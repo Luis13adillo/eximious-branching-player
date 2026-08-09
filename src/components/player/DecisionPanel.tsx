@@ -92,7 +92,7 @@ export function DecisionPanel({
                   {o.label}
                 </span>
                 {o.detail && (
-                  <span className="mt-0.5 block font-sans text-[13px] leading-snug text-ink-300">
+                  <span className="mt-0.5 block font-sans text-[13px] leading-snug text-ink-200">
                     {o.detail}
                   </span>
                 )}

@@ -2,6 +2,7 @@
 
 import type { Lesson, SceneId } from "@/lib/branching/types";
 import { lessonOutline, outlineIndexForScene } from "@/lib/branching/engine";
+import { CheckIcon } from "@/components/ui/icons";
 
 /**
  * ProgressRail — shows the learner where they are along the lesson spine
@@ -39,6 +40,69 @@ export function ProgressRail({
         );
       })}
     </div>
+  );
+}
+
+/**
+ * A labeled, vertical case-progress tracker. Fills the interaction panel with a
+ * purposeful element (instead of dead space) and gives the learner a clear map
+ * of where they are in the case. Branch-stable (feedback maps to its decision).
+ */
+export function LessonStepList({
+  lesson,
+  currentSceneId,
+  className = "",
+}: {
+  lesson: Lesson;
+  currentSceneId: SceneId;
+  className?: string;
+}) {
+  const outline = lessonOutline(lesson);
+  const activeIndex = outlineIndexForScene(lesson, currentSceneId);
+
+  return (
+    <nav aria-label="Case progress" className={className}>
+      <div className="mb-3 font-sans text-[10px] font-semibold uppercase tracking-[0.24em] text-ink-400">
+        Case progress
+      </div>
+      <ol className="space-y-1">
+        {outline.map((step, i) => {
+          const done = i < activeIndex;
+          const active = i === activeIndex;
+          return (
+            <li key={step.id} className="flex items-center gap-3">
+              <span
+                className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-[10px] font-semibold transition-colors ${
+                  active
+                    ? "bg-gold-500 text-navy-950"
+                    : done
+                      ? "bg-gold-500/15 text-gold-300"
+                      : "bg-white/8 text-ink-400"
+                }`}
+              >
+                {done ? <CheckIcon className="h-3 w-3" /> : i + 1}
+              </span>
+              <span
+                className={`font-sans text-[13px] transition-colors ${
+                  active
+                    ? "font-medium text-ink-100"
+                    : done
+                      ? "text-ink-300"
+                      : "text-ink-400"
+                }`}
+              >
+                {step.label}
+              </span>
+              {step.kind === "decision" && (
+                <span className="ml-auto rounded-full bg-white/5 px-1.5 py-0.5 text-[8px] font-semibold uppercase tracking-widest text-gold-300">
+                  Decision
+                </span>
+              )}
+            </li>
+          );
+        })}
+      </ol>
+    </nav>
   );
 }
 

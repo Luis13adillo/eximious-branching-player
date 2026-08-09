@@ -7,7 +7,7 @@ import { useLessonMachine } from "@/lib/branching/useLessonMachine";
 import { useMediaClock } from "./useMediaClock";
 import { MediaStage } from "./MediaStage";
 import { DecisionPanel } from "./DecisionPanel";
-import { ProgressRail, ProgressLabel } from "./ProgressRail";
+import { ProgressRail, ProgressLabel, LessonStepList } from "./ProgressRail";
 import {
   ContinueBar,
   FeedbackNote,
@@ -104,35 +104,48 @@ export function LessonPlayer({
           aria-label="Lesson interaction"
           className="rounded-2xl border border-white/10 bg-navy-900/40 p-5 sm:p-6 lg:h-full lg:min-h-0 lg:flex-1 lg:min-w-0 lg:overflow-y-auto"
         >
-          <div className="lg:flex lg:min-h-full lg:flex-col lg:justify-center">
-            {machine.isComplete ? (
-              <CompletionSummary
-                lesson={lesson}
-                state={state}
-                onRestart={machine.restart}
-              />
-            ) : current.type === "decision" ? (
-              <DecisionPanel scene={current} onSelect={machine.select} />
-            ) : current.type === "feedback" ? (
-              <FeedbackNote
-                scene={current}
-                onContinue={machine.next}
-                ready={ready}
-              />
-            ) : (
-              <>
-                <SceneContext
-                  kicker={current.kicker}
-                  headline={current.headline}
-                  subhead={current.subhead}
-                  body={current.body}
+          <div className="lg:flex lg:min-h-full lg:flex-col">
+            {/* interaction — vertically centered in the space above the tracker */}
+            <div className="lg:flex lg:flex-1 lg:flex-col lg:justify-center">
+              {machine.isComplete ? (
+                <CompletionSummary
+                  lesson={lesson}
+                  state={state}
+                  onRestart={machine.restart}
                 />
-                <ContinueBar
-                  label={CONTINUE_LABEL[current.role] ?? "Continue"}
+              ) : current.type === "decision" ? (
+                <DecisionPanel scene={current} onSelect={machine.select} />
+              ) : current.type === "feedback" ? (
+                <FeedbackNote
+                  scene={current}
                   onContinue={machine.next}
                   ready={ready}
                 />
-              </>
+              ) : (
+                <>
+                  <SceneContext
+                    kicker={current.kicker}
+                    headline={current.headline}
+                    subhead={current.subhead}
+                    body={current.body}
+                  />
+                  <ContinueBar
+                    label={CONTINUE_LABEL[current.role] ?? "Continue"}
+                    onContinue={machine.next}
+                    ready={ready}
+                  />
+                </>
+              )}
+            </div>
+
+            {/* case-progress tracker pinned to the bottom (desktop) — turns the
+                panel's spare height into a purposeful map instead of dead space */}
+            {!machine.isComplete && (
+              <LessonStepList
+                lesson={lesson}
+                currentSceneId={current.id}
+                className="mt-8 hidden border-t border-white/8 pt-5 lg:block"
+              />
             )}
           </div>
         </section>

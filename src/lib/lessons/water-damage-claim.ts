@@ -101,8 +101,8 @@ export const waterDamageClaim: Lesson = {
       evidence: [
         {
           id: "photo-basement",
-          kind: "photo",
-          title: "Basement, north wall",
+          kind: "diagram",
+          title: "Basement, north wall — reconstruction",
           caption: "Water line ~16 in.; warped laminate; damaged contents.",
           illustration: "damage-photo",
         },

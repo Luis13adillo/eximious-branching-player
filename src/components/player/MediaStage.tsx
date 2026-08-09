@@ -163,7 +163,7 @@ export function MediaStage({
           <img
             src={scene.media.posterUrl}
             alt=""
-            className="absolute inset-0 h-full w-full object-cover object-[70%_center]"
+            className="absolute inset-0 h-full w-full object-cover object-[58%_center] lg:object-[70%_center]"
             style={{
               animation: clock.playing
                 ? "exKenBurns 32s var(--ease-cinematic) alternate infinite"
@@ -226,7 +226,7 @@ export function MediaStage({
           </span>
         )}
         {isAvatar && scene.presenter && (
-          <div className="flex items-center gap-2.5 rounded-full bg-navy-950/55 py-1 pl-1 pr-3.5 ring-1 ring-white/10 backdrop-blur-sm">
+          <div className="flex items-center gap-2.5 rounded-full bg-navy-950/80 py-1 pl-1 pr-3.5 ring-1 ring-white/10 backdrop-blur-md">
             <span className="flex h-7 w-7 items-center justify-center rounded-full bg-gradient-to-br from-gold-400 to-gold-600 font-[family-name:var(--font-display)] text-[11px] font-semibold text-navy-950">
               {initials(scene.presenter.name)}
             </span>
