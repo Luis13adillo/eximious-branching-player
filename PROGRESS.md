@@ -136,8 +136,42 @@ exit gate met. Remaining notes addressed this round:
 - Fixed evidence caption/thumbnail overlap; strengthened the control scrim +
   brightened control icons for contrast over the bright presenter frame.
 
-**Round 6 next:** re-run the branching critic vs H5P/Storyline (post consequence
-beats) — the remaining exit gate.
+**Round 6 — Branching (vs H5P/Storyline): YES.** All four A/B/C/D routes verified
+live — distinct on-stage consequence beat + distinct feedback + correct rejoin,
+exactly one correct (C), keyboard-answerable — "clears the bar with higher
+production polish than the stock H5P example." ✅ Branching exit gate met.
+Fixed the one bug it found (case-progress tracker clipped on the decision screen)
+and the last visual notes: real cinematic landing thumbnail, exhibit tabs moved
+above the caption band, seamless exhibit board, always-prominent mobile CTA,
+tightened intro panel spacing.
+
+## ✅ EXIT — both quality bars cleared (independent fresh-context critics)
+
+- **Visual vs MasterClass → CAN'T DISTINGUISH.** Final verdict: "a viewer shown
+  both couldn't reliably say which is the commercial product… ours is a *more*
+  designed surface, executed with equal discipline. No broken elements found."
+- **Branching interaction vs H5P Branching Scenario / Articulate Storyline →
+  OURS.** "Clears the bar with higher production polish than the stock H5P
+  example." All branches + rejoin verified in the running app.
+- **Accessibility:** keyboard-complete, no traps, visible focus, WCAG-AA
+  contrast, reliable live-region announcements, reduced-motion honored.
+- **Code / handoff:** production build clean, 13/13 engine tests pass, lesson
+  validation enforced at build, no hard-coded lesson content in the player.
+
+The gauntlet exit condition — critics choose our result over, or cannot
+meaningfully distinguish it from, the bar — is satisfied on the running app.
+
+## Final validation
+
+- ✅ Every A/B/C/D path plays distinct feedback + a distinct consequence beat.
+- ✅ All four branches rejoin the shared continuation → resolution → completion.
+- ✅ Desktop (two-column) + tablet + mobile (stacked) all hold up; no overflow.
+- ✅ Iframe-safe embed route (`/embed/[slug]`) with CSP `frame-ancestors`.
+- ✅ Scales to 267 lessons × 3 decisions: data-only lessons, one registry line,
+  N-decision engine; validated at build.
+- ✅ Handoff: full README, clean commented source, GitHub repo, Vercel-ready.
+- ✅ Media-swap seam proven: real generated images already flow through the same
+  `posterUrl`/`imageUrl`/`videoUrl` path a HeyGen/ElevenLabs/Mux asset will use.
 
 ## Unresolved issues
 

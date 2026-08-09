@@ -92,10 +92,12 @@ export function ContinueBar({
         {ready ? "Ready when you are." : "Watch the segment, or continue when ready."}
       </p>
       <div className="sm:shrink-0">
+        {/* Primary action is always prominent (gold) — including on mobile,
+            where a muted pill read as disabled. `ready` still drives autofocus. */}
         <ContinueButton
           label={label}
           onClick={onContinue}
-          emphatic={ready}
+          emphatic
           autoFocus={ready}
         />
       </div>
