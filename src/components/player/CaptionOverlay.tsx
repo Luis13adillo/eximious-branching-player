@@ -26,8 +26,8 @@ export function CaptionOverlay({
     <div className="pointer-events-none absolute inset-x-0 bottom-0 flex justify-center px-4">
       <p
         key={cue.text}
-        className="ex-animate-fade max-w-[46ch] rounded-md bg-navy-950/45 px-3 py-1.5 text-center font-sans text-[15px] leading-snug text-ink-100 backdrop-blur-[2px] sm:text-base"
-        style={{ textShadow: "0 1px 3px rgba(0,0,0,0.85), 0 0 10px rgba(0,0,0,0.55)" }}
+        className="ex-animate-fade max-w-[34ch] rounded bg-navy-950/40 px-2.5 py-1 text-center font-sans text-[12px] leading-snug text-ink-100 backdrop-blur-[2px] sm:max-w-[42ch] sm:text-[13.5px]"
+        style={{ textShadow: "0 1px 3px rgba(0,0,0,0.9), 0 0 10px rgba(0,0,0,0.6)" }}
       >
         {cue.text}
       </p>

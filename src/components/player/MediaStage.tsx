@@ -236,38 +236,24 @@ export function MediaStage({
         tabIndex={-1}
       />
 
-      {/* top-left identity stack: kicker + presenter tag (headlines live in the
-          panel below, so nothing ever overlaps the presenter or an exhibit) */}
-      <div className="pointer-events-none absolute left-4 top-4 z-[5] flex max-w-[80%] flex-col items-start gap-2 sm:left-6 sm:top-5">
-        {scene.kicker && (
-          <span className="rounded-full bg-navy-950/70 px-3 py-1 font-sans text-[10px] font-semibold uppercase tracking-[0.24em] text-gold-300 ring-1 ring-white/10 backdrop-blur-sm sm:text-[11px]">
-            {scene.kicker}
+      {/* One tasteful presenter lower-third — DESKTOP ONLY. On phones the video
+          frame is kept clean (the case title / kicker live in the panel beside
+          it), so nothing crowds the presenter. No kicker chip, no preview stamp. */}
+      {isAvatar && scene.presenter && (
+        <div className="pointer-events-none absolute left-6 top-5 z-[5] hidden items-center gap-2.5 rounded-full bg-navy-950/70 py-1 pl-1 pr-3.5 ring-1 ring-white/10 backdrop-blur-md sm:flex">
+          <span className="flex h-7 w-7 items-center justify-center rounded-full bg-gradient-to-br from-gold-400 to-gold-600 font-[family-name:var(--font-display)] text-[11px] font-semibold text-navy-950">
+            {initials(scene.presenter.name)}
           </span>
-        )}
-        {isAvatar && scene.presenter && (
-          <div className="flex items-center gap-2.5 rounded-full bg-navy-950/80 py-1 pl-1 pr-3.5 ring-1 ring-white/10 backdrop-blur-md">
-            <span className="flex h-7 w-7 items-center justify-center rounded-full bg-gradient-to-br from-gold-400 to-gold-600 font-[family-name:var(--font-display)] text-[11px] font-semibold text-navy-950">
-              {initials(scene.presenter.name)}
+          <span className="leading-tight">
+            <span className="block font-sans text-[13px] font-medium text-ink-100">
+              {scene.presenter.name}
             </span>
-            <span className="leading-tight">
-              <span className="block font-sans text-[13px] font-medium text-ink-100">
-                {scene.presenter.name}
-              </span>
-              <span className="block font-sans text-[9px] uppercase tracking-[0.16em] text-gold-300">
-                {scene.presenter.role}
-              </span>
+            <span className="block font-sans text-[9px] uppercase tracking-[0.16em] text-gold-300">
+              {scene.presenter.role}
             </span>
-          </div>
-        )}
-        {/* honest AI-presenter placeholder tag — in the same left stack so it's
-            consistent on every viewport and never collides with the kicker.
-            Remove this once final HeyGen footage is dropped in. */}
-        {isAvatar && (
-          <span className="inline-flex items-center gap-1.5 rounded-full bg-navy-950/70 px-2.5 py-1 font-sans text-[9px] font-medium uppercase tracking-widest text-ink-300 ring-1 ring-white/10 backdrop-blur-sm">
-            <span className="h-1.5 w-1.5 rounded-full bg-gold-400" /> AI Presenter · Preview
           </span>
-        )}
-      </div>
+        </div>
+      )}
 
       {/* big center play when paused (not ended) */}
       {!clock.playing && !clock.ended && (
@@ -278,12 +264,13 @@ export function MediaStage({
         </div>
       )}
 
-      {/* captions */}
+      {/* captions — suppressed on exhibit scenes, where they'd cover the image
+          (the exhibit card carries its own caption and the panel has the body) */}
       <div className="pointer-events-none absolute inset-x-0 bottom-14 sm:bottom-16">
         <CaptionOverlay
           captions={scene.media.captions}
           currentTime={clock.currentTime}
-          visible={clock.captionsOn}
+          visible={clock.captionsOn && !hasEvidence}
         />
       </div>
 
