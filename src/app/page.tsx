@@ -25,7 +25,7 @@ export default function Home() {
             <span className="cursor-default">Accreditation</span>
             <Link
               href={`/lesson/${DEMO_LESSON_SLUG}`}
-              className="rounded-full border border-gold-500/50 px-4 py-1.5 text-gold-200 transition-colors hover:bg-gold-500/10"
+              className="whitespace-nowrap rounded-full border border-gold-500/50 px-4 py-1.5 text-gold-200 transition-colors hover:bg-gold-500/10"
             >
               Enter a case
             </Link>
@@ -73,7 +73,13 @@ export default function Home() {
                 className="group flex flex-col gap-4 rounded-2xl border border-white/10 bg-navy-900/50 p-4 backdrop-blur-sm transition-all hover:border-gold-500/40 hover:bg-navy-900/70 sm:flex-row sm:items-center sm:gap-5 sm:p-5"
               >
                 <div className="relative aspect-video w-full shrink-0 overflow-hidden rounded-lg border border-white/10 sm:h-24 sm:w-44">
-                  <SceneBackdrop scene="flooded-interior" animate={false} />
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src="/media/evidence-basement.jpg"
+                    alt=""
+                    className="absolute inset-0 h-full w-full object-cover"
+                  />
+                  <div className="absolute inset-0 bg-navy-950/25" />
                   <div className="absolute inset-0 flex items-center justify-center">
                     <span className="flex h-10 w-10 items-center justify-center rounded-full bg-navy-950/55 ring-1 ring-white/25 backdrop-blur-sm">
                       <PlayIcon className="ml-0.5 h-4 w-4 text-ink-100" />
@@ -108,7 +114,7 @@ export default function Home() {
 
         <footer className="flex flex-wrap items-center justify-between gap-3 border-t border-white/8 pt-4 font-sans text-[11px] text-ink-400">
           <span>© Eximious Academy · Professional Claims Education</span>
-          <span>Proof-of-concept · placeholder media</span>
+          <span className="hidden sm:block">Investigation · Coverage · Litigation Readiness</span>
         </footer>
       </div>
     </div>

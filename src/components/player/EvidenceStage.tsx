@@ -51,30 +51,9 @@ export function EvidenceStage({
   if (!item) return null;
 
   return (
-    <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 px-4 pb-24 pt-10 sm:gap-3 sm:px-6 sm:pb-24 sm:pt-12">
-      {/* primary exhibit — large and centered so it fills the stage like a
-          full-frame document/diagram view rather than a small marooned card */}
-      <figure className="ex-animate-fade flex min-h-0 w-full max-w-3xl flex-1 flex-col overflow-hidden rounded-xl border border-white/10 bg-navy-950/55 shadow-2xl backdrop-blur-[2px]">
-        <figcaption className="flex items-center justify-between gap-2 border-b border-white/10 bg-navy-900/60 px-4 py-2">
-          <span className="flex items-center gap-2 font-sans text-[13px] font-medium text-ink-100">
-            <DocumentIcon className="h-4 w-4 text-gold-400" />
-            {item.title}
-          </span>
-          <span className="rounded-full bg-white/5 px-2 py-0.5 text-[9px] font-semibold uppercase tracking-widest text-gold-300">
-            {KIND_LABEL[item.kind]}
-          </span>
-        </figcaption>
-        <div className="relative min-h-0 flex-1">
-          <ExhibitVisual item={item} />
-        </div>
-        {item.caption && (
-          <p className="border-t border-white/10 bg-navy-950/60 px-4 py-2 text-center font-sans text-xs text-ink-300">
-            {item.caption}
-          </p>
-        )}
-      </figure>
-
-      {/* thumbnail strip */}
+    <div className="absolute inset-0 flex flex-col items-center gap-3 px-4 pb-16 pt-14 sm:gap-3 sm:px-6 sm:pb-16 sm:pt-14">
+      {/* exhibit selector — at the TOP so it never collides with the caption
+          band or controls at the bottom of the stage */}
       {evidence.length > 1 && (
         <div className="flex flex-wrap items-center justify-center gap-2">
           {evidence.map((ev, i) => (
@@ -86,8 +65,8 @@ export function EvidenceStage({
               aria-current={i === active}
               className={`flex items-center gap-2 rounded-lg border px-3 py-1.5 font-sans text-[11px] transition-all ${
                 i === active
-                  ? "border-gold-500/70 bg-gold-500/10 text-ink-100"
-                  : "border-white/10 bg-navy-950/40 text-ink-300 hover:border-white/25 hover:text-ink-100"
+                  ? "border-gold-500/70 bg-gold-500/15 text-ink-100"
+                  : "border-white/10 bg-navy-950/60 text-ink-200 hover:border-white/25 hover:text-ink-100"
               }`}
             >
               <span
@@ -97,11 +76,34 @@ export function EvidenceStage({
               >
                 {i + 1}
               </span>
-              <span className="max-w-[120px] truncate">{ev.title}</span>
+              <span className="max-w-[130px] truncate">{ev.title}</span>
             </button>
           ))}
         </div>
       )}
+
+      {/* primary exhibit — large, filling the stage as a framed exhibit view */}
+      <figure className="ex-animate-fade flex min-h-0 w-full max-w-3xl flex-1 flex-col overflow-hidden rounded-xl border border-white/10 bg-navy-950 shadow-2xl">
+        <figcaption className="flex items-center justify-between gap-2 border-b border-white/10 bg-navy-900/70 px-4 py-2">
+          <span className="flex items-center gap-2 font-sans text-[13px] font-medium text-ink-100">
+            <DocumentIcon className="h-4 w-4 text-gold-400" />
+            {item.title}
+          </span>
+          <span className="rounded-full bg-white/5 px-2 py-0.5 text-[9px] font-semibold uppercase tracking-widest text-gold-300">
+            {KIND_LABEL[item.kind]}
+          </span>
+        </figcaption>
+        {/* uniform dark board: the photo fills it (object-cover); a vector
+            diagram sits on the same tone so there's no visible hollow seam */}
+        <div className="relative min-h-0 flex-1 bg-navy-950">
+          <ExhibitVisual item={item} />
+        </div>
+        {item.caption && (
+          <p className="border-t border-white/10 bg-navy-900/70 px-4 py-2 text-center font-sans text-xs text-ink-300">
+            {item.caption}
+          </p>
+        )}
+      </figure>
     </div>
   );
 }

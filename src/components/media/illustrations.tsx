@@ -41,7 +41,7 @@ function Frame({
 function FloorPlan() {
   return (
     <Frame label="Basement floor plan showing the window well on the north wall and the sump pit in the south-east corner">
-      <rect x="0" y="0" width="400" height="300" fill="var(--color-navy-950)" />
+      <rect x="0" y="0" width="400" height="300" fill="transparent" />
       {/* faint blueprint grid */}
       <g stroke="var(--color-navy-700)" strokeWidth="1">
         {Array.from({ length: 20 }).map((_, i) => (
@@ -132,7 +132,7 @@ function MoistureReadings() {
   const threshold = 0.6;
   return (
     <Frame label="Bar chart of moisture readings, highest at the sump pit and window well, above the saturation threshold">
-      <rect x="0" y="0" width="400" height="300" fill="var(--color-navy-950)" />
+      <rect x="0" y="0" width="400" height="300" fill="transparent" />
       {/* axes */}
       <line x1="52" y1="60" x2="52" y2={baseY} stroke={NAVY_LINE} strokeWidth="1.5" />
       <line x1="52" y1={baseY} x2="372" y2={baseY} stroke={NAVY_LINE} strokeWidth="1.5" />
@@ -201,7 +201,7 @@ function Timeline() {
   ];
   return (
     <Frame label="Loss timeline: storm, two days away, then discovery of the loss">
-      <rect x="0" y="0" width="400" height="300" fill="var(--color-navy-950)" />
+      <rect x="0" y="0" width="400" height="300" fill="transparent" />
       <line x1="60" y1="150" x2="340" y2="150" stroke={NAVY_LINE} strokeWidth="2" />
       {nodes.map((n, i) => (
         <g key={n.t}>
@@ -234,7 +234,7 @@ function Timeline() {
 function PolicyClause() {
   return (
     <Frame label="Policy excerpt with the water-backup endorsement highlighted as covered and surface-water and seepage exclusions marked">
-      <rect x="0" y="0" width="400" height="300" fill="var(--color-navy-950)" />
+      <rect x="0" y="0" width="400" height="300" fill="transparent" />
       <rect
         x="60"
         y="34"
