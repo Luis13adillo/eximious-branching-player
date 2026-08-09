@@ -181,9 +181,10 @@ export function MediaStage({
             alt=""
             className="absolute inset-0 h-full w-full object-cover object-[58%_center] lg:object-[70%_center]"
             style={{
-              animation: clock.playing
-                ? "exKenBurns 32s var(--ease-cinematic) alternate infinite"
-                : undefined,
+              // Always-on, slow ambient push so the stage "breathes" like footage
+              // even before real avatar video is dropped in (disabled for
+              // prefers-reduced-motion via globals.css).
+              animation: "exKenBurns 26s var(--ease-cinematic) alternate infinite",
             }}
           />
           {/* legibility scrims for the identity tag (left) and captions (bottom) */}
@@ -287,7 +288,7 @@ export function MediaStage({
 
       {/* controls */}
       <div
-        className={`absolute inset-x-0 bottom-0 z-10 bg-gradient-to-t from-navy-950/90 via-navy-950/40 to-transparent pb-2 pt-8 transition-opacity duration-300 ${
+        className={`absolute inset-x-0 bottom-0 z-10 bg-gradient-to-t from-navy-950 via-navy-950/70 to-transparent pb-2 pt-12 transition-opacity duration-300 ${
           controlsVisible || focusWithin
             ? "opacity-100"
             : "pointer-events-none opacity-0"

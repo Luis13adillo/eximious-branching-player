@@ -97,7 +97,7 @@ function CtrlButton({
       aria-label={label}
       title={label}
       onClick={onClick}
-      className="flex h-9 w-9 items-center justify-center rounded-md text-ink-100/90 transition-colors hover:bg-white/10 hover:text-white"
+      className="flex h-9 w-9 items-center justify-center rounded-md text-ink-100 transition-colors hover:bg-white/10 hover:text-white"
     >
       {children}
     </button>

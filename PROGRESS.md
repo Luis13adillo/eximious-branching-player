@@ -127,9 +127,17 @@ panel's vertical dead space → fixed with the Case Progress tracker. Also fixed
 mobile name-plate over face, low-contrast decision descriptions, mislabeled
 "PHOTOGRAPH" exhibit, heavy caption band.
 
-**Round 5 next:** re-run the visual critic vs MasterClass (post panel-fill +
-presenter) and re-run the branching critic vs H5P/Storyline (post consequence
-beats) to test for parity/win.
+**Round 5 — Visual re-check (vs MasterClass): CAN'T DISTINGUISH.** "Ours stands
+beside MasterClass as a finished premium product — it doesn't lose." ✅ Visual
+exit gate met. Remaining notes addressed this round:
+- Stage now "breathes" (always-on ambient Ken Burns on the presenter still).
+- Generated a photoreal basement evidence image (GPT Image 2) so the exhibit
+  matches the presenter's cinematic fidelity (was a flat vector diagram).
+- Fixed evidence caption/thumbnail overlap; strengthened the control scrim +
+  brightened control icons for contrast over the bright presenter frame.
+
+**Round 6 next:** re-run the branching critic vs H5P/Storyline (post consequence
+beats) — the remaining exit gate.
 
 ## Unresolved issues
 

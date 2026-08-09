@@ -51,7 +51,7 @@ export function EvidenceStage({
   if (!item) return null;
 
   return (
-    <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 px-4 pb-16 pt-10 sm:gap-3 sm:px-6 sm:pb-16 sm:pt-12">
+    <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 px-4 pb-24 pt-10 sm:gap-3 sm:px-6 sm:pb-24 sm:pt-12">
       {/* primary exhibit — large and centered so it fills the stage like a
           full-frame document/diagram view rather than a small marooned card */}
       <figure className="ex-animate-fade flex min-h-0 w-full max-w-3xl flex-1 flex-col overflow-hidden rounded-xl border border-white/10 bg-navy-950/55 shadow-2xl backdrop-blur-[2px]">
