@@ -9,7 +9,7 @@ import { EvidenceStage } from "./EvidenceStage";
 import { ConsequenceStage } from "./ConsequenceStage";
 import { CaptionOverlay } from "./CaptionOverlay";
 import { VideoControls } from "./VideoControls";
-import { PlayIcon } from "@/components/ui/icons";
+import { PlayIcon, VolumeIcon } from "@/components/ui/icons";
 
 function initials(name: string) {
   return name
@@ -253,6 +253,24 @@ export function MediaStage({
             </span>
           </span>
         </div>
+      )}
+
+      {/* "tap for sound" — the video autoplays muted (browser policy); this lets
+          the learner turn on the baked voiceover with a gesture, from the top */}
+      {scene.media.hasAudio && clock.muted && (
+        <button
+          type="button"
+          onClick={(e) => {
+            e.stopPropagation();
+            clock.setMuted(false);
+            clock.seek(0);
+            clock.play();
+          }}
+          className="absolute left-1/2 top-4 z-20 inline-flex -translate-x-1/2 items-center gap-2 rounded-full bg-gold-500 px-4 py-2 font-sans text-[13px] font-semibold text-navy-950 shadow-lg ring-1 ring-black/25 transition-colors hover:bg-gold-400 sm:top-5"
+        >
+          <VolumeIcon className="h-4 w-4" />
+          Tap for sound
+        </button>
       )}
 
       {/* big center play when paused (not ended) */}

@@ -1,2 +1,3 @@
-# Remotion source clip — used only to render intro.mp4 locally; not served by the app
+# Remotion sources — used only to render intro.mp4 locally; not served by the app
 public/media/kling-avatar.mp4
+public/media/intro-vo.mp3

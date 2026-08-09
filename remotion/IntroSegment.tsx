@@ -1,5 +1,6 @@
 import {
   AbsoluteFill,
+  Audio,
   Loop,
   OffthreadVideo,
   staticFile,
@@ -21,7 +22,8 @@ import {
  */
 
 export const INTRO_FPS = 30;
-export const INTRO_DURATION_SECONDS = 30;
+/** matches the baked voiceover length (public/media/intro-vo.mp3 ≈ 32.3s) */
+export const INTRO_DURATION_SECONDS = 33;
 /** usable length of the source clip in seconds (kept just under its true 10.04s) */
 const CLIP_SECONDS = 10;
 
@@ -40,6 +42,9 @@ export const IntroSegment = ({ videoSrc }: { videoSrc: string }) => {
 
   return (
     <AbsoluteFill style={{ backgroundColor: "#050f1f", overflow: "hidden" }}>
+      {/* baked narration voiceover (synthetic TTS placeholder) */}
+      <Audio src={staticFile("media/intro-vo.mp3")} />
+
       {/* talking-presenter footage, looped to fill the intro */}
       <Loop durationInFrames={clipFrames}>
         <OffthreadVideo

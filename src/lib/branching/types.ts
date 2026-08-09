@@ -53,6 +53,12 @@ export interface MediaSource {
    */
   loop?: boolean;
   /**
+   * The media carries an audio track (e.g. baked voiceover). The player starts
+   * muted (autoplay policy) and shows a "tap for sound" control so the learner
+   * can turn it on with a gesture.
+   */
+  hasAudio?: boolean;
+  /**
    * Name of a registered placeholder backdrop (see PlaceholderStage). Lets the
    * demo look finished before real footage exists. Ignored once `videoUrl` set.
    */
