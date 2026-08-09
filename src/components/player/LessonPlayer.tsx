@@ -168,8 +168,10 @@ export function LessonPlayer({
             </div>
 
             {/* case-progress tracker pinned to the bottom (desktop) — turns the
-                panel's spare height into a purposeful map instead of dead space */}
-            {!machine.isComplete && (
+                panel's spare height into a purposeful map instead of dead space.
+                Hidden on the decision scene, whose four options already fill the
+                panel (showing it there would overflow/clip the tracker). */}
+            {!machine.isComplete && current.type !== "decision" && (
               <LessonStepList
                 lesson={lesson}
                 currentSceneId={current.id}
