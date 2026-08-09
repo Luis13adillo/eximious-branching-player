@@ -1,4 +1,5 @@
 import type { Lesson, LessonSummary } from "@/lib/branching/types";
+import { validateLesson } from "@/lib/branching/engine";
 import { waterDamageClaim } from "./water-damage-claim";
 
 /**
@@ -13,9 +14,31 @@ import { waterDamageClaim } from "./water-damage-claim";
  * key them the same way; the player only depends on the `Lesson` shape, not on
  * where the data comes from.
  */
-const registry: Record<string, Lesson> = {
-  [waterDamageClaim.slug]: waterDamageClaim,
-};
+const allLessons: Lesson[] = [waterDamageClaim];
+
+/**
+ * Validate every lesson graph as the registry loads. Because this module is
+ * evaluated during `next build`, a malformed lesson (missing scene reference,
+ * a decision without exactly one correct answer, branches that don't rejoin,
+ * etc.) FAILS THE BUILD rather than crashing a learner at runtime. This is the
+ * guardrail that keeps 267 hand-authored lessons safe.
+ */
+for (const lesson of allLessons) {
+  const problems = validateLesson(lesson);
+  if (problems.length > 0) {
+    const message = `Invalid lesson "${lesson.id}":\n  - ${problems.join("\n  - ")}`;
+    if (process.env.NODE_ENV === "production") {
+      // Fail the build so bad data never ships.
+      throw new Error(message);
+    } else {
+      console.error(`[Eximious] ${message}`);
+    }
+  }
+}
+
+const registry: Record<string, Lesson> = Object.fromEntries(
+  allLessons.map((lesson) => [lesson.slug, lesson]),
+);
 
 export function getLesson(slug: string): Lesson | undefined {
   return registry[slug];

@@ -5,84 +5,71 @@ import type { Presenter } from "@/lib/branching/types";
 /**
  * AvatarPresenter
  * ============================================================================
- * Placeholder for an AI-avatar presenter (HeyGen etc.). It renders a framed,
- * softly-lit presenter portrait with a broadcast lower-third and an animated
- * "speaking" indicator while playing. When a real avatar video is supplied the
- * <video> fills this same frame (handled by MediaStage) and this placeholder is
- * not shown — so the presenter provider swaps in with no layout change.
+ * Placeholder for an AI-avatar presenter (HeyGen etc.). Rendered as a soft,
+ * cinematically-lit portrait — a rim-lit head-and-shoulders form under a warm
+ * key light, softly blurred so it reads as an out-of-focus person on a studio
+ * set rather than clip art. A "speaking" equalizer animates while playing.
+ * When a real avatar video is supplied the <video> fills this frame instead
+ * (handled by MediaStage) and this is not shown — so the provider swaps in with
+ * no layout change. The presenter's name/role appear in the stage's identity
+ * tag, so no lettering is drawn here.
  */
-
-function initials(name: string) {
-  return name
-    .split(" ")
-    .map((w) => w[0])
-    .slice(0, 2)
-    .join("")
-    .toUpperCase();
-}
-
-export function AvatarPresenter({
-  presenter,
-  speaking,
-}: {
-  presenter: Presenter;
-  speaking: boolean;
-}) {
+export function AvatarPresenter({ speaking }: { presenter: Presenter; speaking: boolean }) {
   return (
-    <div className="absolute inset-0 flex items-center justify-center">
-      {/* framed portrait */}
-      <div className="relative flex h-[62%] max-h-[340px] min-h-[180px] w-[min(46%,300px)] items-end justify-center">
-        <div
-          className="absolute inset-0 rounded-2xl border border-white/10"
-          style={{
-            background:
-              "radial-gradient(120% 90% at 50% 12%, rgba(199,162,84,0.16), rgba(8,24,49,0.2) 55%, rgba(5,15,31,0.55))",
-            boxShadow: "inset 0 0 60px rgba(0,0,0,0.35)",
-          }}
-        />
-        {/* stylized presenter figure */}
+    <div className="absolute inset-0 flex items-end justify-center">
+      <div className="relative h-[78%] w-[min(58%,360px)]">
         <svg
-          viewBox="0 0 200 240"
-          className="relative h-full w-full"
+          viewBox="0 0 220 260"
+          className="h-full w-full"
           aria-hidden="true"
           preserveAspectRatio="xMidYMax meet"
         >
           <defs>
-            <radialGradient id="spot" cx="50%" cy="22%" r="70%">
-              <stop offset="0" stopColor="var(--color-gold-500)" stopOpacity="0.22" />
-              <stop offset="100%" stopColor="var(--color-gold-500)" stopOpacity="0" />
-            </radialGradient>
-            <linearGradient id="figure" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0" stopColor="var(--color-navy-300)" stopOpacity="0.9" />
-              <stop offset="1" stopColor="var(--color-navy-500)" stopOpacity="0.9" />
+            {/* warm key from upper-left, cool shadow side */}
+            <linearGradient id="pres-body" x1="0.15" y1="0" x2="0.9" y2="1">
+              <stop offset="0" stopColor="#3b567f" />
+              <stop offset="0.5" stopColor="#26364f" />
+              <stop offset="1" stopColor="#141f30" />
             </linearGradient>
+            <filter id="pres-soft" x="-30%" y="-30%" width="160%" height="160%">
+              <feGaussianBlur stdDeviation="2.2" />
+            </filter>
           </defs>
-          <rect x="0" y="0" width="200" height="240" fill="url(#spot)" />
-          {/* shoulders */}
-          <path
-            d="M28 240 C34 176 66 156 100 156 C134 156 166 176 172 240 Z"
-            fill="url(#figure)"
-          />
-          {/* head */}
-          <circle cx="100" cy="104" r="40" fill="url(#figure)" />
-          {/* monogram badge */}
-          <circle cx="100" cy="104" r="40" fill="none" stroke="var(--color-gold-500)" strokeWidth="1.5" opacity="0.55" />
-          <text
-            x="100"
-            y="116"
-            textAnchor="middle"
-            fill="var(--color-ink-100)"
-            fontSize="30"
-            fontFamily="var(--font-display)"
-            opacity="0.92"
-          >
-            {initials(presenter.name)}
-          </text>
+
+          <g filter="url(#pres-soft)">
+            {/* shoulders / torso */}
+            <path
+              d="M12 260 C22 188 62 164 110 164 C158 164 198 188 208 260 Z"
+              fill="url(#pres-body)"
+            />
+            {/* neck */}
+            <rect x="94" y="118" width="32" height="52" rx="14" fill="#26364f" />
+            {/* head */}
+            <ellipse cx="110" cy="92" rx="40" ry="46" fill="url(#pres-body)" />
+          </g>
+
+          {/* warm rim light along the key-side edge */}
+          <g filter="url(#pres-soft)" opacity="0.9">
+            <path
+              d="M70 60 C58 78 56 104 66 130"
+              stroke="var(--color-gold-300)"
+              strokeWidth="3"
+              fill="none"
+              opacity="0.55"
+            />
+            <path
+              d="M150 62 C162 80 164 104 156 128"
+              stroke="var(--color-gold-300)"
+              strokeWidth="2"
+              fill="none"
+              opacity="0.3"
+            />
+          </g>
         </svg>
 
         {/* speaking indicator */}
         <div
-          className="absolute bottom-3 left-1/2 flex -translate-x-1/2 items-end gap-1"
+          className="absolute bottom-6 left-1/2 flex -translate-x-1/2 items-end gap-1"
           aria-hidden="true"
         >
           {[0, 1, 2, 3, 4].map((i) => (
@@ -90,12 +77,12 @@ export function AvatarPresenter({
               key={i}
               className="w-1 rounded-full bg-gold-400"
               style={{
-                height: speaking ? 14 : 4,
+                height: speaking ? 15 : 4,
                 transformOrigin: "bottom",
                 animation: speaking
                   ? `exSpeak ${0.7 + i * 0.12}s var(--ease-cinematic) ${i * 0.08}s infinite`
                   : undefined,
-                opacity: speaking ? 1 : 0.4,
+                opacity: speaking ? 0.95 : 0.35,
               }}
             />
           ))}

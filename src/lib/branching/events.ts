@@ -46,14 +46,3 @@ export interface PlayerEventHandlers {
   onSceneEnter?: (event: SceneEnterEvent) => void;
   onLessonComplete?: (event: LessonCompleteEvent) => void;
 }
-
-/**
- * A no-op logger used in development so integrators can see the exact event
- * shape in the console without wiring anything. Swap for a real sink later.
- */
-export const consoleEventHandlers: PlayerEventHandlers = {
-  onAnswerSelected: (e) =>
-    console.info("[player] onAnswerSelected", e),
-  onSceneEnter: (e) => console.debug("[player] onSceneEnter", e),
-  onLessonComplete: (e) => console.info("[player] onLessonComplete", e),
-};

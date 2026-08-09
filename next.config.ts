@@ -23,6 +23,8 @@ const nextConfig: NextConfig = {
   // Pin the workspace root so a stray lockfile elsewhere on the machine can't
   // confuse dev/build root detection (and Vercel).
   turbopack: { root: projectRoot },
+  // Hide the Next dev overlay button — it otherwise floats over the player UI.
+  devIndicators: false,
   async headers() {
     return [
       {

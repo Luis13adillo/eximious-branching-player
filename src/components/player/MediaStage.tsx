@@ -124,7 +124,7 @@ export function MediaStage({
       tabIndex={0}
       aria-label={`Video: ${scene.headline ?? scene.label}`}
       className={`group/stage relative w-full overflow-hidden bg-navy-950 outline-none ${
-        fullscreen ? "h-full" : "aspect-video"
+        fullscreen ? "h-full" : "aspect-[4/3] sm:aspect-video"
       }`}
     >
       {/* backdrop / video */}
@@ -201,9 +201,9 @@ export function MediaStage({
         )}
       </div>
 
-      {/* top-right: honest AI-presenter placeholder tag */}
+      {/* top-right: honest AI-presenter placeholder tag (desktop/tablet only) */}
       {isAvatar && !hasVideo && (
-        <div className="pointer-events-none absolute right-4 top-4 z-[5] sm:right-6 sm:top-5">
+        <div className="pointer-events-none absolute right-4 top-4 z-[5] hidden sm:right-6 sm:top-5 sm:block">
           <span className="inline-flex items-center gap-1.5 rounded-full bg-navy-950/55 px-2.5 py-1 font-sans text-[9px] font-medium uppercase tracking-widest text-ink-300 ring-1 ring-white/10 backdrop-blur-sm">
             <span className="h-1.5 w-1.5 rounded-full bg-gold-400" /> AI Presenter · Preview
           </span>

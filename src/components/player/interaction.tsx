@@ -26,7 +26,7 @@ function ContinueButton({
       ref={ref}
       type="button"
       onClick={onClick}
-      className={`group/cta inline-flex items-center gap-2 rounded-full px-6 py-3 font-sans text-sm font-semibold transition-all ${
+      className={`group/cta inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full px-6 py-3 font-sans text-sm font-semibold transition-all ${
         emphatic
           ? "bg-gold-500 text-navy-950 shadow-lg shadow-gold-900/40 hover:bg-gold-400"
           : "bg-white/10 text-ink-100 hover:bg-white/16"
@@ -87,16 +87,18 @@ export function ContinueBar({
   ready: boolean;
 }) {
   return (
-    <div className="ex-animate-fade flex items-center justify-between gap-4">
+    <div className="ex-animate-fade flex flex-col items-stretch gap-3 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
       <p className="font-sans text-sm text-ink-300">
         {ready ? "Ready when you are." : "Watch the segment, or continue when ready."}
       </p>
-      <ContinueButton
-        label={label}
-        onClick={onContinue}
-        emphatic={ready}
-        autoFocus={ready}
-      />
+      <div className="sm:shrink-0">
+        <ContinueButton
+          label={label}
+          onClick={onContinue}
+          emphatic={ready}
+          autoFocus={ready}
+        />
+      </div>
     </div>
   );
 }
@@ -179,22 +181,32 @@ export function CompletionSummary({
   const total = decisions.length;
   const allCorrect = correctCount === total;
 
+  // All lesson-specific copy comes from data (lesson.completion), with generic
+  // fallbacks — nothing here is hard-coded to a particular lesson.
+  const headline = allCorrect
+    ? (lesson.completion?.headlineAllCorrect ?? "Handled to standard.")
+    : (lesson.completion?.headlinePartial ?? "Case resolved — here's the takeaway.");
+
   return (
     <div className="ex-animate-drift">
       <div className="mb-1 font-sans text-[11px] font-semibold uppercase tracking-[0.28em] text-gold-300">
         Lesson complete
       </div>
       <h3 className="font-[family-name:var(--font-display)] text-2xl leading-tight text-ink-100 sm:text-3xl">
-        {allCorrect
-          ? "Handled to standard."
-          : "Case resolved — here's the takeaway."}
+        {headline}
       </h3>
       <p className="mt-2 max-w-2xl font-sans text-[15px] leading-relaxed text-ink-200">
-        You worked{" "}
-        <span className="text-ink-100">{lesson.title}</span> and reached the
-        correct resolution: establish cause of loss first, then determine
-        coverage. On this attempt you made {correctCount} of {total} decision
-        {total === 1 ? "" : "s"} the way a seasoned adjuster would.
+        You worked <span className="text-ink-100">{lesson.title}</span>
+        {lesson.completion?.takeaway ? (
+          <>
+            {" — "}
+            {lesson.completion.takeaway}
+          </>
+        ) : (
+          "."
+        )}{" "}
+        On this attempt you made {correctCount} of {total} decision
+        {total === 1 ? "" : "s"} the way a seasoned professional would.
       </p>
 
       <div className="mt-5 flex flex-col gap-2">

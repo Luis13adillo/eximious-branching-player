@@ -162,6 +162,19 @@ export interface Lesson {
   estimatedMinutes?: number;
   startSceneId: SceneId;
   scenes: Record<SceneId, Scene>;
+  /**
+   * Per-lesson completion copy shown on the summary screen. Optional — the
+   * player falls back to generic wording. This keeps lesson-specific text in
+   * DATA (never hard-coded into the shared player component).
+   */
+  completion?: {
+    /** The one-line takeaway, e.g. "Establish cause of loss, then coverage." */
+    takeaway: string;
+    /** Headline when every decision was answered correctly. */
+    headlineAllCorrect?: string;
+    /** Headline when at least one decision was missed. */
+    headlinePartial?: string;
+  };
   meta?: {
     module?: string;
     lessonNumber?: number;

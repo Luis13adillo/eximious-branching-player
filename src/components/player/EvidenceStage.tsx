@@ -51,7 +51,7 @@ export function EvidenceStage({
   if (!item) return null;
 
   return (
-    <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 px-4 pb-16 pt-12 sm:gap-4 sm:px-8 sm:pb-20 sm:pt-14">
+    <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 px-4 pb-24 pt-12 sm:gap-4 sm:px-8 sm:pb-24 sm:pt-14">
       {/* primary exhibit */}
       <figure className="ex-animate-fade flex min-h-0 w-full max-w-2xl flex-1 flex-col overflow-hidden rounded-xl border border-white/10 bg-navy-950/50 shadow-2xl backdrop-blur-[2px]">
         <figcaption className="flex items-center justify-between gap-2 border-b border-white/10 bg-navy-900/60 px-4 py-2">

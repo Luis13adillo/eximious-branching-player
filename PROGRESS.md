@@ -36,10 +36,12 @@ Live status of the gauntlet build. Updated as work evolves.
 | Loading / error states | ✅ done | route loading + error boundary |
 | Landing + lesson + embed routes | ✅ done | `/`, `/lesson/[slug]`, `/embed/[slug]` |
 | Iframe-safety (Thinkific headers) | ✅ done | CSP frame-ancestors |
-| Responsive (desktop/tablet/mobile) | 🔧 needs critic | |
+| Responsive (desktop/tablet/mobile) | 🔧 round 2 | mobile stage/card fixes applied |
 | Keyboard accessibility pass | 🔧 needs critic | |
-| README + handoff docs | ⏳ todo | |
-| GitHub + Vercel setup | ⏳ todo | |
+| README + handoff docs | ✅ done | full handoff README |
+| Engine test suite (vitest) | ✅ done | 13 tests, all branches + rejoin |
+| Lesson validation enforced at build | ✅ done | bad data fails the build |
+| GitHub + Vercel setup | 🔧 local git done | remote/deploy pending user |
 
 ## Validation log
 
@@ -53,9 +55,30 @@ Live status of the gauntlet build. Updated as work evolves.
 
 ## Critic verdicts
 
-_(round 1 in progress — visual vs MasterClass, branching vs H5P/Storyline, a11y+responsive, code/deploy)_
+**Round 1**
+- **Visual (vs MasterClass): MasterClass won.** Biggest gap: the video stage read
+  as a wireframe (flat noise + cartoon avatar). Also flagged: dev "N" badge over
+  footer, evidence caption vs thumbnail overlap, mobile stage chip overlap,
+  featured thumbnail near-black, mobile card not stacking, mobile CTA wrapping.
+- **Code/handoff: "not confidently yet."** Biggest flaw: lesson-1 copy hard-coded
+  in the shared completion screen. Correctness: `validateLesson` never called + no
+  tests → typo'd scene ref crashes at scale. Plus dead code, stale README.
+
+**Round 1 fixes applied**
+- Rewrote the stage: cinematic graded backdrops (key/fill light, bokeh, vignette,
+  restrained grain) + soft-lit presenter portrait (no cartoon bust, no box).
+- Disabled the Next dev indicator; fixed evidence caption clearance; taller mobile
+  stage (4:3) + hid preview chip on mobile → no overlaps; featured card stacks on
+  mobile with a proper preview (play glyph + duration); Continue button no longer
+  wraps on mobile.
+- Added `lesson.completion` data field → no lesson copy in the player. Enforced
+  `validateLesson` at registry load (bad data fails the build). Added vitest suite
+  (13 tests). Removed dead code. Wrote full handoff README.
+
+**Round 2:** re-checking visual vs MasterClass, first branching pass vs
+H5P/Storyline, and accessibility + responsive.
 
 ## Unresolved issues
 
-- Exhibit illustrations letterbox slightly inside the wide card (4:3 art in a 16:9 stage).
-- Presenter placeholder is an honest monogram figure — refinement vs MasterClass TBD by critic.
+- Presenter is a soft-lit abstract portrait (honest placeholder, no real avatar yet).
+- Exhibit illustrations still sit in a card narrower than the 16:9 stage.

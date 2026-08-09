@@ -14,7 +14,6 @@ import {
   advance,
   decisionOrder,
   getScene,
-  goToScene,
   initMachine,
   restart as restartMachine,
   selectOption,
@@ -32,7 +31,6 @@ export interface LessonMachine {
   isComplete: boolean;
   select: (optionId: OptionId) => void;
   next: () => void;
-  goTo: (sceneId: SceneId) => void;
   restart: () => void;
 }
 
@@ -130,19 +128,6 @@ export function useLessonMachine(
     });
   }, [lesson, emitSceneEnter, maybeEmitComplete]);
 
-  const goTo = useCallback(
-    (sceneId: SceneId) => {
-      setState((prev) => {
-        const nextState = goToScene(prev, lesson, sceneId);
-        if (nextState.currentSceneId !== prev.currentSceneId) {
-          emitSceneEnter(nextState.currentSceneId);
-        }
-        return nextState;
-      });
-    },
-    [lesson, emitSceneEnter],
-  );
-
   const restart = useCallback(() => {
     setState(restartMachine(lesson, now()));
   }, [lesson]);
@@ -156,7 +141,6 @@ export function useLessonMachine(
     isComplete: state.status === "complete",
     select,
     next,
-    goTo,
     restart,
   };
 }

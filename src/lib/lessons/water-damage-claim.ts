@@ -36,6 +36,12 @@ export const waterDamageClaim: Lesson = {
   summary:
     "A finished basement, a storm, and a policy with three clauses in play. Work the evidence and make the determination a professional adjuster would defend.",
   estimatedMinutes: 6,
+  completion: {
+    takeaway:
+      "you reached the correct resolution: establish cause of loss first, then determine coverage.",
+    headlineAllCorrect: "Handled to standard.",
+    headlinePartial: "Case resolved — here's the takeaway.",
+  },
   startSceneId: "intro",
   meta: {
     module: "Module 2 · Coverage Determination",

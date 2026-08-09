@@ -211,23 +211,6 @@ export function selectOption(
   };
 }
 
-/** Jump directly to a scene (used by the progress rail for review). */
-export function goToScene(
-  state: MachineState,
-  lesson: Lesson,
-  sceneId: SceneId,
-): MachineState {
-  const scene = getScene(lesson, sceneId);
-  return {
-    ...state,
-    currentSceneId: sceneId,
-    visited: state.visited.includes(sceneId)
-      ? state.visited
-      : [...state.visited, sceneId],
-    status: statusForScene(scene),
-  };
-}
-
 export function restart(lesson: Lesson, nowMs: number): MachineState {
   return initMachine(lesson, nowMs);
 }

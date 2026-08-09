@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { BrandMark } from "@/components/ui/BrandMark";
-import { ArrowRightIcon } from "@/components/ui/icons";
+import { ArrowRightIcon, PlayIcon } from "@/components/ui/icons";
 import { DEMO_LESSON_SLUG, listLessons } from "@/lib/lessons";
 import { SceneBackdrop } from "@/components/media/SceneBackdrop";
 
@@ -70,12 +70,25 @@ export default function Home() {
               </div>
               <Link
                 href={`/lesson/${featured.slug}`}
-                className="group flex items-center gap-5 rounded-2xl border border-white/10 bg-navy-900/50 p-5 backdrop-blur-sm transition-all hover:border-gold-500/40 hover:bg-navy-900/70"
+                className="group flex flex-col gap-4 rounded-2xl border border-white/10 bg-navy-900/50 p-4 backdrop-blur-sm transition-all hover:border-gold-500/40 hover:bg-navy-900/70 sm:flex-row sm:items-center sm:gap-5 sm:p-5"
               >
-                <div className="relative h-20 w-32 shrink-0 overflow-hidden rounded-lg border border-white/10">
+                <div className="relative aspect-video w-full shrink-0 overflow-hidden rounded-lg border border-white/10 sm:h-24 sm:w-44">
                   <SceneBackdrop scene="flooded-interior" animate={false} />
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <span className="flex h-10 w-10 items-center justify-center rounded-full bg-navy-950/55 ring-1 ring-white/25 backdrop-blur-sm">
+                      <PlayIcon className="ml-0.5 h-4 w-4 text-ink-100" />
+                    </span>
+                  </div>
+                  <span className="absolute left-2 top-2 rounded bg-navy-950/70 px-1.5 py-0.5 font-sans text-[9px] font-semibold uppercase tracking-[0.15em] text-gold-300 ring-1 ring-white/10">
+                    Case study
+                  </span>
+                  {featured.estimatedMinutes && (
+                    <span className="absolute bottom-2 right-2 rounded bg-navy-950/70 px-1.5 py-0.5 font-sans text-[9px] font-medium text-ink-200 ring-1 ring-white/10">
+                      {featured.estimatedMinutes} min
+                    </span>
+                  )}
                 </div>
-                <div className="min-w-0">
+                <div className="min-w-0 flex-1">
                   <div className="font-sans text-[11px] uppercase tracking-[0.18em] text-gold-300">
                     {featured.courseTitle}
                     {featured.caseId ? ` · Case ${featured.caseId}` : ""}
@@ -83,11 +96,11 @@ export default function Home() {
                   <div className="mt-1 font-[family-name:var(--font-display)] text-xl text-ink-100">
                     {featured.title}
                   </div>
-                  <div className="mt-0.5 truncate font-sans text-sm text-ink-300">
+                  <div className="mt-0.5 font-sans text-sm text-ink-300">
                     {featured.subtitle}
                   </div>
                 </div>
-                <ArrowRightIcon className="ml-auto h-5 w-5 shrink-0 text-ink-400 transition-all group-hover:translate-x-0.5 group-hover:text-gold-300" />
+                <ArrowRightIcon className="hidden h-5 w-5 shrink-0 text-ink-400 transition-all group-hover:translate-x-0.5 group-hover:text-gold-300 sm:block" />
               </Link>
             </div>
           )}
