@@ -102,7 +102,7 @@ export function DecisionPanel({
         })}
       </div>
 
-      <p className="mt-3 font-sans text-[11px] text-ink-400">
+      <p className="mt-3 hidden font-sans text-[11px] text-ink-400 sm:block">
         Tip — you can also press{" "}
         <span className="font-semibold text-ink-200">A</span>,{" "}
         <span className="font-semibold text-ink-200">B</span>,{" "}

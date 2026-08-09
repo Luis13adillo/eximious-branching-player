@@ -19,7 +19,7 @@ function ContinueButton({
 }) {
   const ref = useRef<HTMLButtonElement>(null);
   useEffect(() => {
-    if (autoFocus) ref.current?.focus();
+    if (autoFocus) ref.current?.focus({ preventScroll: true });
   }, [autoFocus]);
   return (
     <button

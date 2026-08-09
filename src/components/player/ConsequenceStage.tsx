@@ -27,7 +27,7 @@ export function ConsequenceStage({ scene }: { scene: FeedbackScene }) {
         }}
       />
 
-      <div className="ex-animate-drift absolute inset-0 flex flex-col items-center justify-center gap-5 px-6 pb-20 pt-16 text-center sm:px-10">
+      <div className="ex-animate-drift absolute inset-0 flex flex-col items-center justify-start gap-4 px-6 pb-28 pt-8 text-center sm:justify-center sm:gap-5 sm:px-10 sm:pt-8">
         {/* verdict mark */}
         <div className="relative">
           <span

@@ -93,8 +93,25 @@ choose"), contradictory completion copy for wrong answers.
 - Fixed the keyboard hint (now "press A, B, C, or D") and the completion copy
   (wrong answers no longer told they "reached the correct resolution").
 
-**Round 3 next:** re-check visual vs MasterClass (post stage upgrade) and run
-accessibility + responsive.
+**Round 3 — Visual re-check (vs MasterClass): MasterClass won, narrowly.**
+Everything competitive/better except the deciding factor: our presenter was a
+faceless blurred silhouette. Also flagged: mobile caption/callout overlap on the
+consequence beat, evidence exhibit under-filled ("marooned"), keyboard tip on
+mobile, redundant decision caption, footer "placeholder" disclaimer.
+
+**Round 3 fixes applied**
+- **Presenter:** generated cinematic AI-presenter stills (GPT Image 2, the exact
+  frame a HeyGen avatar swaps into) and set them as the avatar-scene visual —
+  full-bleed photo + legibility scrims + identity tag. The stage now reads as a
+  real MasterClass-grade lesson frame on desktop AND mobile. (`public/media/`)
+- Evidence exhibit now fills the stage (large, centered) instead of marooned.
+- Fixed mobile consequence caption/callout overlap; hid the keyboard tip on
+  mobile; rewrote decision narration so it no longer duplicates the panel prompt;
+  removed the "placeholder media" line from the footer; `preventScroll` on the
+  CTA auto-focus.
+
+**Round 4 next:** re-check visual vs MasterClass (post presenter upgrade) +
+first accessibility + responsive pass.
 
 ## Unresolved issues
 

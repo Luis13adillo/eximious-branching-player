@@ -63,6 +63,7 @@ export const waterDamageClaim: Lesson = {
         "A residential water-damage claim where the right answer depends entirely on the order you work it.",
       media: {
         provider: "placeholder",
+        posterUrl: "/media/presenter-diane.jpg",
         placeholderScene: "claim-desk",
         durationSec: 30,
         captions: [
@@ -174,11 +175,12 @@ export const waterDamageClaim: Lesson = {
       headline: "Make the Call",
       media: {
         provider: "placeholder",
+        posterUrl: "/media/presenter-diane.jpg",
         placeholderScene: "claim-desk",
         durationSec: 10,
         captions: [
-          { start: 0, end: 5.5, text: "You have the loss, the policy, and the readings — but not yet a confirmed cause." },
-          { start: 5.5, end: 10, text: "What is your next step?" },
+          { start: 0, end: 5, text: "Take a moment. Weigh what the evidence is — and isn't — telling you." },
+          { start: 5, end: 10, text: "When you're ready, make your call." },
         ],
       },
       prompt:
@@ -368,6 +370,7 @@ export const waterDamageClaim: Lesson = {
       subhead: "Cause established → coverage determined → scope the damage",
       media: {
         provider: "placeholder",
+        posterUrl: "/media/presenter-resolution.jpg",
         placeholderScene: "resolution",
         durationSec: 33,
         captions: [

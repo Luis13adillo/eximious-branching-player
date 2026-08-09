@@ -141,7 +141,7 @@ export function LessonPlayer({
       {!embed && (
         <footer className="mt-5 flex items-center justify-between gap-3 border-t border-white/8 pt-3 font-sans text-[11px] text-ink-400">
           <span>Eximious Academy · Interactive Case Study</span>
-          <span>Placeholder media — AI presenter &amp; narration swap in later.</span>
+          <span className="hidden sm:block">Property Claims Investigation · Module 2</span>
         </footer>
       )}
     </div>

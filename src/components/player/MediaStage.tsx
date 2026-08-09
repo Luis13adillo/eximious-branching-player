@@ -44,6 +44,14 @@ export function MediaStage({
   const hasVideo = !!scene.media.videoUrl;
   const isAvatar = scene.layout === "avatar" && !!scene.presenter;
   const hasEvidence = !!scene.evidence && scene.evidence.length > 0;
+  // A cinematic presenter still (placeholder for the AI-avatar video) fills the
+  // stage when a poster is provided on an avatar scene. This is the "paused
+  // HeyGen frame" — swapping in real avatar video only means setting videoUrl.
+  const presenterStill =
+    !hasVideo &&
+    isAvatar &&
+    scene.type !== "feedback" &&
+    !!scene.media.posterUrl;
 
   const nudgeControls = useCallback(() => {
     setControlsVisible(true);
@@ -149,6 +157,35 @@ export function MediaStage({
             />
           )}
         </video>
+      ) : presenterStill ? (
+        <div className="absolute inset-0">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={scene.media.posterUrl}
+            alt=""
+            className="absolute inset-0 h-full w-full object-cover object-[70%_center]"
+            style={{
+              animation: clock.playing
+                ? "exKenBurns 32s var(--ease-cinematic) alternate infinite"
+                : undefined,
+            }}
+          />
+          {/* legibility scrims for the identity tag (left) and captions (bottom) */}
+          <div
+            className="absolute inset-0"
+            style={{
+              background:
+                "linear-gradient(90deg, rgba(5,15,31,0.78) 0%, rgba(5,15,31,0.35) 34%, rgba(5,15,31,0) 62%)",
+            }}
+          />
+          <div
+            className="absolute inset-x-0 bottom-0 h-2/5"
+            style={{
+              background:
+                "linear-gradient(0deg, rgba(5,15,31,0.72), rgba(5,15,31,0))",
+            }}
+          />
+        </div>
       ) : (
         <SceneBackdrop
           scene={scene.media.placeholderScene ?? "claim-desk"}
@@ -161,7 +198,7 @@ export function MediaStage({
         <ConsequenceStage scene={scene} />
       ) : !hasVideo && hasEvidence ? (
         <EvidenceStage evidence={scene.evidence!} sceneKey={scene.id} />
-      ) : !hasVideo && isAvatar ? (
+      ) : !hasVideo && isAvatar && !presenterStill ? (
         <AvatarPresenter
           presenter={scene.presenter!}
           speaking={clock.playing && !clock.ended}
