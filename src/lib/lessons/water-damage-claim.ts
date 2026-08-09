@@ -62,7 +62,11 @@ export const waterDamageClaim: Lesson = {
       subhead:
         "A residential water-damage claim where the right answer depends entirely on the order you work it.",
       media: {
-        provider: "placeholder",
+        // Real rendered video (Remotion) — proves the swap path. Replace with a
+        // HeyGen/Mux URL later and nothing else changes. posterUrl shows while it
+        // loads and is the fallback if the file is absent.
+        provider: "file",
+        videoUrl: "/media/intro.mp4",
         posterUrl: "/media/presenter-diane.jpg",
         placeholderScene: "claim-desk",
         durationSec: 30,

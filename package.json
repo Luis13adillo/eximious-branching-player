@@ -7,7 +7,9 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "test": "vitest run"
+    "test": "vitest run",
+    "remotion": "remotion studio remotion/index.ts --public-dir=public",
+    "render:intro": "remotion render remotion/index.ts IntroSegment public/media/intro.mp4 --public-dir=public --crf=26"
   },
   "dependencies": {
     "next": "16.3.0",
@@ -15,12 +17,14 @@
     "react-dom": "19.2.8"
   },
   "devDependencies": {
+    "@remotion/cli": "^4.0.507",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "16.3.0",
+    "remotion": "^4.0.507",
     "tailwindcss": "^4",
     "typescript": "^5",
     "vitest": "^4.1.10"

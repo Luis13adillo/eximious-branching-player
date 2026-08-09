@@ -158,11 +158,12 @@ export function MediaStage({
       {hasVideo ? (
         <video
           ref={mediaRef as React.RefObject<HTMLVideoElement>}
-          className="absolute inset-0 h-full w-full object-cover"
+          className="absolute inset-0 h-full w-full object-cover object-[58%_center] lg:object-[70%_center]"
           src={scene.media.videoUrl}
           poster={scene.media.posterUrl}
           playsInline
-          crossOrigin="anonymous"
+          muted
+          autoPlay
         >
           {scene.media.captionsUrl && (
             <track
@@ -259,8 +260,10 @@ export function MediaStage({
         )}
       </div>
 
-      {/* top-right: honest AI-presenter placeholder tag (desktop/tablet only) */}
-      {isAvatar && !hasVideo && (
+      {/* top-right: honest AI-presenter placeholder tag (desktop/tablet only).
+          Shown for the rendered placeholder video too — it's still not a real
+          avatar. Remove this flag once final HeyGen footage is dropped in. */}
+      {isAvatar && (
         <div className="pointer-events-none absolute right-4 top-4 z-[5] hidden sm:right-6 sm:top-5 sm:block">
           <span className="inline-flex items-center gap-1.5 rounded-full bg-navy-950/55 px-2.5 py-1 font-sans text-[9px] font-medium uppercase tracking-widest text-ink-300 ring-1 ring-white/10 backdrop-blur-sm">
             <span className="h-1.5 w-1.5 rounded-full bg-gold-400" /> AI Presenter · Preview

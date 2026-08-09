@@ -57,9 +57,12 @@ Key URLs:
 Other scripts:
 
 ```bash
-npm run build   # production build (also type-checks every route)
-npm run start   # serve the production build
-npm run lint    # eslint
+npm run build         # production build (also type-checks every route)
+npm run start         # serve the production build
+npm run lint          # eslint
+npm run test          # engine unit tests (vitest)
+npm run remotion      # open Remotion Studio to preview video segments
+npm run render:intro  # render the intro segment → public/media/intro.mp4
 ```
 
 ---
@@ -207,6 +210,30 @@ media: { provider: "heygen", videoUrl: "https://…/lesson7-intro.mp4",
 - Swap evidence illustrations for real photos by setting `imageUrl` on an
   `EvidenceItem` instead of `illustration`.
 
+### Rendered video segments (Remotion)
+
+The intro segment ships as a **real rendered `.mp4`** (`public/media/intro.mp4`) so
+the video path is proven end-to-end, not just simulated. It's produced with
+[Remotion](https://remotion.dev) from the composition in [`remotion/`](remotion/):
+
+- `remotion/IntroSegment.tsx` — turns the AI-presenter still into "living
+  footage" (frame-driven push-in, handheld drift, film grain, breathing
+  vignette). No text is baked in — the player still overlays the identity tag,
+  captions and controls, so a rendered clip is a drop-in for the still.
+- `remotion/Root.tsx` — composition list (dimensions, fps, duration).
+
+```bash
+npm run remotion       # preview/tweak in Remotion Studio
+npm run render:intro   # re-render → public/media/intro.mp4
+```
+
+Remotion is a **dev/build-time** tool only — it is not in the browser bundle;
+the app just plays the resulting file. To make another scene a rendered clip,
+add a `<Composition>` in `remotion/Root.tsx`, a render script in `package.json`,
+and point that scene's `media.videoUrl` at the output. When final HeyGen /
+ElevenLabs footage arrives, drop its URL into `videoUrl` and you can delete the
+Remotion pipeline entirely — the player doesn't depend on it.
+
 ---
 
 ## Analytics — the `onAnswerSelected` seam
@@ -325,6 +352,10 @@ src/
                                illustrations (vector evidence exhibits)
     ui/                        BrandMark, icons
 next.config.ts                 iframe headers (frame-ancestors)
+remotion/                      Remotion compositions (rendered video segments)
+  Root.tsx                     composition list
+  IntroSegment.tsx             the intro "living-still" footage
+public/media/                  generated media (presenter stills, evidence photo, intro.mp4)
 ```
 
 ---

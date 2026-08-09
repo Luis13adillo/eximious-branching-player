@@ -161,6 +161,18 @@ tightened intro panel spacing.
 The gauntlet exit condition — critics choose our result over, or cannot
 meaningfully distinguish it from, the bar — is satisfied on the running app.
 
+## Post-exit addition — Remotion video pipeline
+
+Added [Remotion](https://remotion.dev) and rendered the **intro segment to a real
+`.mp4`** (`public/media/intro.mp4`, 1920×1080, 30s, ~4 MB) — the stage now plays
+genuine moving footage (frame-driven push-in + handheld drift + film grain +
+breathing vignette), verified playing in the browser through the existing
+`media.videoUrl` path (`paused:false`, time advancing, captions synced). No text
+baked in, so the player's identity tag / captions / controls still overlay it —
+a true drop-in for the still, and the exact seam a HeyGen/Mux URL uses later.
+Remotion is a dev/build-time tool (not in the browser bundle); `npm run render:intro`
+regenerates the clip.
+
 ## Final validation
 
 - ✅ Every A/B/C/D path plays distinct feedback + a distinct consequence beat.
