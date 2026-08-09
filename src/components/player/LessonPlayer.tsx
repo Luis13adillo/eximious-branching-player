@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import type { Lesson } from "@/lib/branching/types";
 import type { PlayerEventHandlers } from "@/lib/branching/events";
 import { useLessonMachine } from "@/lib/branching/useLessonMachine";
@@ -52,8 +52,35 @@ export function LessonPlayer({
 
   const ready = clock.ended;
 
+  // Move focus into the interaction panel on each scene change so keyboard
+  // users don't lose their place (focus never drops to <body>) and screen
+  // readers land on the new content.
+  const panelRef = useRef<HTMLElement>(null);
+  useEffect(() => {
+    panelRef.current?.focus({ preventScroll: true });
+  }, [current.id]);
+
+  // A single persistent live region reliably announces each scene to screen
+  // readers (a per-scene region that mounts with its text already present is
+  // often not spoken).
+  const announcement = machine.isComplete
+    ? `Lesson complete. ${lesson.title}.`
+    : current.type === "decision"
+      ? `Decision. ${current.prompt}`
+      : current.type === "feedback"
+        ? `${current.verdict === "correct" ? "Correct." : "Not quite."} ${current.headline ?? ""}. ${current.body ?? ""}`
+        : `${current.headline ?? current.label}. ${current.subhead ?? ""}`;
+
   return (
     <div className="mx-auto flex min-h-[100dvh] w-full max-w-6xl flex-col px-4 pb-6 pt-4 sm:px-6 sm:pt-5 lg:h-[100dvh] lg:min-h-0 lg:overflow-hidden lg:pb-5">
+      {/* one page heading + a persistent live region for scene announcements */}
+      <h1 className="sr-only">
+        {lesson.courseTitle}: {lesson.title}
+      </h1>
+      <div aria-live="polite" className="sr-only">
+        {announcement}
+      </div>
+
       {/* header */}
       <header className="mb-4 flex items-center justify-between gap-4">
         <BrandMark size={embed ? "sm" : "md"} showWordmark={!embed} />
@@ -101,8 +128,10 @@ export function LessonPlayer({
         {/* interaction area */}
         <section
           key={current.id}
+          ref={panelRef}
+          tabIndex={-1}
           aria-label="Lesson interaction"
-          className="rounded-2xl border border-white/10 bg-navy-900/40 p-5 sm:p-6 lg:h-full lg:min-h-0 lg:flex-1 lg:min-w-0 lg:overflow-y-auto"
+          className="rounded-2xl border border-white/10 bg-navy-900/40 p-5 outline-none [outline-offset:-3px] sm:p-6 lg:h-full lg:min-h-0 lg:flex-1 lg:min-w-0 lg:overflow-y-auto"
         >
           <div className="lg:flex lg:min-h-full lg:flex-col">
             {/* interaction — vertically centered in the space above the tracker */}

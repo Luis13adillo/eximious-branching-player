@@ -39,6 +39,9 @@ export function MediaStage({
   const stageRef = useRef<HTMLDivElement>(null);
   const [fullscreen, setFullscreen] = useState(false);
   const [controlsVisible, setControlsVisible] = useState(true);
+  const [focusWithin, setFocusWithin] = useState(false);
+  const focusWithinRef = useRef(false);
+  focusWithinRef.current = focusWithin;
   const hideTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const hasVideo = !!scene.media.videoUrl;
@@ -57,7 +60,9 @@ export function MediaStage({
     setControlsVisible(true);
     if (hideTimer.current) clearTimeout(hideTimer.current);
     hideTimer.current = setTimeout(() => {
-      if (clock.playing && !clock.ended) setControlsVisible(false);
+      // Keep controls up while keyboard focus is inside the stage.
+      if (clock.playing && !clock.ended && !focusWithinRef.current)
+        setControlsVisible(false);
     }, 2600);
   }, [clock.playing, clock.ended]);
 
@@ -130,9 +135,20 @@ export function MediaStage({
       ref={stageRef}
       onMouseMove={nudgeControls}
       onKeyDown={onKeyDown}
+      onFocusCapture={() => {
+        setFocusWithin(true);
+        setControlsVisible(true);
+      }}
+      onBlurCapture={(e) => {
+        if (!stageRef.current?.contains(e.relatedTarget as Node))
+          setFocusWithin(false);
+      }}
       tabIndex={0}
       aria-label={`Video: ${scene.headline ?? scene.label}`}
-      className={`group/stage relative w-full overflow-hidden bg-navy-950 outline-none ${
+      // Inset the focus ring so the overflow-hidden wrapper can't clip it.
+      // Inline style beats the global :focus-visible rule's outline-offset.
+      style={{ outlineOffset: "-3px" }}
+      className={`group/stage relative w-full overflow-hidden bg-navy-950 ${
         fullscreen
           ? "h-full"
           : "h-[46vh] min-h-[300px] sm:h-[52vh] lg:h-full lg:min-h-0"
@@ -272,7 +288,9 @@ export function MediaStage({
       {/* controls */}
       <div
         className={`absolute inset-x-0 bottom-0 z-10 bg-gradient-to-t from-navy-950/90 via-navy-950/40 to-transparent pb-2 pt-8 transition-opacity duration-300 ${
-          controlsVisible ? "opacity-100" : "pointer-events-none opacity-0"
+          controlsVisible || focusWithin
+            ? "opacity-100"
+            : "pointer-events-none opacity-0"
         }`}
         onClick={(e) => e.stopPropagation()}
       >

@@ -110,8 +110,26 @@ mobile, redundant decision caption, footer "placeholder" disclaimer.
   removed the "placeholder media" line from the footer; `preventScroll` on the
   CTA auto-focus.
 
-**Round 4 next:** re-check visual vs MasterClass (post presenter upgrade) +
-first accessibility + responsive pass.
+**Round 4 — Accessibility + responsive: keyboard-complete YES, no keyboard trap,
+reduced-motion correct, no responsive overflow at 375/768/1280.** Fixes applied
+for the real issues found: video-stage focus ring was clipped by the
+`overflow-hidden` wrapper + an `outline-none` class (now an inset ring, verified
+`outline-offset:-3px`); auto-hidden controls now reveal on focus (no invisible
+focusable controls); added a page `<h1>` + decision `<h2>` heading; brightened
+`--color-verdict-correct` / `--color-ink-400` to clear WCAG AA; added one
+persistent `aria-live` region for reliable scene announcements (+ removed the
+flaky per-cue caption live region); move focus into the panel on each scene so
+focus never drops to `<body>`.
+
+**Round 4 — Visual re-check (vs MasterClass): close, MasterClass still narrowly.**
+Presenter gap CLOSED (now a cinematic still). New deciding gap was the desktop
+panel's vertical dead space → fixed with the Case Progress tracker. Also fixed:
+mobile name-plate over face, low-contrast decision descriptions, mislabeled
+"PHOTOGRAPH" exhibit, heavy caption band.
+
+**Round 5 next:** re-run the visual critic vs MasterClass (post panel-fill +
+presenter) and re-run the branching critic vs H5P/Storyline (post consequence
+beats) to test for parity/win.
 
 ## Unresolved issues
 

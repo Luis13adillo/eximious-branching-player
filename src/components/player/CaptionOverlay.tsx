@@ -23,10 +23,7 @@ export function CaptionOverlay({
   if (!cue) return null;
 
   return (
-    <div
-      className="pointer-events-none absolute inset-x-0 bottom-0 flex justify-center px-4"
-      aria-live="polite"
-    >
+    <div className="pointer-events-none absolute inset-x-0 bottom-0 flex justify-center px-4">
       <p
         key={cue.text}
         className="ex-animate-fade max-w-[46ch] rounded-md bg-navy-950/45 px-3 py-1.5 text-center font-sans text-[15px] leading-snug text-ink-100 backdrop-blur-[2px] sm:text-base"

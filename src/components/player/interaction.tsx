@@ -115,11 +115,7 @@ export function FeedbackNote({
 }) {
   const correct = scene.verdict === "correct";
   return (
-    <div
-      className="ex-animate-drift"
-      role="status"
-      aria-live="polite"
-    >
+    <div className="ex-animate-drift">
       <div className="mb-3 flex items-center gap-3">
         <span
           className={`flex h-8 items-center gap-1.5 rounded-full px-3 font-sans text-xs font-bold uppercase tracking-widest ${
@@ -135,14 +131,14 @@ export function FeedbackNote({
           )}
           {correct ? "Correct" : "Not quite"}
         </span>
-        <span className="font-sans text-[11px] uppercase tracking-[0.18em] text-ink-400">
+        <span className="font-sans text-[11px] uppercase tracking-[0.18em] text-ink-300">
           You chose {scene.forOptionId}
         </span>
       </div>
 
-      <h3 className="font-[family-name:var(--font-display)] text-xl leading-snug text-ink-100 sm:text-2xl">
+      <h2 className="font-[family-name:var(--font-display)] text-xl leading-snug text-ink-100 sm:text-2xl">
         {scene.headline}
-      </h3>
+      </h2>
       {scene.body && (
         <p className="mt-2 max-w-2xl font-sans text-[15px] leading-relaxed text-ink-200">
           {scene.body}
@@ -192,9 +188,9 @@ export function CompletionSummary({
       <div className="mb-1 font-sans text-[11px] font-semibold uppercase tracking-[0.28em] text-gold-300">
         Lesson complete
       </div>
-      <h3 className="font-[family-name:var(--font-display)] text-2xl leading-tight text-ink-100 sm:text-3xl">
+      <h2 className="font-[family-name:var(--font-display)] text-2xl leading-tight text-ink-100 sm:text-3xl">
         {headline}
-      </h3>
+      </h2>
       <p className="mt-2 max-w-2xl font-sans text-[15px] leading-relaxed text-ink-200">
         {allCorrect ? (
           <>

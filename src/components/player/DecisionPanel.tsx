@@ -50,9 +50,9 @@ export function DecisionPanel({
   return (
     <div className="ex-animate-drift">
       <div className="mb-4 flex items-baseline justify-between gap-4">
-        <p className="font-[family-name:var(--font-display)] text-lg leading-snug text-ink-100 sm:text-xl">
+        <h2 className="font-[family-name:var(--font-display)] text-lg leading-snug text-ink-100 sm:text-xl">
           {scene.prompt}
-        </p>
+        </h2>
         <span className="hidden shrink-0 font-sans text-[11px] uppercase tracking-[0.18em] text-gold-300 sm:block">
           {scene.decisionLabel ?? scene.kicker}
         </span>

@@ -36,16 +36,18 @@
   --color-gold-900: #453623;
 
   /* ---- Semantic feedback (muted / corporate, not candy) ---- */
-  --color-verdict-correct: #4f9d78;
+  /* Brightened to clear WCAG AA (4.5:1) for badge text on the soft backgrounds. */
+  --color-verdict-correct: #6cbd97;
   --color-verdict-correct-soft: #14342b;
-  --color-verdict-incorrect: #c9776a;
+  --color-verdict-incorrect: #dc8d80;
   --color-verdict-incorrect-soft: #38211d;
 
   /* ---- Neutral ink on dark ---- */
   --color-ink-100: #f4f6fa;
   --color-ink-200: #cdd6e4;
   --color-ink-300: #9fadc4;
-  --color-ink-400: #6f7f9a;
+  /* ink-400: brightened so small muted text clears AA even on navy-800/900. */
+  --color-ink-400: #8697b0;
 
   /* ---- Type ---- */
   --font-display: var(--font-fraunces), ui-serif, Georgia, serif;
