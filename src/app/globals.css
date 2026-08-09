@@ -1,26 +1,224 @@
 @import "tailwindcss";
 
+/*
+  Eximious Academy — brand + design tokens
+  --------------------------------------------------------------
+  Brand palette is navy #0B1F3A and gold #C7A254. Everything else
+  is a considered tint/shade of those two so the whole product
+  reads as one system. Change a value here and it propagates
+  through every component (Tailwind v4 CSS-first theming).
+*/
+
+@theme {
+  /* ---- Navy scale (brand core) ---- */
+  --color-navy-50: #eef2f8;
+  --color-navy-100: #d6e0ee;
+  --color-navy-200: #a9bcd7;
+  --color-navy-300: #7994bd;
+  --color-navy-400: #3f5f92;
+  --color-navy-500: #1d3a63;
+  --color-navy-600: #12294a;
+  --color-navy-700: #0e2340;
+  --color-navy-800: #0b1f3a; /* brand navy */
+  --color-navy-900: #081831;
+  --color-navy-950: #050f1f;
+
+  /* ---- Gold scale (brand accent) ---- */
+  --color-gold-50: #fbf7ee;
+  --color-gold-100: #f3e9cf;
+  --color-gold-200: #e7d3a2;
+  --color-gold-300: #d9bd78;
+  --color-gold-400: #cfad61;
+  --color-gold-500: #c7a254; /* brand gold */
+  --color-gold-600: #ab8641;
+  --color-gold-700: #876835;
+  --color-gold-800: #634c2b;
+  --color-gold-900: #453623;
+
+  /* ---- Semantic feedback (muted / corporate, not candy) ---- */
+  --color-verdict-correct: #4f9d78;
+  --color-verdict-correct-soft: #14342b;
+  --color-verdict-incorrect: #c9776a;
+  --color-verdict-incorrect-soft: #38211d;
+
+  /* ---- Neutral ink on dark ---- */
+  --color-ink-100: #f4f6fa;
+  --color-ink-200: #cdd6e4;
+  --color-ink-300: #9fadc4;
+  --color-ink-400: #6f7f9a;
+
+  /* ---- Type ---- */
+  --font-display: var(--font-fraunces), ui-serif, Georgia, serif;
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+
+  /* ---- Motion ---- */
+  --ease-cinematic: cubic-bezier(0.22, 1, 0.36, 1);
+
+  /* ---- Radii ---- */
+  --radius-card: 14px;
+}
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  color-scheme: dark;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html,
+body {
+  height: 100%;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: var(--color-navy-950);
+  color: var(--color-ink-100);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* Respect users who ask for less motion. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Focus ring — gold, visible, consistent across the whole player.
+   Only shows for keyboard users (:focus-visible). */
+:where(a, button, [role="button"], [tabindex], input, select):focus-visible {
+  outline: 2px solid var(--color-gold-400);
+  outline-offset: 3px;
+  border-radius: 6px;
+}
+
+/* Thin premium scrollbars inside the dark shell */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-navy-500) transparent;
+}
+
+@keyframes exDriftIn {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes exFadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes exKenBurns {
+  from {
+    transform: scale(1.05);
+  }
+  to {
+    transform: scale(1.14) translate3d(-1.5%, -1.5%, 0);
+  }
+}
+
+@keyframes exSpeak {
+  0%,
+  100% {
+    transform: scaleY(0.3);
+  }
+  50% {
+    transform: scaleY(1);
+  }
+}
+
+@keyframes exShimmer {
+  from {
+    background-position: -180% 0;
+  }
+  to {
+    background-position: 180% 0;
+  }
+}
+
+@keyframes exSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes exPulseRing {
+  0% {
+    opacity: 0.55;
+    transform: scale(0.9);
+  }
+  70% {
+    opacity: 0;
+    transform: scale(1.5);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.5);
+  }
+}
+
+.ex-animate-drift {
+  animation: exDriftIn 0.6s var(--ease-cinematic) both;
+}
+
+.ex-animate-fade {
+  animation: exFadeIn 0.5s var(--ease-cinematic) both;
+}
+
+/* Loading skeleton shimmer */
+.ex-skeleton {
+  background: linear-gradient(
+    100deg,
+    var(--color-navy-900) 30%,
+    var(--color-navy-700) 50%,
+    var(--color-navy-900) 70%
+  );
+  background-size: 200% 100%;
+  animation: exShimmer 1.4s linear infinite;
+}
+
+/* Volume range slider — themed to match the player controls */
+.ex-volume {
+  -webkit-appearance: none;
+  appearance: none;
+  background: transparent;
+}
+.ex-volume::-webkit-slider-runnable-track {
+  height: 3px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.25);
+}
+.ex-volume::-moz-range-track {
+  height: 3px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.25);
+}
+.ex-volume::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  margin-top: -3.5px;
+  height: 10px;
+  width: 10px;
+  border-radius: 999px;
+  background: var(--color-gold-400);
+}
+.ex-volume::-moz-range-thumb {
+  height: 10px;
+  width: 10px;
+  border: none;
+  border-radius: 999px;
+  background: var(--color-gold-400);
 }
