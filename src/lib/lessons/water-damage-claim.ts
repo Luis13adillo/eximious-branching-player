@@ -70,6 +70,7 @@ export const waterDamageClaim: Lesson = {
         posterUrl: "/media/presenter-diane.jpg",
         placeholderScene: "claim-desk",
         durationSec: 30,
+        loop: true,
         captions: [
           { start: 0, end: 4, text: "Welcome to the Eximious Academy claims investigation series." },
           { start: 4, end: 9.5, text: "I'm Diane Marchetti — today we're working a residential water-damage claim." },

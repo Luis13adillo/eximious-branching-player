@@ -164,6 +164,7 @@ export function MediaStage({
           playsInline
           muted
           autoPlay
+          loop={!!scene.media.loop}
         >
           {scene.media.captionsUrl && (
             <track
@@ -258,18 +259,15 @@ export function MediaStage({
             </span>
           </div>
         )}
-      </div>
-
-      {/* top-right: honest AI-presenter placeholder tag (desktop/tablet only).
-          Shown for the rendered placeholder video too — it's still not a real
-          avatar. Remove this flag once final HeyGen footage is dropped in. */}
-      {isAvatar && (
-        <div className="pointer-events-none absolute right-4 top-4 z-[5] hidden sm:right-6 sm:top-5 sm:block">
-          <span className="inline-flex items-center gap-1.5 rounded-full bg-navy-950/55 px-2.5 py-1 font-sans text-[9px] font-medium uppercase tracking-widest text-ink-300 ring-1 ring-white/10 backdrop-blur-sm">
+        {/* honest AI-presenter placeholder tag — in the same left stack so it's
+            consistent on every viewport and never collides with the kicker.
+            Remove this once final HeyGen footage is dropped in. */}
+        {isAvatar && (
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-navy-950/70 px-2.5 py-1 font-sans text-[9px] font-medium uppercase tracking-widest text-ink-300 ring-1 ring-white/10 backdrop-blur-sm">
             <span className="h-1.5 w-1.5 rounded-full bg-gold-400" /> AI Presenter · Preview
           </span>
-        </div>
-      )}
+        )}
+      </div>
 
       {/* big center play when paused (not ended) */}
       {!clock.playing && !clock.ended && (

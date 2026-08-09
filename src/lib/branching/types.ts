@@ -47,6 +47,12 @@ export interface MediaSource {
   /** Playback length in seconds. Drives the scrubber + auto-advance. */
   durationSec: number;
   /**
+   * Loop the video instead of holding on its last frame. Use for short ambient
+   * "living-still" presenter clips; leave false/undefined for real narrated
+   * footage that should play once and let the learner continue.
+   */
+  loop?: boolean;
+  /**
    * Name of a registered placeholder backdrop (see PlaceholderStage). Lets the
    * demo look finished before real footage exists. Ignored once `videoUrl` set.
    */

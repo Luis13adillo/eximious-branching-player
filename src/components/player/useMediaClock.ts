@@ -51,7 +51,10 @@ export function useMediaClock(
   const [currentTime, setCurrentTime] = useState(0);
   const [playing, setPlaying] = useState(autoplay);
   const [ended, setEnded] = useState(false);
-  const [muted, setMutedState] = useState(false);
+  // Start muted: browsers only allow unattended autoplay of muted video, and
+  // the placeholder clips are silent anyway. The mute control still works for
+  // real narrated footage dropped in later.
+  const [muted, setMutedState] = useState(true);
   const [volume, setVolumeState] = useState(1);
   const [captionsOn, setCaptionsOn] = useState(true);
 
@@ -73,6 +76,10 @@ export function useMediaClock(
     if (el) {
       try {
         el.currentTime = 0;
+        // Force muted at play() time so autoplay isn't blocked on real mobile
+        // browsers (the React `muted` attribute alone is unreliable). The mute
+        // control can unmute afterward for real narrated footage.
+        el.muted = true;
         if (autoplay) void el.play().catch(() => setPlaying(false));
       } catch {
         /* ignore */
