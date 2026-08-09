@@ -24,7 +24,7 @@ export const RemotionRoot = () => {
       fps={INTRO_FPS}
       width={1920}
       height={1080}
-      defaultProps={{ posterSrc: "media/presenter-diane.jpg" }}
+      defaultProps={{ videoSrc: "media/kling-avatar.mp4" }}
     />
   );
 };

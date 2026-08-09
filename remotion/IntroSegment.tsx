@@ -1,6 +1,7 @@
 import {
   AbsoluteFill,
-  Img,
+  Loop,
+  OffthreadVideo,
   staticFile,
   useCurrentFrame,
   useVideoConfig,
@@ -9,87 +10,71 @@ import {
 /**
  * IntroSegment
  * ============================================================================
- * A bigger, more cinematic treatment of the AI-presenter frame: a pronounced
- * breathing push, a wider handheld drift, a warm light sweep that travels
- * across the frame, a richer teal/gold color grade, a soft key bloom, fine
- * moving film grain and a breathing vignette.
+ * Composites the Kling talking-presenter clip into the full-length intro. The
+ * ~10s clip is looped to fill the 30s narration, and the Eximious cinematic
+ * grade (cool navy shadows / warm highlights), a warm key bloom, fine film
+ * grain and a breathing vignette are layered over it so the brand look stays
+ * consistent. The player still overlays identity/captions responsively.
  *
- * NO text/labels are baked in — the player overlays identity + captions
- * responsively (baked corners would be cropped off on a phone). Motion uses
- * whole sine cycles over the clip so it LOOPS SEAMLESSLY (no freeze, no snap).
+ * Swap `videoSrc` for a HeyGen (lip-synced) clip later and nothing else changes.
  * Frame-driven per Remotion rules; no CSS animation.
  */
 
 export const INTRO_FPS = 30;
 export const INTRO_DURATION_SECONDS = 30;
+/** usable length of the source clip in seconds (kept just under its true 10.04s) */
+const CLIP_SECONDS = 10;
 
 const TAU = Math.PI * 2;
-const osc = (t: number, cycles: number, phase = 0) =>
-  Math.sin(t * TAU * cycles + phase);
 const osc01 = (t: number, cycles: number, phase = 0) =>
-  osc(t, cycles, phase) * 0.5 + 0.5;
+  Math.sin(t * TAU * cycles + phase) * 0.5 + 0.5;
 
-export const IntroSegment = ({ posterSrc }: { posterSrc: string }) => {
+export const IntroSegment = ({ videoSrc }: { videoSrc: string }) => {
   const frame = useCurrentFrame();
-  const { durationInFrames } = useVideoConfig();
-  const t = frame / durationInFrames; // 0..1
+  const { fps, durationInFrames } = useVideoConfig();
+  const t = frame / durationInFrames; // 0..1 across the whole intro
+  const clipFrames = Math.round(CLIP_SECONDS * fps);
 
-  // Bigger, more visible camera — a slow breath + wider handheld sway.
-  const scale = 1.09 + osc(t, 1) * 0.06; // 1.03 .. 1.15
-  const driftX = osc(t, 2) * 14;
-  const driftY = osc(t, 3, Math.PI / 2) * 9;
-
-  // Warm key bloom, drifting with the camera.
-  const bloom = 0.12 + osc01(t, 1) * 0.07;
-  const keyX = 24 + driftX * 0.5;
-
-  // A soft warm light sweep that travels across the frame (one pass per loop).
-  const sweepX = 8 + osc01(t, 1, -Math.PI / 2) * 84; // 8% -> 92%
-
-  const vignette = 0.52 + osc01(t, 2) * 0.16;
+  const bloom = 0.1 + osc01(t, 1) * 0.06;
+  const vignette = 0.5 + osc01(t, 2) * 0.14;
 
   return (
     <AbsoluteFill style={{ backgroundColor: "#050f1f", overflow: "hidden" }}>
-      <Img
-        src={staticFile(posterSrc)}
-        style={{
-          position: "absolute",
-          width: "100%",
-          height: "100%",
-          objectFit: "cover",
-          objectPosition: "68% center",
-          transform: `translate(${driftX}px, ${driftY}px) scale(${scale})`,
-        }}
-      />
+      {/* talking-presenter footage, looped to fill the intro */}
+      <Loop durationInFrames={clipFrames}>
+        <OffthreadVideo
+          src={staticFile(videoSrc)}
+          muted
+          style={{
+            position: "absolute",
+            width: "100%",
+            height: "100%",
+            objectFit: "cover",
+            objectPosition: "68% center",
+          }}
+        />
+      </Loop>
 
-      {/* richer cinematic grade — teal/navy shadows, warmth through the mids */}
+      {/* cinematic grade — cool navy shadows top/bottom, warmth through the mids */}
       <AbsoluteFill
         style={{
           background:
-            "linear-gradient(180deg, rgba(9,26,49,0.42) 0%, rgba(5,15,31,0) 34%, rgba(5,15,31,0) 58%, rgba(4,12,26,0.5) 100%)",
+            "linear-gradient(180deg, rgba(9,26,49,0.34) 0%, rgba(5,15,31,0) 36%, rgba(5,15,31,0) 60%, rgba(4,12,26,0.42) 100%)",
           mixBlendMode: "soft-light",
         }}
       />
       <AbsoluteFill
         style={{
           background:
-            "radial-gradient(74% 64% at 60% 40%, rgba(199,162,84,0.16), rgba(199,162,84,0) 70%)",
+            "radial-gradient(74% 64% at 60% 40%, rgba(199,162,84,0.13), rgba(199,162,84,0) 70%)",
           mixBlendMode: "soft-light",
-        }}
-      />
-
-      {/* traveling warm light sweep */}
-      <AbsoluteFill
-        style={{
-          background: `radial-gradient(38% 120% at ${sweepX}% 32%, rgba(255,240,205,0.12), rgba(255,240,205,0) 60%)`,
-          mixBlendMode: "screen",
         }}
       />
 
       {/* warm key-light bloom */}
       <AbsoluteFill
         style={{
-          background: `radial-gradient(48% 42% at ${keyX}% 24%, rgba(232,203,138,${bloom}), rgba(232,203,138,0) 60%)`,
+          background: `radial-gradient(48% 42% at 24% 24%, rgba(232,203,138,${bloom}), rgba(232,203,138,0) 60%)`,
           mixBlendMode: "screen",
         }}
       />
@@ -101,7 +86,7 @@ export const IntroSegment = ({ posterSrc }: { posterSrc: string }) => {
           inset: 0,
           width: "100%",
           height: "100%",
-          opacity: 0.05,
+          opacity: 0.045,
           mixBlendMode: "overlay",
         }}
       >
@@ -121,7 +106,7 @@ export const IntroSegment = ({ posterSrc }: { posterSrc: string }) => {
       {/* breathing cinematic vignette */}
       <AbsoluteFill
         style={{
-          background: `radial-gradient(122% 96% at 50% 42%, rgba(0,0,0,0) 50%, rgba(2,8,18,${vignette}) 100%)`,
+          background: `radial-gradient(122% 96% at 50% 42%, rgba(0,0,0,0) 52%, rgba(2,8,18,${vignette}) 100%)`,
         }}
       />
     </AbsoluteFill>
