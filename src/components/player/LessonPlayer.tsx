@@ -53,7 +53,7 @@ export function LessonPlayer({
   const ready = clock.ended;
 
   return (
-    <div className="mx-auto flex min-h-[100dvh] w-full max-w-5xl flex-col px-4 pb-6 pt-4 sm:px-6 sm:pt-5">
+    <div className="mx-auto flex min-h-[100dvh] w-full max-w-6xl flex-col px-4 pb-6 pt-4 sm:px-6 sm:pt-5 lg:h-[100dvh] lg:min-h-0 lg:overflow-hidden lg:pb-5">
       {/* header */}
       <header className="mb-4 flex items-center justify-between gap-4">
         <BrandMark size={embed ? "sm" : "md"} showWordmark={!embed} />
@@ -90,9 +90,11 @@ export function LessonPlayer({
         )}
       </div>
 
-      <main className="flex flex-1 flex-col gap-4">
+      {/* Desktop: stage + panel side-by-side so the decision options are always
+          visible without scrolling. Mobile/tablet: stacked. */}
+      <main className="flex flex-1 flex-col gap-4 lg:min-h-0 lg:flex-row lg:items-stretch lg:gap-5">
         {/* video stage */}
-        <div className="overflow-hidden rounded-2xl border border-white/10 shadow-2xl shadow-black/40 ring-1 ring-black/20">
+        <div className="overflow-hidden rounded-2xl border border-white/10 shadow-2xl shadow-black/40 ring-1 ring-black/20 lg:h-full lg:min-h-0 lg:flex-[1.55] lg:min-w-0">
           <MediaStage scene={current} clock={clock} mediaRef={mediaRef} />
         </div>
 
@@ -100,33 +102,39 @@ export function LessonPlayer({
         <section
           key={current.id}
           aria-label="Lesson interaction"
-          className="rounded-2xl border border-white/10 bg-navy-900/40 p-5 sm:p-6"
+          className="rounded-2xl border border-white/10 bg-navy-900/40 p-5 sm:p-6 lg:h-full lg:min-h-0 lg:flex-1 lg:min-w-0 lg:overflow-y-auto"
         >
-          {machine.isComplete ? (
-            <CompletionSummary
-              lesson={lesson}
-              state={state}
-              onRestart={machine.restart}
-            />
-          ) : current.type === "decision" ? (
-            <DecisionPanel scene={current} onSelect={machine.select} />
-          ) : current.type === "feedback" ? (
-            <FeedbackNote scene={current} onContinue={machine.next} ready={ready} />
-          ) : (
-            <>
-              <SceneContext
-                kicker={current.kicker}
-                headline={current.headline}
-                subhead={current.subhead}
-                body={current.body}
+          <div className="lg:flex lg:min-h-full lg:flex-col lg:justify-center">
+            {machine.isComplete ? (
+              <CompletionSummary
+                lesson={lesson}
+                state={state}
+                onRestart={machine.restart}
               />
-              <ContinueBar
-                label={CONTINUE_LABEL[current.role] ?? "Continue"}
+            ) : current.type === "decision" ? (
+              <DecisionPanel scene={current} onSelect={machine.select} />
+            ) : current.type === "feedback" ? (
+              <FeedbackNote
+                scene={current}
                 onContinue={machine.next}
                 ready={ready}
               />
-            </>
-          )}
+            ) : (
+              <>
+                <SceneContext
+                  kicker={current.kicker}
+                  headline={current.headline}
+                  subhead={current.subhead}
+                  body={current.body}
+                />
+                <ContinueBar
+                  label={CONTINUE_LABEL[current.role] ?? "Continue"}
+                  onContinue={machine.next}
+                  ready={ready}
+                />
+              </>
+            )}
+          </div>
         </section>
       </main>
 

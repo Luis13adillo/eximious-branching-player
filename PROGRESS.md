@@ -75,8 +75,26 @@ Live status of the gauntlet build. Updated as work evolves.
   `validateLesson` at registry load (bad data fails the build). Added vitest suite
   (13 tests). Removed dead code. Wrote full handoff README.
 
-**Round 2:** re-checking visual vs MasterClass, first branching pass vs
-H5P/Storyline, and accessibility + responsive.
+**Round 2 — Branching (vs H5P/Storyline): NO, narrowly.** All four A/B/C/D
+routes distinct + rejoin correct + keyboard works (verified live) — writing and
+correctness signaling *beat* the bar. Biggest gap: media didn't visibly branch
+(consequences told, not shown). Bugs: broken keyboard hint ("press – to
+choose"), contradictory completion copy for wrong answers.
+
+**Round 2 fixes applied**
+- Added a per-branch **consequence beat** on the stage (`ConsequenceStage`): the
+  case visibly reacts — gold ✓ / red ✕ verdict wash + a present-tense
+  consequence line + a distinct backdrop per branch — before the written
+  rationale. Directly closes "told, not shown."
+- Discovered + fixed a real layout problem: on laptop viewports the 16:9 stage
+  pushed the decision options **below the fold**. New **responsive two-column
+  layout** (stage + panel side-by-side on desktop, stacked on mobile) keeps all
+  four options visible with no scroll; player now fits the viewport on desktop.
+- Fixed the keyboard hint (now "press A, B, C, or D") and the completion copy
+  (wrong answers no longer told they "reached the correct resolution").
+
+**Round 3 next:** re-check visual vs MasterClass (post stage upgrade) and run
+accessibility + responsive.
 
 ## Unresolved issues
 

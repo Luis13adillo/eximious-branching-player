@@ -146,6 +146,13 @@ export interface FeedbackScene extends SceneCommon {
   verdict: "correct" | "incorrect";
   forDecisionId: SceneId;
   forOptionId: OptionId;
+  /**
+   * A short, present-tense line describing what the learner's choice DOES —
+   * shown large on the stage as a "consequence beat" so the case visibly reacts
+   * to the decision before the written rationale. e.g. "You deny the claim —
+   * before the cause is even established."
+   */
+  consequence?: string;
   /** The common rejoin scene every branch of this decision returns to. */
   next: SceneId;
 }

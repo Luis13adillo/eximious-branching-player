@@ -38,7 +38,7 @@ export const waterDamageClaim: Lesson = {
   estimatedMinutes: 6,
   completion: {
     takeaway:
-      "you reached the correct resolution: establish cause of loss first, then determine coverage.",
+      "establish the cause of loss first, then determine coverage — never the reverse.",
     headlineAllCorrect: "Handled to standard.",
     headlinePartial: "Case resolved — here's the takeaway.",
   },
@@ -221,6 +221,7 @@ export const waterDamageClaim: Lesson = {
       verdict: "incorrect",
       forDecisionId: "decision-1",
       forOptionId: "A",
+      consequence: "You deny the claim — before the cause is even established.",
       label: "Feedback — deny as flood",
       layout: "avatar",
       presenter: INSTRUCTOR,
@@ -229,7 +230,7 @@ export const waterDamageClaim: Lesson = {
       body: "You can't apply an exclusion before you've established the cause. The failed sump in the corner could bring this squarely under the water-backup endorsement — deny it now and you risk a bad-faith and unfair-claims-practices exposure.",
       media: {
         provider: "placeholder",
-        placeholderScene: "claim-desk",
+        placeholderScene: "policy-document",
         durationSec: 27,
         captions: [
           { start: 0, end: 4, text: "Hold on — denying as flood is premature." },
@@ -247,6 +248,7 @@ export const waterDamageClaim: Lesson = {
       verdict: "incorrect",
       forDecisionId: "decision-1",
       forOptionId: "B",
+      consequence: "You cut the check — on a loss that might be excluded.",
       label: "Feedback — pay in full",
       layout: "avatar",
       presenter: INSTRUCTOR,
@@ -273,6 +275,7 @@ export const waterDamageClaim: Lesson = {
       verdict: "correct",
       forDecisionId: "decision-1",
       forOptionId: "C",
+      consequence: "You send it for inspection — cause before coverage.",
       label: "Feedback — order C&O",
       layout: "avatar",
       presenter: INSTRUCTOR,
@@ -281,7 +284,7 @@ export const waterDamageClaim: Lesson = {
       body: "Three plausible causes — surface water, a sump/backup failure, and older seepage — carry three different coverage outcomes. So you confirm the cause of loss before determining coverage, never the reverse.",
       media: {
         provider: "placeholder",
-        placeholderScene: "claim-desk",
+        placeholderScene: "moisture-map",
         durationSec: 25,
         captions: [
           { start: 0, end: 3, text: "That's the professional standard." },
@@ -299,6 +302,7 @@ export const waterDamageClaim: Lesson = {
       verdict: "incorrect",
       forDecisionId: "decision-1",
       forOptionId: "D",
+      consequence: "You chase repair bids — while coverage is still unknown.",
       label: "Feedback — collect estimates",
       layout: "avatar",
       presenter: INSTRUCTOR,
@@ -307,7 +311,7 @@ export const waterDamageClaim: Lesson = {
       body: "Repair estimates size the loss; they don't establish whether it's covered. And the standard isn't 'lowest bid wins' — it's a proper agreed scope. Coverage first, scope second.",
       media: {
         provider: "placeholder",
-        placeholderScene: "claim-desk",
+        placeholderScene: "flooded-interior",
         durationSec: 25,
         captions: [
           { start: 0, end: 6, text: "Not yet. Repair estimates scope the damage — they don't tell you whether the loss is covered." },

@@ -6,6 +6,7 @@ import type { MediaClock } from "./useMediaClock";
 import { SceneBackdrop } from "@/components/media/SceneBackdrop";
 import { AvatarPresenter } from "./AvatarPresenter";
 import { EvidenceStage } from "./EvidenceStage";
+import { ConsequenceStage } from "./ConsequenceStage";
 import { CaptionOverlay } from "./CaptionOverlay";
 import { VideoControls } from "./VideoControls";
 import { PlayIcon } from "@/components/ui/icons";
@@ -124,7 +125,9 @@ export function MediaStage({
       tabIndex={0}
       aria-label={`Video: ${scene.headline ?? scene.label}`}
       className={`group/stage relative w-full overflow-hidden bg-navy-950 outline-none ${
-        fullscreen ? "h-full" : "aspect-[4/3] sm:aspect-video"
+        fullscreen
+          ? "h-full"
+          : "h-[46vh] min-h-[300px] sm:h-[52vh] lg:h-full lg:min-h-0"
       }`}
     >
       {/* backdrop / video */}
@@ -153,11 +156,12 @@ export function MediaStage({
         />
       )}
 
-      {/* presenter or evidence layer (placeholder only) */}
-      {!hasVideo && hasEvidence ? (
+      {/* content layer (placeholder only): consequence beat > exhibits > presenter */}
+      {!hasVideo && scene.type === "feedback" ? (
+        <ConsequenceStage scene={scene} />
+      ) : !hasVideo && hasEvidence ? (
         <EvidenceStage evidence={scene.evidence!} sceneKey={scene.id} />
-      ) : null}
-      {!hasVideo && isAvatar && !hasEvidence ? (
+      ) : !hasVideo && isAvatar ? (
         <AvatarPresenter
           presenter={scene.presenter!}
           speaking={clock.playing && !clock.ended}

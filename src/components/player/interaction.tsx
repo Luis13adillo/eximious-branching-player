@@ -196,17 +196,24 @@ export function CompletionSummary({
         {headline}
       </h3>
       <p className="mt-2 max-w-2xl font-sans text-[15px] leading-relaxed text-ink-200">
-        You worked <span className="text-ink-100">{lesson.title}</span>
-        {lesson.completion?.takeaway ? (
+        {allCorrect ? (
           <>
-            {" — "}
-            {lesson.completion.takeaway}
+            You made {correctCount} of {total} decision
+            {total === 1 ? "" : "s"} the way a seasoned professional would.
           </>
         ) : (
-          "."
-        )}{" "}
-        On this attempt you made {correctCount} of {total} decision
-        {total === 1 ? "" : "s"} the way a seasoned professional would.
+          <>
+            The case resolves correctly no matter what you chose — but your call
+            would have put it at risk. You matched the professional standard on{" "}
+            {correctCount} of {total} decision{total === 1 ? "" : "s"} this time.
+          </>
+        )}
+        {lesson.completion?.takeaway && (
+          <>
+            {" "}
+            The rule to carry forward: {lesson.completion.takeaway}
+          </>
+        )}
       </p>
 
       <div className="mt-5 flex flex-col gap-2">

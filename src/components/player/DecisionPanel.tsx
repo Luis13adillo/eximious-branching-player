@@ -103,15 +103,11 @@ export function DecisionPanel({
       </div>
 
       <p className="mt-3 font-sans text-[11px] text-ink-400">
-        Tip: press{" "}
-        <kbd className="rounded bg-white/10 px-1 py-0.5 text-[10px] text-ink-200">
-          A
-        </kbd>
-        –
-        <kbd className="rounded bg-white/10 px-1 py-0.5 text-[10px] text-ink-200">
-          D
-        </kbd>{" "}
-        to choose.
+        Tip — you can also press{" "}
+        <span className="font-semibold text-ink-200">A</span>,{" "}
+        <span className="font-semibold text-ink-200">B</span>,{" "}
+        <span className="font-semibold text-ink-200">C</span>, or{" "}
+        <span className="font-semibold text-ink-200">D</span> to choose.
       </p>
     </div>
   );
