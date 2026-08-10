@@ -74,11 +74,13 @@ export function useMediaClock(
   const { sceneKey, autoplay = true, mediaRef, hasRealMedia, onEnded } = opts;
 
   const [currentTime, setCurrentTime] = useState(0);
-  // Starts paused: the lesson opens on a Play button. Pressing play is the
-  // gesture that both starts the video and turns sound on (browsers forbid
-  // autoplaying audio before a gesture) — so there's no separate "tap for
-  // sound" step. After that, scenes play with sound automatically.
-  const [playing, setPlaying] = useState(false);
+  // Scenes autoplay from the start. Browsers always allow MUTED autoplay, so
+  // the avatar plays and lip-syncs immediately — nothing is ever a frozen,
+  // silent frame. Sound is off only until the learner's first interaction
+  // anywhere on the page (see the first-gesture effect below), after which it
+  // stays on for the rest of the lesson. So `playing` starts true whenever the
+  // scene allows autoplay.
+  const [playing, setPlaying] = useState(autoplay);
   const [ended, setEnded] = useState(false);
   // Start muted: browsers only allow unattended autoplay of muted video, and
   // the placeholder clips are silent anyway. The mute control still works for
@@ -97,11 +99,16 @@ export function useMediaClock(
   // it (read via ref so the scene-change effect doesn't re-run on unmute).
   const mutedRef = useRef(muted);
   mutedRef.current = muted;
-  // Whether the learner has started playback once. Before that, scenes don't
-  // auto-run (they wait on the Play button); the first play turns sound on.
+  // Whether sound has been unlocked yet. Scenes always autoplay muted; the
+  // learner's first interaction anywhere (see the first-gesture effect below)
+  // flips this to true and turns sound on for the rest of the lesson.
   const [unlocked, setUnlocked] = useState(false);
   const unlockedRef = useRef(false);
   unlockedRef.current = unlocked;
+  // Read the current scene's autoplay preference from the first-gesture handler
+  // without making that listener re-bind whenever it changes.
+  const autoplayRef = useRef(autoplay);
+  autoplayRef.current = autoplay;
 
   const duration = durationSec;
 
@@ -110,11 +117,12 @@ export function useMediaClock(
     setCurrentTime(0);
     setEnded(false);
     endedFiredRef.current = false;
-    // Auto-run a scene only once the learner has pressed play (unlocked) — and
-    // the scene itself allows autoplay (a decision retry re-entry does not). The
-    // very first scene therefore waits on the Play button; everything after the
-    // first play runs with the learner's sound preference carried across.
-    const doAutoplay = autoplay && unlockedRef.current;
+    // Autoplay every scene the lesson marks autoplay-able (a decision retry
+    // re-entry is the one exception — the learner chooses again without the
+    // question replaying). MUTED autoplay is always allowed, so the avatar
+    // plays and lip-syncs right away; `el.muted` carries the learner's sound
+    // preference, which is on once they've interacted once (unlocked).
+    const doAutoplay = autoplay;
     setPlaying(doAutoplay);
     const el = mediaRef?.current;
     if (el) {
@@ -235,6 +243,39 @@ export function useMediaClock(
       el.volume = volume;
     }
   }, [muted, volume, mediaRef]);
+
+  // Turn sound on at the learner's FIRST interaction anywhere on the page —
+  // clicking "Continue", picking an answer, tapping the video, pressing a key,
+  // anything. Scenes are already autoplaying (muted), so this is the single
+  // gesture that unmutes them; there is no separate "press Play for sound" or
+  // "tap for sound" step. Once unlocked, every following scene plays with sound
+  // because the persistent <video> keeps its user-activation. Uses {once:true}
+  // so it costs nothing after the first interaction.
+  useEffect(() => {
+    if (unlocked) return;
+    const onFirstGesture = () => {
+      unlockedRef.current = true;
+      setUnlocked(true);
+      mutedRef.current = false;
+      setMutedState(false);
+      const el = mediaRef?.current;
+      if (el) {
+        el.muted = false;
+        // If autoplay was somehow blocked and the scene is sitting paused,
+        // start it now that we have a real user gesture.
+        if (el.paused && autoplayRef.current) {
+          pauseOtherMedia(el);
+          void el.play().catch(() => {});
+        }
+      }
+    };
+    window.addEventListener("pointerdown", onFirstGesture, { once: true });
+    window.addEventListener("keydown", onFirstGesture, { once: true });
+    return () => {
+      window.removeEventListener("pointerdown", onFirstGesture);
+      window.removeEventListener("keydown", onFirstGesture);
+    };
+  }, [unlocked, mediaRef]);
 
   const play = useCallback(() => {
     setEnded(false);
