@@ -74,7 +74,11 @@ export function useMediaClock(
   const { sceneKey, autoplay = true, mediaRef, hasRealMedia, onEnded } = opts;
 
   const [currentTime, setCurrentTime] = useState(0);
-  const [playing, setPlaying] = useState(autoplay);
+  // Starts paused: the lesson opens on a Play button. Pressing play is the
+  // gesture that both starts the video and turns sound on (browsers forbid
+  // autoplaying audio before a gesture) — so there's no separate "tap for
+  // sound" step. After that, scenes play with sound automatically.
+  const [playing, setPlaying] = useState(false);
   const [ended, setEnded] = useState(false);
   // Start muted: browsers only allow unattended autoplay of muted video, and
   // the placeholder clips are silent anyway. The mute control still works for
@@ -93,6 +97,11 @@ export function useMediaClock(
   // it (read via ref so the scene-change effect doesn't re-run on unmute).
   const mutedRef = useRef(muted);
   mutedRef.current = muted;
+  // Whether the learner has started playback once. Before that, scenes don't
+  // auto-run (they wait on the Play button); the first play turns sound on.
+  const [unlocked, setUnlocked] = useState(false);
+  const unlockedRef = useRef(false);
+  unlockedRef.current = unlocked;
 
   const duration = durationSec;
 
@@ -101,22 +110,23 @@ export function useMediaClock(
     setCurrentTime(0);
     setEnded(false);
     endedFiredRef.current = false;
-    setPlaying(autoplay);
+    // Auto-run a scene only once the learner has pressed play (unlocked) — and
+    // the scene itself allows autoplay (a decision retry re-entry does not). The
+    // very first scene therefore waits on the Play button; everything after the
+    // first play runs with the learner's sound preference carried across.
+    const doAutoplay = autoplay && unlockedRef.current;
+    setPlaying(doAutoplay);
     const el = mediaRef?.current;
     if (el) {
       try {
         el.currentTime = 0;
-        // Preserve the learner's mute preference across scenes. The first scene
-        // starts muted (autoplay policy needs it), but once they turn sound on,
-        // every following scene keeps playing the voiceover — their click to
-        // continue is the gesture that lets sound autoplay.
-        el.muted = mutedRef.current;
-        if (autoplay) {
+        el.muted = mutedRef.current; // carry the mute preference across scenes
+        if (doAutoplay) {
           pauseOtherMedia(el); // never two sources at once
           void el.play().catch(() => setPlaying(false));
+        } else {
+          el.pause();
         }
-        // Retry re-entry: don't let the reused <video> element start on its own.
-        else el.pause();
       } catch {
         /* ignore */
       }
@@ -229,8 +239,18 @@ export function useMediaClock(
   const play = useCallback(() => {
     setEnded(false);
     endedFiredRef.current = false;
+    // The first play is the gesture that unlocks sound: turn audio on and
+    // remember it, so every following scene plays with sound (no "tap for
+    // sound" step). Later plays respect the current mute button state.
+    if (!unlockedRef.current) {
+      unlockedRef.current = true;
+      setUnlocked(true);
+      mutedRef.current = false;
+      setMutedState(false);
+    }
     setPlaying(true);
     const el = mediaRef?.current;
+    if (el) el.muted = mutedRef.current;
     pauseOtherMedia(el); // never two sources at once (covers manual Replay too)
     el?.play().catch(() => setPlaying(false));
   }, [mediaRef]);

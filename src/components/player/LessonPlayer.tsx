@@ -150,12 +150,7 @@ export function LessonPlayer({
       <main className="flex flex-1 flex-col gap-4 lg:min-h-0 lg:flex-row lg:items-stretch lg:gap-5">
         {/* video stage */}
         <div className="overflow-hidden rounded-2xl border border-white/10 shadow-2xl shadow-black/40 ring-1 ring-black/20 lg:h-full lg:min-h-0 lg:flex-[1.55] lg:min-w-0">
-          <MediaStage
-            scene={current}
-            clock={clock}
-            mediaRef={mediaRef}
-            autoPlay={autoplayScene}
-          />
+          <MediaStage scene={current} clock={clock} mediaRef={mediaRef} />
         </div>
 
         {/* interaction area */}
