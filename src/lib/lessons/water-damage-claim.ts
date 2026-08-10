@@ -1,25 +1,20 @@
 import type { Lesson } from "@/lib/branching/types";
 
 /**
- * DEMO LESSON — Residential Water-Damage Claim
+ * Residential Water-Damage Claim
  * ============================================================================
- * A single, self-contained lesson graph. It has ONE decision point (as the
- * brief requires) but the exact same shape scales to three per lesson: just
- * add more `decision` scenes between narrative scenes. Nothing in the player
- * knows or cares how many decisions there are.
+ * A single, self-contained lesson graph. It has one decision point, but the
+ * same shape scales to any number: add more `decision` scenes between narrative
+ * scenes. Nothing in the player knows or cares how many decisions there are.
  *
  * Narrative arc:
  *   intro → loss evidence → policy/readings briefing → DECISION
- *     ├─ A (deny as flood)        → feedback → ┐
- *     ├─ B (pay in full now)      → feedback → ┤
- *     ├─ C (order C&O inspection) → feedback → ┤  ALL rejoin here
- *     └─ D (collect estimates)    → feedback → ┘
- *   → continuation (C&O findings) → resolution → end
+ *     A / B / D (wrong)   → specific feedback → back to the decision to retry
+ *     C (correct)         → feedback → continuation (C&O findings) → resolution
  *
- * The narration lives in `captions`, which the placeholder stage renders in
- * sync — so the demo plays as a fully captioned, accessible lesson before any
- * real avatar/voice asset exists. Replace `media.videoUrl` per scene to swap in
- * HeyGen / ElevenLabs / Mux output; no other change is needed.
+ * Narration lives in `captions`, rendered in sync, so the lesson is fully
+ * captioned and accessible. Set `media.videoUrl` or `media.audioUrl` per scene
+ * to attach speaking-avatar or voiceover assets; no other change is needed.
  */
 
 const INSTRUCTOR = {

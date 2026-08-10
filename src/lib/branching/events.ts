@@ -24,7 +24,21 @@ export interface AnswerSelectedEvent {
 export interface SceneEnterEvent {
   lessonId: string;
   sceneId: SceneId;
-  sceneType: "narrative" | "decision" | "feedback";
+  sceneType: "narrative" | "decision" | "feedback" | "quiz";
+  timestampMs: number;
+}
+
+/** Fired once when the learner submits the graded completion quiz. */
+export interface QuizCompletedEvent {
+  lessonId: string;
+  sceneId: SceneId;
+  correct: number;
+  total: number;
+  /** Score as a whole percent, e.g. 80. */
+  scorePct: number;
+  /** Threshold required to pass, e.g. 80. */
+  passPct: number;
+  passed: boolean;
   timestampMs: number;
 }
 
@@ -45,4 +59,5 @@ export interface PlayerEventHandlers {
   onAnswerSelected?: (event: AnswerSelectedEvent) => void;
   onSceneEnter?: (event: SceneEnterEvent) => void;
   onLessonComplete?: (event: LessonCompleteEvent) => void;
+  onQuizCompleted?: (event: QuizCompletedEvent) => void;
 }

@@ -138,9 +138,11 @@ export function FeedbackNote({
         </span>
       </div>
 
-      <h2 className="font-[family-name:var(--font-display)] text-xl leading-snug text-ink-100 sm:text-2xl">
-        {scene.headline}
-      </h2>
+      {scene.headline && (
+        <h2 className="font-[family-name:var(--font-display)] text-xl leading-snug text-ink-100 sm:text-2xl">
+          {scene.headline}
+        </h2>
+      )}
       {scene.body && (
         <p className="mt-2 max-w-2xl font-sans text-[15px] leading-relaxed text-ink-200">
           {scene.body}
@@ -149,7 +151,7 @@ export function FeedbackNote({
 
       <div className="mt-5">
         <ContinueButton
-          label="Continue"
+          label={correct ? "Continue" : "Try again"}
           onClick={onContinue}
           emphatic
           autoFocus={ready}

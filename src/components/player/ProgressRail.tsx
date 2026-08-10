@@ -34,7 +34,7 @@ export function ProgressRail({
                   : done
                     ? "w-4 bg-gold-700"
                     : "w-4 bg-white/15"
-              } ${step.kind === "decision" ? "ring-1 ring-gold-400/40" : ""}`}
+              } ${step.kind === "decision" || step.kind === "quiz" ? "ring-1 ring-gold-400/40" : ""}`}
             />
           </div>
         );
@@ -96,6 +96,11 @@ export function LessonStepList({
               {step.kind === "decision" && (
                 <span className="ml-auto rounded-full bg-white/5 px-1.5 py-0.5 text-[8px] font-semibold uppercase tracking-widest text-gold-300">
                   Decision
+                </span>
+              )}
+              {step.kind === "quiz" && (
+                <span className="ml-auto rounded-full bg-white/5 px-1.5 py-0.5 text-[8px] font-semibold uppercase tracking-widest text-gold-300">
+                  Quiz
                 </span>
               )}
             </li>

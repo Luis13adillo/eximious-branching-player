@@ -65,7 +65,7 @@ export function ConsequenceStage({ scene }: { scene: FeedbackScene }) {
               : "text-[color:var(--color-verdict-incorrect)]"
           }`}
         >
-          {correct ? "On the right track" : "Here's what that does"}
+          On screen
         </div>
 
         {scene.consequence && (

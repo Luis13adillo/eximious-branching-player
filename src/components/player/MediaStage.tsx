@@ -31,10 +31,13 @@ export function MediaStage({
   scene,
   clock,
   mediaRef,
+  autoPlay = true,
 }: {
   scene: Scene;
   clock: MediaClock;
   mediaRef: React.RefObject<HTMLMediaElement | null>;
+  /** Whether this scene's media should start on its own (false on a retry re-entry). */
+  autoPlay?: boolean;
 }) {
   const stageRef = useRef<HTMLDivElement>(null);
   const [fullscreen, setFullscreen] = useState(false);
@@ -45,6 +48,11 @@ export function MediaStage({
   const hideTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const hasVideo = !!scene.media.videoUrl;
+  // Audio-only scenes (voiceover over a still/exhibit): a hidden <audio> element
+  // drives the same clock as a real <video> would, so captions, controls, and
+  // "tap for sound" all work with no visual change. This is how every non-avatar
+  // scene (the assignment, feedback branches, the quiz) gets the shimmer voice.
+  const hasAudioTrack = !hasVideo && !!scene.media.audioUrl;
   const isAvatar = scene.layout === "avatar" && !!scene.presenter;
   const hasEvidence = !!scene.evidence && scene.evidence.length > 0;
   // A cinematic presenter still (placeholder for the AI-avatar video) fills the
@@ -163,7 +171,7 @@ export function MediaStage({
           poster={scene.media.posterUrl}
           playsInline
           muted
-          autoPlay
+          autoPlay={autoPlay}
           loop={!!scene.media.loop}
         >
           {scene.media.captionsUrl && (
@@ -209,6 +217,17 @@ export function MediaStage({
         <SceneBackdrop
           scene={scene.media.placeholderScene ?? "claim-desk"}
           animate={clock.playing}
+        />
+      )}
+
+      {/* audio-only scenes: hidden voiceover element bound to the clock */}
+      {hasAudioTrack && (
+        <audio
+          ref={mediaRef as React.RefObject<HTMLAudioElement>}
+          src={scene.media.audioUrl}
+          autoPlay={autoPlay}
+          muted
+          className="hidden"
         />
       )}
 
@@ -273,8 +292,15 @@ export function MediaStage({
         </button>
       )}
 
-      {/* big center play when paused (not ended) */}
-      {!clock.playing && !clock.ended && (
+      {/* buffering spinner — only when real media is genuinely not ready */}
+      {clock.waiting && !clock.ended && (
+        <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
+          <span className="h-12 w-12 animate-spin rounded-full border-2 border-white/25 border-t-gold-400 sm:h-14 sm:w-14" />
+        </div>
+      )}
+
+      {/* big center play when paused (not ended, not buffering) */}
+      {!clock.playing && !clock.ended && !clock.waiting && (
         <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
           <span className="flex h-16 w-16 items-center justify-center rounded-full bg-navy-950/55 ring-1 ring-white/20 backdrop-blur-sm sm:h-20 sm:w-20">
             <PlayIcon className="ml-1 h-7 w-7 text-ink-100 sm:h-9 sm:w-9" />

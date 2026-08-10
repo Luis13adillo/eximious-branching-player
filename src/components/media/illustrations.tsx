@@ -290,6 +290,57 @@ function PolicyClause() {
   );
 }
 
+function CoverageClause() {
+  return (
+    <Frame label="Policy excerpt: covers sudden and accidental discharge; excludes damage occurring over a period of time">
+      <rect x="0" y="0" width="400" height="300" fill="transparent" />
+      <rect
+        x="60"
+        y="34"
+        width="280"
+        height="232"
+        rx="4"
+        fill="var(--color-navy-900)"
+        stroke="var(--color-navy-600)"
+        strokeWidth="1"
+      />
+      <text x="78" y="60" fill={INK} fontSize="11" fontFamily="var(--font-display)">
+        Homeowners Policy · Water Damage
+      </text>
+      {/* covered clause */}
+      <rect x="72" y="76" width="256" height="46" rx="3" fill="var(--color-gold-900)" opacity="0.55" />
+      <rect x="72" y="76" width="4" height="46" fill={GOLD} />
+      <text x="86" y="93" fill={GOLD_SOFT} fontSize="9">
+        ✓ Covered
+      </text>
+      <text x="86" y="109" fill={INK} fontSize="8.5" opacity="0.9">
+        Sudden and accidental discharge
+      </text>
+      {/* excluded clause */}
+      <rect x="72" y="136" width="256" height="46" rx="3" fill="var(--color-navy-800)" opacity="0.6" />
+      <rect x="72" y="136" width="4" height="46" fill="var(--color-verdict-incorrect)" />
+      <text x="86" y="153" fill="var(--color-verdict-incorrect)" fontSize="9">
+        ✕ Excluded
+      </text>
+      <text x="86" y="169" fill={INK} fontSize="8.5" opacity="0.75">
+        Damage occurring over a period of time
+      </text>
+      {/* the conflict note */}
+      <text x="78" y="206" fill={INK} fontSize="8.5" opacity="0.7">
+        The claim turns on one factual question:
+      </text>
+      <text x="78" y="220" fill={GOLD_SOFT} fontSize="8.5">
+        sudden event, or gradual over time?
+      </text>
+      {/* faux lines */}
+      <g stroke="var(--color-navy-600)" strokeWidth="1" opacity="0.5">
+        <line x1="72" y1="238" x2="328" y2="238" />
+        <line x1="72" y1="250" x2="300" y2="250" />
+      </g>
+    </Frame>
+  );
+}
+
 function DamagePhoto() {
   return (
     <Frame label="Evidence photo illustration of a basement corner with a water line about sixteen inches up the wall, a window well, and warped flooring">
@@ -353,6 +404,7 @@ const MAP: Record<EvidenceIllustration, () => React.ReactElement> = {
   "moisture-readings": MoistureReadings,
   timeline: Timeline,
   "policy-clause": PolicyClause,
+  "coverage-clause": CoverageClause,
   "damage-photo": DamagePhoto,
 };
 

@@ -1,5 +1,6 @@
 import type { Lesson, LessonSummary } from "@/lib/branching/types";
 import { validateLesson } from "@/lib/branching/engine";
+import { claimsInvestigationApplication1 } from "./claims-investigation-application-1";
 import { waterDamageClaim } from "./water-damage-claim";
 
 /**
@@ -14,7 +15,7 @@ import { waterDamageClaim } from "./water-damage-claim";
  * key them the same way; the player only depends on the `Lesson` shape, not on
  * where the data comes from.
  */
-const allLessons: Lesson[] = [waterDamageClaim];
+const allLessons: Lesson[] = [claimsInvestigationApplication1, waterDamageClaim];
 
 /**
  * Validate every lesson graph as the registry loads. Because this module is
@@ -70,4 +71,4 @@ export function listLessons(): LessonSummary[] {
   return Object.values(registry).map(toSummary);
 }
 
-export const DEMO_LESSON_SLUG = waterDamageClaim.slug;
+export const FEATURED_LESSON_SLUG = claimsInvestigationApplication1.slug;

@@ -18,6 +18,7 @@ import type {
 export type MachineStatus =
   | "playing" // a narrative/feedback scene is on screen (auto-advances)
   | "awaiting-decision" // a decision scene is waiting for a choice
+  | "quiz" // a graded quiz scene is on screen (component-driven)
   | "complete"; // reached a scene with next === null
 
 export interface DecisionRecord {
@@ -36,6 +37,13 @@ export interface MachineState {
   visited: SceneId[];
   /** One record per decision made, keyed by decision scene id. */
   decisions: Record<SceneId, DecisionRecord>;
+  /**
+   * Wrong options already tried at each decision, in order. Drives the
+   * retry-until-correct flow: a wrong answer plays its feedback then returns
+   * the learner to the same decision, with the tried options marked so they can
+   * choose again. Cleared on restart.
+   */
+  attempts: Record<SceneId, OptionId[]>;
   status: MachineStatus;
 }
 
@@ -49,6 +57,7 @@ export class LessonIntegrityError extends Error {
 
 function statusForScene(scene: Scene): MachineStatus {
   if (scene.type === "decision") return "awaiting-decision";
+  if (scene.type === "quiz") return "quiz";
   if (scene.type === "narrative" && scene.next === null) return "complete";
   return "playing";
 }
@@ -81,10 +90,11 @@ export function decisionOrder(lesson: Lesson): SceneId[] {
         scene.options.find((o) => o.isCorrect) ?? scene.options[0];
       const feedback = getScene(lesson, via.feedbackSceneId);
       cursor = feedback.type === "feedback" ? feedback.next : null;
-    } else if (scene.type === "narrative") {
+    } else if (scene.type === "narrative" || scene.type === "feedback") {
       cursor = scene.next;
     } else {
-      cursor = scene.next;
+      // quiz — terminal, ends the spine.
+      cursor = null;
     }
   }
   return order;
@@ -93,7 +103,7 @@ export function decisionOrder(lesson: Lesson): SceneId[] {
 export interface OutlineStep {
   id: SceneId;
   label: string;
-  kind: "narrative" | "decision";
+  kind: "narrative" | "decision" | "quiz";
 }
 
 /**
@@ -118,6 +128,9 @@ export function lessonOutline(lesson: Lesson): OutlineStep[] {
     } else if (scene.type === "narrative") {
       steps.push({ id: scene.id, label: scene.label, kind: "narrative" });
       cursor = scene.next;
+    } else if (scene.type === "quiz") {
+      steps.push({ id: scene.id, label: scene.label, kind: "quiz" });
+      cursor = null; // quiz is the terminal spine step
     } else {
       // A feedback scene should not appear on the spine, but guard anyway.
       cursor = scene.next;
@@ -146,16 +159,28 @@ export function initMachine(lesson: Lesson, nowMs: number): MachineState {
     currentSceneId: lesson.startSceneId,
     visited: [lesson.startSceneId],
     decisions: {},
+    attempts: {},
     status: statusForScene(start),
   };
 }
 
-/** Advance from a narrative/feedback scene to its `next`. No-op on decisions. */
+/**
+ * Advance from a narrative/feedback scene. No-op on decisions/quiz.
+ *
+ * Retry-until-correct: a WRONG answer's feedback returns the learner to the
+ * SAME decision so they can choose again; only the CORRECT answer's feedback
+ * proceeds to the rejoin (`next`) and lets the lesson move on. This behavior is
+ * engine-level, so every lesson gets it with no per-scene wiring.
+ */
 export function advance(state: MachineState, lesson: Lesson): MachineState {
   const scene = getScene(lesson, state.currentSceneId);
   if (scene.type === "decision") return state; // must choose first
+  if (scene.type === "quiz") return state; // quiz is component-driven, terminal
 
-  const nextId = scene.next;
+  const nextId =
+    scene.type === "feedback" && scene.verdict === "incorrect"
+      ? scene.forDecisionId // wrong answer → back to the decision to retry
+      : scene.next;
   if (nextId === null) {
     return { ...state, status: "complete" };
   }
@@ -193,11 +218,20 @@ export function selectOption(
   const order = decisionOrder(lesson);
   const decisionIndex = order.indexOf(decisionSceneId) + 1;
 
+  // Record a wrong pick as an attempt (deduped) so the decision can show which
+  // options were already tried when the learner returns to retry.
+  const prevAttempts = state.attempts[decisionSceneId] ?? [];
+  const nextAttempts =
+    !option.isCorrect && !prevAttempts.includes(optionId)
+      ? [...prevAttempts, optionId]
+      : prevAttempts;
+
   return {
     ...state,
     currentSceneId: option.feedbackSceneId,
     visited: [...state.visited, option.feedbackSceneId],
     status: statusForScene(feedback),
+    attempts: { ...state.attempts, [decisionSceneId]: nextAttempts },
     decisions: {
       ...state.decisions,
       [decisionSceneId]: {
@@ -242,6 +276,31 @@ export function validateLesson(lesson: Lesson): string[] {
     if (scene.type === "narrative" || scene.type === "feedback") {
       ref(id, scene.next, "advances to");
     }
+    if (scene.type === "quiz") {
+      if (!scene.questions || scene.questions.length === 0) {
+        problems.push(`Quiz "${id}" has no questions.`);
+      }
+      if (
+        typeof scene.passPct !== "number" ||
+        scene.passPct < 0 ||
+        scene.passPct > 100
+      ) {
+        problems.push(`Quiz "${id}" passPct must be a number between 0 and 100.`);
+      }
+      (scene.questions ?? []).forEach((q, qi) => {
+        if (!q.options || q.options.length < 2) {
+          problems.push(
+            `Quiz "${id}" question ${qi + 1} needs at least 2 options.`,
+          );
+        }
+        const correct = (q.options ?? []).filter((o) => o.isCorrect).length;
+        if (correct !== 1) {
+          problems.push(
+            `Quiz "${id}" question ${qi + 1} has ${correct} correct options (expected exactly 1).`,
+          );
+        }
+      });
+    }
     if (scene.type === "decision") {
       const d = scene as DecisionScene;
       if (d.options.length !== 4) {
@@ -272,21 +331,27 @@ export function validateLesson(lesson: Lesson): string[] {
     }
   }
 
-  // Every feedback scene for a given decision should rejoin the same scene, so
-  // all branches converge. Warn if a decision's branches diverge.
+  // Retry-until-correct: wrong feedback returns to its decision (engine-level),
+  // so branches intentionally do NOT converge. What must hold instead is that
+  // the CORRECT option's feedback advances FORWARD (to a rejoin), never back to
+  // the decision — otherwise a correct answer could never progress the lesson.
   const decisions = Object.values(lesson.scenes).filter(
     (s): s is DecisionScene => s.type === "decision",
   );
   for (const d of decisions) {
-    const rejoinTargets = new Set<string>();
-    for (const o of d.options) {
-      const fb = lesson.scenes[o.feedbackSceneId];
-      if (fb && fb.type === "feedback") rejoinTargets.add(fb.next);
-    }
-    if (rejoinTargets.size > 1) {
-      problems.push(
-        `Decision "${d.id}" branches rejoin at different scenes: ${[...rejoinTargets].join(", ")}. Expected a single common continuation.`,
-      );
+    const correct = d.options.find((o) => o.isCorrect);
+    if (!correct) continue; // missing-correct already reported above
+    const fb = lesson.scenes[correct.feedbackSceneId];
+    if (fb && fb.type === "feedback") {
+      if (fb.next === null || !ids.has(fb.next)) {
+        problems.push(
+          `Decision "${d.id}" correct feedback "${fb.id}" must advance to a valid rejoin scene.`,
+        );
+      } else if (fb.next === d.id) {
+        problems.push(
+          `Decision "${d.id}" correct feedback "${fb.id}" must advance forward, not back to the decision.`,
+        );
+      }
     }
   }
 

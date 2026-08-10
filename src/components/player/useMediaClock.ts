@@ -19,6 +19,8 @@ export interface MediaClock {
   duration: number;
   playing: boolean;
   ended: boolean;
+  /** Real media is buffering / not yet ready to play (drives a loading state). */
+  waiting: boolean;
   muted: boolean;
   volume: number;
   captionsOn: boolean;
@@ -57,12 +59,17 @@ export function useMediaClock(
   const [muted, setMutedState] = useState(true);
   const [volume, setVolumeState] = useState(1);
   const [captionsOn, setCaptionsOn] = useState(true);
+  const [waiting, setWaiting] = useState(false);
 
   const rafRef = useRef<number | null>(null);
   const lastTsRef = useRef<number>(0);
   const endedFiredRef = useRef(false);
   const onEndedRef = useRef(onEnded);
   onEndedRef.current = onEnded;
+  // Track the learner's current mute preference so a scene change can preserve
+  // it (read via ref so the scene-change effect doesn't re-run on unmute).
+  const mutedRef = useRef(muted);
+  mutedRef.current = muted;
 
   const duration = durationSec;
 
@@ -76,16 +83,38 @@ export function useMediaClock(
     if (el) {
       try {
         el.currentTime = 0;
-        // Force muted at play() time so autoplay isn't blocked on real mobile
-        // browsers (the React `muted` attribute alone is unreliable). The mute
-        // control can unmute afterward for real narrated footage.
-        el.muted = true;
+        // Preserve the learner's mute preference across scenes. The first scene
+        // starts muted (autoplay policy needs it), but once they turn sound on,
+        // every following scene keeps playing the voiceover — their click to
+        // continue is the gesture that lets sound autoplay.
+        el.muted = mutedRef.current;
         if (autoplay) void el.play().catch(() => setPlaying(false));
+        // Retry re-entry: don't let the reused <video> element start on its own.
+        else el.pause();
       } catch {
         /* ignore */
       }
     }
   }, [sceneKey, autoplay, mediaRef]);
+
+  // Stop this scene's media when leaving it. A media element removed from the
+  // DOM does NOT pause itself (HTML spec), so without this a video/audio track
+  // keeps playing underneath the next scene. Capturing `el` in the closure means
+  // we pause the exact element that belonged to this scene, even when the next
+  // scene swaps <video>↔<audio>. This is the audio-cleanup guarantee.
+  useEffect(() => {
+    const el = mediaRef?.current;
+    return () => {
+      if (el) {
+        try {
+          el.pause();
+          el.currentTime = 0;
+        } catch {
+          /* ignore */
+        }
+      }
+    };
+  }, [sceneKey, mediaRef]);
 
   // Simulated clock loop (only when there is no real media element).
   useEffect(() => {
@@ -125,12 +154,20 @@ export function useMediaClock(
   useEffect(() => {
     const el = mediaRef?.current;
     if (!el || !hasRealMedia) return;
-    const onTime = () => setCurrentTime(el.currentTime);
+    setWaiting(false);
+    const onTime = () => {
+      setCurrentTime(el.currentTime);
+      setWaiting(false);
+    };
     const onPlay = () => setPlaying(true);
+    const onPlaying = () => setWaiting(false);
+    const onCanPlay = () => setWaiting(false);
+    const onWaiting = () => setWaiting(true);
     const onPause = () => setPlaying(false);
     const onEnd = () => {
       setEnded(true);
       setPlaying(false);
+      setWaiting(false);
       if (!endedFiredRef.current) {
         endedFiredRef.current = true;
         onEndedRef.current?.();
@@ -138,11 +175,17 @@ export function useMediaClock(
     };
     el.addEventListener("timeupdate", onTime);
     el.addEventListener("play", onPlay);
+    el.addEventListener("playing", onPlaying);
+    el.addEventListener("canplay", onCanPlay);
+    el.addEventListener("waiting", onWaiting);
     el.addEventListener("pause", onPause);
     el.addEventListener("ended", onEnd);
     return () => {
       el.removeEventListener("timeupdate", onTime);
       el.removeEventListener("play", onPlay);
+      el.removeEventListener("playing", onPlaying);
+      el.removeEventListener("canplay", onCanPlay);
+      el.removeEventListener("waiting", onWaiting);
       el.removeEventListener("pause", onPause);
       el.removeEventListener("ended", onEnd);
     };
@@ -203,6 +246,7 @@ export function useMediaClock(
     duration,
     playing,
     ended,
+    waiting,
     muted,
     volume,
     captionsOn,

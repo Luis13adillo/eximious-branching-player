@@ -59,8 +59,8 @@ export interface MediaSource {
    */
   hasAudio?: boolean;
   /**
-   * Name of a registered placeholder backdrop (see PlaceholderStage). Lets the
-   * demo look finished before real footage exists. Ignored once `videoUrl` set.
+   * Name of a registered fallback backdrop (see SceneBackdrop). Gives a
+   * polished look before final footage exists. Ignored once `videoUrl` is set.
    */
   placeholderScene?: PlaceholderSceneName;
 }
@@ -106,6 +106,7 @@ export type EvidenceIllustration =
   | "moisture-readings"
   | "timeline"
   | "policy-clause"
+  | "coverage-clause"
   | "damage-photo";
 
 /** Layout mode for a scene's media stage. */
@@ -125,6 +126,12 @@ interface SceneCommon {
   /** Longer narration/summary body shown beside or below the stage. */
   body?: string;
   evidence?: EvidenceItem[];
+  /**
+   * Optional per-scene label for the primary "continue" control. Keeps
+   * lesson-specific wording in DATA (e.g. "Begin the graded quiz") instead of
+   * hard-coding it in the player. Falls back to a role-based default.
+   */
+  continueLabel?: string;
 }
 
 /** Plays, then advances to `next`. `next: null` ends the lesson. */
@@ -169,7 +176,51 @@ export interface FeedbackScene extends SceneCommon {
   next: SceneId;
 }
 
-export type Scene = NarrativeScene | DecisionScene | FeedbackScene;
+/** One option in a quiz question. */
+export interface QuizOption {
+  id: OptionId;
+  label: string;
+  isCorrect: boolean;
+}
+
+/** One graded question inside a QuizScene. */
+export interface QuizQuestion {
+  id: string;
+  prompt: string;
+  /** Two to four options; exactly one is correct. */
+  options: QuizOption[];
+  /** Reasoning revealed after answering — tie it to the lesson's teaching. */
+  explanation?: string;
+}
+
+/**
+ * A terminal, graded completion quiz. Data-driven like everything else: each
+ * lesson defines its own questions and pass threshold, so the same player runs
+ * the quiz for lesson #1 and lesson #267 with no code changes. Reached as the
+ * `next` of the final resolution scene; the quiz itself has no `next` (it ends
+ * the lesson, gating completion on the pass mark).
+ */
+export interface QuizScene extends SceneCommon {
+  type: "quiz";
+  /** Percent correct required to pass, e.g. 80. */
+  passPct: number;
+  questions: QuizQuestion[];
+  /** Short line shown above the first question. */
+  intro?: string;
+  /** Pass/fail result copy (kept in data, not hard-coded in the component). */
+  result?: {
+    passHeadline?: string;
+    failHeadline?: string;
+    passNote?: string;
+    failNote?: string;
+  };
+}
+
+export type Scene =
+  | NarrativeScene
+  | DecisionScene
+  | FeedbackScene
+  | QuizScene;
 
 export interface Lesson {
   id: string;

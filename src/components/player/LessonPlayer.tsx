@@ -7,6 +7,9 @@ import { useLessonMachine } from "@/lib/branching/useLessonMachine";
 import { useMediaClock } from "./useMediaClock";
 import { MediaStage } from "./MediaStage";
 import { DecisionPanel } from "./DecisionPanel";
+import { MediaPreloader } from "./MediaPreloader";
+import { QuizPanel } from "./QuizPanel";
+import { getScene } from "@/lib/branching/engine";
 import { ProgressRail, ProgressLabel, LessonStepList } from "./ProgressRail";
 import {
   ContinueBar,
@@ -24,10 +27,11 @@ import { BrandMark } from "@/components/ui/BrandMark";
  */
 
 const CONTINUE_LABEL: Record<string, string> = {
-  intro: "Review the evidence",
+  intro: "Open the file",
   evidence: "Continue",
   briefing: "Make the call",
-  continuation: "See the resolution",
+  continuation: "Continue",
+  resolution: "Continue",
 };
 
 export function LessonPlayer({
@@ -43,14 +47,33 @@ export function LessonPlayer({
   const { current, state } = machine;
   const mediaRef = useRef<HTMLMediaElement | null>(null);
 
+  // Retry re-entry: on the FIRST visit to a decision the question autoplays;
+  // when the learner returns after a wrong answer (there are recorded attempts)
+  // the question does NOT auto-replay — they choose again immediately, and can
+  // use the "Replay question" control if they want to hear it again. Every
+  // other scene autoplays as before.
+  const isDecisionRetry =
+    current.type === "decision" && machine.attemptsForCurrent.length > 0;
+  const autoplayScene = !isDecisionRetry;
+
   const clock = useMediaClock(current.media.durationSec, {
     sceneKey: current.id,
-    autoplay: true,
+    autoplay: autoplayScene,
     mediaRef,
-    hasRealMedia: !!current.media.videoUrl,
+    hasRealMedia: !!(current.media.videoUrl || current.media.audioUrl),
   });
 
   const ready = clock.ended;
+
+  // Preload all four feedback assets for the active decision so picking an
+  // option starts its feedback with no perceptible dead air.
+  const feedbackUrls =
+    current.type === "decision"
+      ? current.options.map((o) => {
+          const fb = getScene(lesson, o.feedbackSceneId);
+          return fb.media.videoUrl ?? fb.media.audioUrl;
+        })
+      : [];
 
   // Move focus into the interaction panel on each scene change so keyboard
   // users don't lose their place (focus never drops to <body>) and screen
@@ -67,12 +90,17 @@ export function LessonPlayer({
     ? `Lesson complete. ${lesson.title}.`
     : current.type === "decision"
       ? `Decision. ${current.prompt}`
-      : current.type === "feedback"
-        ? `${current.verdict === "correct" ? "Correct." : "Not quite."} ${current.headline ?? ""}. ${current.body ?? ""}`
-        : `${current.headline ?? current.label}. ${current.subhead ?? ""}`;
+      : current.type === "quiz"
+        ? `Graded completion quiz. ${current.passPct} percent required to pass.`
+        : current.type === "feedback"
+          ? `${current.verdict === "correct" ? "Correct." : "Not quite."} ${current.headline ?? current.consequence ?? ""}. ${current.body ?? ""}`
+          : `${current.headline ?? current.label}. ${current.subhead ?? ""}`;
 
   return (
     <div className="mx-auto flex min-h-[100dvh] w-full max-w-6xl flex-col px-4 pb-6 pt-4 sm:px-6 sm:pt-5 lg:h-[100dvh] lg:min-h-0 lg:overflow-hidden lg:pb-5">
+      {/* preload the active decision's four feedback clips (off-screen) */}
+      {feedbackUrls.length > 0 && <MediaPreloader urls={feedbackUrls} />}
+
       {/* one page heading + a persistent live region for scene announcements */}
       <h1 className="sr-only">
         {lesson.courseTitle}: {lesson.title}
@@ -83,7 +111,7 @@ export function LessonPlayer({
 
       {/* header */}
       <header className="mb-4 flex items-center justify-between gap-4">
-        <BrandMark size={embed ? "sm" : "md"} showWordmark={!embed} />
+        <BrandMark size={embed ? "sm" : "md"} />
         <div className="flex flex-col items-end gap-1.5">
           <div className="hidden sm:block">
             <ProgressLabel lesson={lesson} currentSceneId={current.id} />
@@ -122,7 +150,12 @@ export function LessonPlayer({
       <main className="flex flex-1 flex-col gap-4 lg:min-h-0 lg:flex-row lg:items-stretch lg:gap-5">
         {/* video stage */}
         <div className="overflow-hidden rounded-2xl border border-white/10 shadow-2xl shadow-black/40 ring-1 ring-black/20 lg:h-full lg:min-h-0 lg:flex-[1.55] lg:min-w-0">
-          <MediaStage scene={current} clock={clock} mediaRef={mediaRef} />
+          <MediaStage
+            scene={current}
+            clock={clock}
+            mediaRef={mediaRef}
+            autoPlay={autoplayScene}
+          />
         </div>
 
         {/* interaction area */}
@@ -144,7 +177,29 @@ export function LessonPlayer({
                   onRestart={machine.restart}
                 />
               ) : current.type === "decision" ? (
-                <DecisionPanel scene={current} onSelect={machine.select} />
+                <DecisionPanel
+                  scene={current}
+                  onSelect={machine.select}
+                  attempted={machine.attemptsForCurrent}
+                  onReplayQuestion={clock.replay}
+                />
+              ) : current.type === "quiz" ? (
+                <QuizPanel
+                  scene={current}
+                  onRestartLesson={machine.restart}
+                  onCompleted={(r) =>
+                    handlers?.onQuizCompleted?.({
+                      lessonId: lesson.id,
+                      sceneId: current.id,
+                      correct: r.correct,
+                      total: r.total,
+                      scorePct: r.scorePct,
+                      passPct: r.passPct,
+                      passed: r.passed,
+                      timestampMs: Date.now(),
+                    })
+                  }
+                />
               ) : current.type === "feedback" ? (
                 <FeedbackNote
                   scene={current}
@@ -160,7 +215,11 @@ export function LessonPlayer({
                     body={current.body}
                   />
                   <ContinueBar
-                    label={CONTINUE_LABEL[current.role] ?? "Continue"}
+                    label={
+                      current.continueLabel ??
+                      CONTINUE_LABEL[current.role] ??
+                      "Continue"
+                    }
                     onContinue={machine.next}
                     ready={ready}
                   />
@@ -171,7 +230,9 @@ export function LessonPlayer({
             {/* case-progress tracker (desktop) — a purposeful case map that
                 fills the panel's spare height instead of dead space. Hidden on
                 the decision scene, whose four options already fill the panel. */}
-            {!machine.isComplete && current.type !== "decision" && (
+            {!machine.isComplete &&
+              current.type !== "decision" &&
+              current.type !== "quiz" && (
               <LessonStepList
                 lesson={lesson}
                 currentSceneId={current.id}
@@ -185,7 +246,10 @@ export function LessonPlayer({
       {!embed && (
         <footer className="mt-5 flex items-center justify-between gap-3 border-t border-white/8 pt-3 font-sans text-[11px] text-ink-400">
           <span>Eximious Academy · Interactive Case Study</span>
-          <span className="hidden sm:block">Property Claims Investigation · Module 2</span>
+          <span className="hidden sm:block">
+            {lesson.courseTitle}
+            {lesson.meta?.module ? ` · ${lesson.meta.module}` : ""}
+          </span>
         </footer>
       )}
     </div>

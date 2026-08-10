@@ -29,6 +29,8 @@ export interface LessonMachine {
   /** Ordered decision scene ids, for numbering + progress. */
   decisionIds: SceneId[];
   isComplete: boolean;
+  /** Wrong options already tried at the current decision (for retry marking). */
+  attemptsForCurrent: OptionId[];
   select: (optionId: OptionId) => void;
   next: () => void;
   restart: () => void;
@@ -139,6 +141,7 @@ export function useLessonMachine(
     current,
     decisionIds,
     isComplete: state.status === "complete",
+    attemptsForCurrent: state.attempts[state.currentSceneId] ?? [],
     select,
     next,
     restart,

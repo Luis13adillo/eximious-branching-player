@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { BrandMark } from "@/components/ui/BrandMark";
 import { ArrowRightIcon, PlayIcon } from "@/components/ui/icons";
-import { DEMO_LESSON_SLUG, listLessons } from "@/lib/lessons";
+import { FEATURED_LESSON_SLUG, listLessons } from "@/lib/lessons";
 import { SceneBackdrop } from "@/components/media/SceneBackdrop";
 
 export default function Home() {
@@ -24,7 +24,7 @@ export default function Home() {
             <span className="cursor-default">Faculty</span>
             <span className="cursor-default">Accreditation</span>
             <Link
-              href={`/lesson/${DEMO_LESSON_SLUG}`}
+              href={`/lesson/${FEATURED_LESSON_SLUG}`}
               className="whitespace-nowrap rounded-full border border-gold-500/50 px-4 py-1.5 text-gold-200 transition-colors hover:bg-gold-500/10"
             >
               Enter a case
@@ -50,14 +50,14 @@ export default function Home() {
 
             <div className="mt-8 flex flex-wrap items-center gap-4">
               <Link
-                href={`/lesson/${DEMO_LESSON_SLUG}`}
+                href={`/lesson/${FEATURED_LESSON_SLUG}`}
                 className="group inline-flex items-center gap-2 rounded-full bg-gold-500 px-7 py-3.5 font-sans text-[15px] font-semibold text-navy-950 shadow-lg shadow-gold-900/40 transition-colors hover:bg-gold-400"
               >
                 Begin the case study
                 <ArrowRightIcon className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
               </Link>
               <span className="font-sans text-sm text-ink-400">
-                ~6 minutes · 1 decision point · 4 branches
+                ~8 minutes · 3 decision points · 12 feedback branches
               </span>
             </div>
           </div>

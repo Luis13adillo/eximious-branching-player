@@ -11,10 +11,10 @@ structured data, not in code. The same player runs one lesson or **267**, with
 one decision point or **three** — no code changes required. It deploys to Vercel
 and embeds in Thinkific (or any LMS) via an iframe-safe URL.
 
-> **Media note:** The demo ships with polished **placeholder** media (cinematic
-> vector scenes, a monogram AI-presenter, and fully-synced captions that carry
-> the narration). Final AI-avatar video (HeyGen), voiceover (ElevenLabs), or
-> hosted video (Mux) drop in via data with **no engine changes** — see
+> **Media note:** Every scene ships with a lip-synced speaking-avatar video and
+> a matching voiceover, with full-screen evidence scenes narrated over the
+> exhibit. All narration is captioned in sync. Media is attached per scene via
+> data, so higher-fidelity assets drop in with **no engine changes** — see
 > [Replacing the media](#replacing-the-media-heygen--elevenlabs--mux).
 
 ---
@@ -179,9 +179,9 @@ scene. Run it in a test or a build step to catch authoring mistakes early.
   (each with its own four feedback scenes rejoining a shared continuation). The
   player, engine, progress rail, and completion summary already handle any
   number of decisions — nothing is hard-coded to "one".
-- The demo intentionally ships **one** decision (per the brief) but the data
-  model, `decisionOrder()`, event `decisionIndex`, and the completion review are
-  all written for N decisions.
+- The featured lesson ships **three** decisions (four feedback branches each);
+  the data model, `decisionOrder()`, event `decisionIndex`, and the completion
+  review are all written for any number of decisions.
 
 ---
 
@@ -253,7 +253,7 @@ player**:
 />
 ```
 
-The demo wires a console-logging handler in
+The player wires a console-logging handler in
 [`src/components/player/PlayerClient.tsx`](src/components/player/PlayerClient.tsx)
 so you can watch the events fire in the browser console — replace it with a real
 sink.
@@ -342,7 +342,7 @@ src/
       useLessonMachine.ts      React binding over the engine
     lessons/
       index.ts                 lesson registry (scales to 267)
-      water-damage-claim.ts    the demo lesson (fully commented)
+      water-damage-claim.ts    a second lesson (fully commented)
   components/
     player/                    LessonPlayer, MediaStage, useMediaClock,
                                DecisionPanel, EvidenceStage, AvatarPresenter,
