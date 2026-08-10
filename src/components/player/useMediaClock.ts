@@ -37,6 +37,29 @@ export interface MediaClock {
 const nowMs = () =>
   typeof performance !== "undefined" ? performance.now() : Date.now();
 
+/**
+ * Hard guarantee that only ONE media source is ever audible: before the active
+ * scene's element plays, pause every other <video>/<audio> in the document
+ * (e.g. a previous scene's element mid-teardown, or a stray). Combined with the
+ * pause-on-leave cleanup — which also stops elements already detached from the
+ * DOM — this makes overlapping audio impossible across scene changes, retries,
+ * and replays. Preload elements are already paused, so this is a no-op for them.
+ */
+function pauseOtherMedia(keep: HTMLMediaElement | null | undefined) {
+  if (typeof document === "undefined") return;
+  for (const m of Array.from(
+    document.querySelectorAll<HTMLMediaElement>("video, audio"),
+  )) {
+    if (m !== keep && !m.paused) {
+      try {
+        m.pause();
+      } catch {
+        /* ignore */
+      }
+    }
+  }
+}
+
 export function useMediaClock(
   durationSec: number,
   opts: {
@@ -88,7 +111,10 @@ export function useMediaClock(
         // every following scene keeps playing the voiceover — their click to
         // continue is the gesture that lets sound autoplay.
         el.muted = mutedRef.current;
-        if (autoplay) void el.play().catch(() => setPlaying(false));
+        if (autoplay) {
+          pauseOtherMedia(el); // never two sources at once
+          void el.play().catch(() => setPlaying(false));
+        }
         // Retry re-entry: don't let the reused <video> element start on its own.
         else el.pause();
       } catch {
@@ -204,7 +230,9 @@ export function useMediaClock(
     setEnded(false);
     endedFiredRef.current = false;
     setPlaying(true);
-    mediaRef?.current?.play().catch(() => setPlaying(false));
+    const el = mediaRef?.current;
+    pauseOtherMedia(el); // never two sources at once (covers manual Replay too)
+    el?.play().catch(() => setPlaying(false));
   }, [mediaRef]);
 
   const pause = useCallback(() => {
