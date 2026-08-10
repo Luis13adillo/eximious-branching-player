@@ -66,7 +66,8 @@ export const waterDamageClaim: Lesson = {
         // (KIE, no HeyGen). Her mouth is driven by the audio, which is baked in.
         // Swap in a HeyGen clip later and nothing else changes.
         provider: "file",
-        videoUrl: "/media/intro.mp4",
+        // Versioned filename so a new clip is never served from a stale cache.
+        videoUrl: "/media/intro-shimmer-v1.mp4",
         posterUrl: "/media/presenter-diane.jpg",
         placeholderScene: "claim-desk",
         durationSec: 10.44,
