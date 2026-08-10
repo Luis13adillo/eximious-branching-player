@@ -9,7 +9,7 @@
     "lint": "eslint",
     "test": "vitest run",
     "remotion": "remotion studio remotion/index.ts --public-dir=public",
-    "render:intro": "remotion render remotion/index.ts IntroSegment public/media/intro.mp4 --public-dir=public --crf=26"
+    "render:intro": "remotion render remotion/index.ts IntroSegment public/media/intro-remotion.mp4 --public-dir=public --crf=26"
   },
   "dependencies": {
     "next": "16.3.0",

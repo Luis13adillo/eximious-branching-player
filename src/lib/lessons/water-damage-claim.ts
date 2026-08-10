@@ -62,23 +62,21 @@ export const waterDamageClaim: Lesson = {
       subhead:
         "A residential water-damage claim where the right answer depends entirely on the order you work it.",
       media: {
-        // Real rendered video (Remotion) — proves the swap path. Replace with a
-        // HeyGen/Mux URL later and nothing else changes. posterUrl shows while it
-        // loads and is the fallback if the file is absent.
+        // Real lip-synced avatar clip: presenter still + voiceover → InfiniTalk
+        // (KIE, no HeyGen). Her mouth is driven by the audio, which is baked in.
+        // Swap in a HeyGen clip later and nothing else changes.
         provider: "file",
         videoUrl: "/media/intro.mp4",
         posterUrl: "/media/presenter-diane.jpg",
         placeholderScene: "claim-desk",
-        durationSec: 33,
-        loop: true,
+        durationSec: 10.44,
+        loop: false,
         hasAudio: true,
-        // Caption cue times match the baked voiceover (public/media/intro-vo.mp3).
+        // Caption cues approximate the ~10.4s narration in the clip.
         captions: [
-          { start: 0, end: 4.42, text: "Welcome to the Eximious Academy claims investigation series." },
-          { start: 4.82, end: 10.72, text: "I'm Diane Marchetti — today we're working a residential water-damage claim." },
-          { start: 11.12, end: 21.68, text: "Case file 2043-RW: a finished basement, a significant loss, and a policy with more than one clause in play." },
-          { start: 22.08, end: 28.68, text: "Your job isn't to rush to yes or no. It's to reach the right determination, in the right order." },
-          { start: 29.08, end: 32.3, text: "Review the evidence with me. Then you'll make the call." },
+          { start: 0, end: 3.6, text: "Welcome to Eximious Academy — I'm Diane Marchetti." },
+          { start: 3.6, end: 7.2, text: "Today, a residential water-damage claim: case file 2043-RW." },
+          { start: 7.2, end: 10.44, text: "Review the evidence with me, then make the call." },
         ],
       },
       next: "loss-evidence",
