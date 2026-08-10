@@ -47,19 +47,20 @@ export function MediaStage({
   focusWithinRef.current = focusWithin;
   const hideTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  const hasVideo = !!scene.media.videoUrl;
-  // Audio-only scenes (voiceover over a still/exhibit): a hidden <audio> element
-  // drives the same clock as a real <video> would, so captions, controls, and
-  // "tap for sound" all work with no visual change. This is how every non-avatar
-  // scene (the assignment, feedback branches, the quiz) gets the shimmer voice.
-  const hasAudioTrack = !hasVideo && !!scene.media.audioUrl;
+  // ONE persistent media element for the whole lesson. It is ALWAYS a <video>
+  // (a <video> plays audio-only tracks too), and the SAME node is reused for
+  // every scene — only its `src` changes. Never swapping or recreating the
+  // element means the browser's "user unlocked sound" gesture is never lost, so
+  // the learner taps "sound on" once and it sticks for the rest of the lesson.
+  // (Element recreation on every scene was the cause of the repeated
+  // tap-for-sound, especially on mobile Safari.)
+  const mediaUrl = scene.media.videoUrl ?? scene.media.audioUrl;
+  const showVideo = !!scene.media.videoUrl; // has real visual footage to show
   const isAvatar = scene.layout === "avatar" && !!scene.presenter;
   const hasEvidence = !!scene.evidence && scene.evidence.length > 0;
-  // A cinematic presenter still (placeholder for the AI-avatar video) fills the
-  // stage when a poster is provided on an avatar scene. This is the "paused
-  // HeyGen frame" — swapping in real avatar video only means setting videoUrl.
+  // A cinematic presenter still, only when an avatar scene has no real video.
   const presenterStill =
-    !hasVideo &&
+    !showVideo &&
     isAvatar &&
     scene.type !== "feedback" &&
     !!scene.media.posterUrl;
@@ -162,13 +163,22 @@ export function MediaStage({
           : "h-[46vh] min-h-[300px] sm:h-[52vh] lg:h-full lg:min-h-0"
       }`}
     >
-      {/* backdrop / video */}
-      {hasVideo ? (
+      {/* Persistent media element — the SAME <video> node for every scene (only
+          its `src` changes), so a sound-unlock gesture is never lost to element
+          recreation. It shows real footage when present, and plays the
+          audio-only voiceover otherwise (kept invisible behind the scene's
+          visual layer below). `key` pins its identity across renders. */}
+      {mediaUrl && (
         <video
+          key="stage-media"
           ref={mediaRef as React.RefObject<HTMLVideoElement>}
-          className="absolute inset-0 h-full w-full object-cover object-[58%_center] lg:object-[70%_center]"
-          src={scene.media.videoUrl}
-          poster={scene.media.posterUrl}
+          className={
+            showVideo
+              ? "absolute inset-0 h-full w-full object-cover object-[58%_center] lg:object-[70%_center]"
+              : "pointer-events-none absolute inset-0 h-full w-full opacity-0"
+          }
+          src={mediaUrl}
+          poster={showVideo ? scene.media.posterUrl : undefined}
           playsInline
           muted
           autoPlay={autoPlay}
@@ -183,60 +193,49 @@ export function MediaStage({
             />
           )}
         </video>
-      ) : presenterStill ? (
-        <div className="absolute inset-0">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src={scene.media.posterUrl}
-            alt=""
-            className="absolute inset-0 h-full w-full object-cover object-[58%_center] lg:object-[70%_center]"
-            style={{
-              // Always-on, slow ambient push so the stage "breathes" like footage
-              // even before real avatar video is dropped in (disabled for
-              // prefers-reduced-motion via globals.css).
-              animation: "exKenBurns 26s var(--ease-cinematic) alternate infinite",
-            }}
-          />
-          {/* legibility scrims for the identity tag (left) and captions (bottom) */}
-          <div
-            className="absolute inset-0"
-            style={{
-              background:
-                "linear-gradient(90deg, rgba(5,15,31,0.78) 0%, rgba(5,15,31,0.35) 34%, rgba(5,15,31,0) 62%)",
-            }}
-          />
-          <div
-            className="absolute inset-x-0 bottom-0 h-2/5"
-            style={{
-              background:
-                "linear-gradient(0deg, rgba(5,15,31,0.72), rgba(5,15,31,0))",
-            }}
-          />
-        </div>
-      ) : (
-        <SceneBackdrop
-          scene={scene.media.placeholderScene ?? "claim-desk"}
-          animate={clock.playing}
-        />
       )}
 
-      {/* audio-only scenes: hidden voiceover element bound to the clock */}
-      {hasAudioTrack && (
-        <audio
-          ref={mediaRef as React.RefObject<HTMLAudioElement>}
-          src={scene.media.audioUrl}
-          autoPlay={autoPlay}
-          muted
-          className="hidden"
-        />
-      )}
+      {/* visual layer for scenes without real footage (audio-only, e.g. the assignment) */}
+      {!showVideo &&
+        (presenterStill ? (
+          <div className="absolute inset-0">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={scene.media.posterUrl}
+              alt=""
+              className="absolute inset-0 h-full w-full object-cover object-[58%_center] lg:object-[70%_center]"
+              style={{
+                animation: "exKenBurns 26s var(--ease-cinematic) alternate infinite",
+              }}
+            />
+            <div
+              className="absolute inset-0"
+              style={{
+                background:
+                  "linear-gradient(90deg, rgba(5,15,31,0.78) 0%, rgba(5,15,31,0.35) 34%, rgba(5,15,31,0) 62%)",
+              }}
+            />
+            <div
+              className="absolute inset-x-0 bottom-0 h-2/5"
+              style={{
+                background:
+                  "linear-gradient(0deg, rgba(5,15,31,0.72), rgba(5,15,31,0))",
+              }}
+            />
+          </div>
+        ) : (
+          <SceneBackdrop
+            scene={scene.media.placeholderScene ?? "claim-desk"}
+            animate={clock.playing}
+          />
+        ))}
 
-      {/* content layer (placeholder only): consequence beat > exhibits > presenter */}
-      {!hasVideo && scene.type === "feedback" ? (
+      {/* content layer (no real video): consequence beat > exhibits > presenter */}
+      {!showVideo && scene.type === "feedback" ? (
         <ConsequenceStage scene={scene} />
-      ) : !hasVideo && hasEvidence ? (
+      ) : !showVideo && hasEvidence ? (
         <EvidenceStage evidence={scene.evidence!} sceneKey={scene.id} />
-      ) : !hasVideo && isAvatar && !presenterStill ? (
+      ) : !showVideo && isAvatar && !presenterStill ? (
         <AvatarPresenter
           presenter={scene.presenter!}
           speaking={clock.playing && !clock.ended}
