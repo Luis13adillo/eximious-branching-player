@@ -39,6 +39,12 @@ yarn-error.log*
 # local tooling
 /.claude/
 
+# thinkific static export — build artifacts (regenerable from export-thinkific/)
+/export-thinkific/node_modules
+/export-thinkific/dist
+/eximious-claims-investigation-thinkific-html5/
+/eximious-claims-investigation-thinkific-html5.zip
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts

@@ -1,0 +1,23 @@
+/*
+  Export stylesheet for the Thinkific static package.
+  ------------------------------------------------------------------
+  Reuses the EXACT approved theme by importing the app's globals.css
+  (Tailwind v4 import + @theme design tokens + keyframes + base styles).
+  We add:
+   - @source, so Tailwind scans the shared ../../src components and
+     generates every utility class they use (the app source lives
+     outside this folder, so it must be declared explicitly).
+   - the two font-family CSS variables that next/font sets in the Next
+     app (--font-fraunces / --font-inter). The @theme in globals.css
+     references these, so they must exist at runtime. Here they point
+     at the self-hosted @fontsource variable fonts imported in main.tsx
+     (no external/network font requests).
+*/
+@import "../../src/app/globals.css";
+
+@source "../../src";
+
+:root {
+  --font-fraunces: "Fraunces Variable";
+  --font-inter: "Inter Variable";
+}
