@@ -21,6 +21,14 @@ function initials(name: string) {
 }
 
 /**
+ * Contractual lower-third title, fixed at the TEMPLATE level so every presenter
+ * in every lesson reads exactly "Course Presenter" — never an instructor title
+ * or any implied professional credential (Agreement §1.4). The per-scene
+ * presenter name still shows; only this title line is locked here.
+ */
+const LOWER_THIRD_TITLE = "Course Presenter";
+
+/**
  * MediaStage — the 16:9 "player rectangle".
  * Renders real <video> when a scene has a videoUrl, otherwise a cinematic
  * placeholder (backdrop + presenter or exhibits). Owns fullscreen, click-to-
@@ -263,7 +271,7 @@ export function MediaStage({
               {scene.presenter.name}
             </span>
             <span className="block font-sans text-[9px] uppercase tracking-[0.16em] text-gold-300">
-              {scene.presenter.role}
+              {LOWER_THIRD_TITLE}
             </span>
           </span>
         </div>

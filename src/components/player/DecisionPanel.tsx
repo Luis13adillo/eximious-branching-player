@@ -1,8 +1,11 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import type { DecisionScene, OptionId } from "@/lib/branching/types";
+import { orderOptionsForAttempt } from "@/lib/branching/shuffle";
 import { ReplayIcon, XIcon } from "@/components/ui/icons";
+
+const POSITION_LETTERS = ["A", "B", "C", "D"] as const;
 
 /**
  * DecisionPanel — the A/B/C/D choice. Options are buttons (each routes the
@@ -19,6 +22,7 @@ export function DecisionPanel({
   onSelect,
   attempted = [],
   onReplayQuestion,
+  shuffleOnRetry = true,
 }: {
   scene: DecisionScene;
   onSelect: (id: OptionId) => void;
@@ -26,9 +30,23 @@ export function DecisionPanel({
   attempted?: OptionId[];
   /** Manually replay the question video/narration (used after a retry re-entry). */
   onReplayQuestion?: () => void;
+  /** Reshuffle answer order after a wrong answer (template default: on). */
+  shuffleOnRetry?: boolean;
 }) {
   const [chosen, setChosen] = useState<OptionId | null>(null);
   const retrying = attempted.length > 0;
+
+  // DISPLAY order only. First visit (no attempts) = lesson-defined order; each
+  // retry reshuffles deterministically. The option OBJECTS are untouched, so
+  // correctness, feedback routing, analytics, and the "tried" marking all stay
+  // bound to the option's identity (its id), never to its screen position.
+  const displayOptions = useMemo(
+    () =>
+      shuffleOnRetry
+        ? orderOptionsForAttempt(scene.options, scene.id, attempted.length)
+        : scene.options.slice(),
+    [scene.id, scene.options, attempted.length, shuffleOnRetry],
+  );
 
   const choose = (id: OptionId) => {
     if (chosen || attempted.includes(id)) return;
@@ -41,14 +59,17 @@ export function DecisionPanel({
   // reset the local acknowledgement whenever the decision (re)mounts
   useEffect(() => setChosen(null), [scene.id]);
 
-  // keyboard: A / B / C / D (skips options already tried)
+  // keyboard: A / B / C / D map to DISPLAYED position (so the letters the
+  // learner sees always match the keys), then resolve to that option's identity
+  // (skips options already tried).
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       const tag = (e.target as HTMLElement)?.tagName;
       if (tag === "INPUT" || tag === "TEXTAREA") return;
       const k = e.key.toUpperCase();
-      if (["A", "B", "C", "D"].includes(k)) {
-        const opt = scene.options.find((o) => o.id === (k as OptionId));
+      const idx = POSITION_LETTERS.indexOf(k as (typeof POSITION_LETTERS)[number]);
+      if (idx >= 0 && idx < displayOptions.length) {
+        const opt = displayOptions[idx];
         if (opt && !attempted.includes(opt.id)) {
           e.preventDefault();
           choose(opt.id);
@@ -58,7 +79,7 @@ export function DecisionPanel({
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [scene.id, chosen, attempted]);
+  }, [scene.id, chosen, attempted, displayOptions]);
 
   return (
     <div className="ex-animate-drift">
@@ -96,14 +117,18 @@ export function DecisionPanel({
         aria-label="Choose your answer"
         className="grid gap-2.5 sm:grid-cols-2 sm:gap-3"
       >
-        {scene.options.map((o) => {
+        {displayOptions.map((o, idx) => {
           const isChosen = chosen === o.id;
           const isTried = attempted.includes(o.id);
           const dim = (chosen && !isChosen) || isTried;
+          const letter = POSITION_LETTERS[idx];
           return (
             <button
               key={o.id}
               type="button"
+              // Stable identity handle — the option's own id, independent of its
+              // shuffled screen position (used by state, analytics, and tests).
+              data-option-id={o.id}
               disabled={!!chosen || isTried}
               onClick={() => choose(o.id)}
               aria-label={isTried ? `${o.label} — already tried, incorrect` : o.label}
@@ -124,7 +149,7 @@ export function DecisionPanel({
                       : "bg-white/8 text-gold-300 group-hover/opt:bg-gold-500 group-hover/opt:text-navy-950"
                 }`}
               >
-                {isTried ? <XIcon className="h-4 w-4" /> : o.id}
+                {isTried ? <XIcon className="h-4 w-4" /> : letter}
               </span>
               <span className="min-w-0">
                 <span className="block font-sans text-[15px] font-medium leading-snug text-ink-100">

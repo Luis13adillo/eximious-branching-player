@@ -222,6 +222,31 @@ export type Scene =
   | FeedbackScene
   | QuizScene;
 
+/**
+ * Configurable "are you still there?" presence check. This is a TEMPLATE-level
+ * behavior: the timing lives here in config (a default in the player, optionally
+ * overridden per deployment), never hard-coded scene-by-scene into a lesson.
+ * Deliberately simple — a single acknowledgement, no biometrics/login/identity
+ * services.
+ */
+export interface IdentityCheckConfig {
+  /** Master switch. Default: on. */
+  enabled?: boolean;
+  /**
+   * Interval mode: prompt after this many scene entries (counted across the
+   * whole lesson, decisions included in the count but never interrupted).
+   */
+  everyScenes?: number;
+  /**
+   * Checkpoint mode: prompt when the learner enters any of these scene ids.
+   * When provided, this takes precedence over `everyScenes`.
+   */
+  checkpoints?: SceneId[];
+  title?: string;
+  body?: string;
+  acknowledgeLabel?: string;
+}
+
 export interface Lesson {
   id: string;
   slug: string;

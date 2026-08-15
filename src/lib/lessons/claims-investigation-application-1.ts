@@ -22,7 +22,7 @@ import type { Lesson } from "@/lib/branching/types";
 
 const INSTRUCTOR = {
   name: "Diane Marchetti",
-  role: "Senior Claims Instructor",
+  role: "Course Presenter",
 };
 
 const PRESENTER_POSTER = "/media/presenter-diane.jpg";

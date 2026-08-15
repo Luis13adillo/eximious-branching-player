@@ -1,12 +1,14 @@
 "use client";
 
-import { useEffect, useRef } from "react";
-import type { Lesson } from "@/lib/branching/types";
+import { useEffect, useRef, useState } from "react";
+import type { Lesson, IdentityCheckConfig } from "@/lib/branching/types";
 import type { PlayerEventHandlers } from "@/lib/branching/events";
 import { useLessonMachine } from "@/lib/branching/useLessonMachine";
 import { useMediaClock } from "./useMediaClock";
 import { MediaStage } from "./MediaStage";
 import { DecisionPanel } from "./DecisionPanel";
+import { IdentityCheck } from "./IdentityCheck";
+import { AiDisclosure } from "./AiDisclosure";
 import { MediaPreloader } from "./MediaPreloader";
 import { QuizPanel } from "./QuizPanel";
 import { getScene } from "@/lib/branching/engine";
@@ -34,18 +36,41 @@ const CONTINUE_LABEL: Record<string, string> = {
   resolution: "Continue",
 };
 
+/**
+ * Template-level default for the presence check. Configurable per deployment by
+ * passing `identityCheck` to <LessonPlayer>; the timing lives here, never
+ * hard-coded into individual lessons. `enabled: false` turns it off entirely.
+ */
+const DEFAULT_IDENTITY_CHECK: Required<
+  Pick<IdentityCheckConfig, "enabled" | "everyScenes" | "title" | "body" | "acknowledgeLabel">
+> = {
+  enabled: true,
+  everyScenes: 6,
+  title: "Are you still there?",
+  body: "To confirm you're still completing this lesson, please acknowledge you're present. Your place is saved and the lesson will resume where it paused.",
+  acknowledgeLabel: "I'm still here — continue",
+};
+
 export function LessonPlayer({
   lesson,
   handlers,
   embed = false,
+  identityCheck,
+  shuffleOptionsOnRetry = true,
 }: {
   lesson: Lesson;
   handlers?: PlayerEventHandlers;
   embed?: boolean;
+  /** Override the presence-check timing/copy (falls back to template defaults). */
+  identityCheck?: IdentityCheckConfig;
+  /** Reshuffle answer order after a wrong answer (template default: on). */
+  shuffleOptionsOnRetry?: boolean;
 }) {
   const machine = useLessonMachine(lesson, handlers);
   const { current, state } = machine;
   const mediaRef = useRef<HTMLMediaElement | null>(null);
+
+  const idCfg = { ...DEFAULT_IDENTITY_CHECK, ...identityCheck };
 
   // Retry re-entry: on the FIRST visit to a decision the question autoplays;
   // when the learner returns after a wrong answer (there are recorded attempts)
@@ -75,11 +100,62 @@ export function LessonPlayer({
         })
       : [];
 
+  // ---- Presence check (identity acknowledgment) --------------------------
+  // Counts scene entries and, at the configured interval (or on a configured
+  // checkpoint scene), pauses media and blocks progress until the learner
+  // acknowledges they're present. Decisions/quiz are never interrupted in
+  // interval mode, so the prompt can't collide with a choice in progress.
+  const [identityOpen, setIdentityOpen] = useState(false);
+  const identityOpenRef = useRef(false);
+  identityOpenRef.current = identityOpen;
+  const sceneCountRef = useRef(0);
+  const firstSceneRef = useRef(true);
+
+  useEffect(() => {
+    if (!idCfg.enabled || machine.isComplete) return;
+    // Don't fire on the very first scene the lesson opens on.
+    if (firstSceneRef.current) {
+      firstSceneRef.current = false;
+      return;
+    }
+    const usingCheckpoints = !!(idCfg.checkpoints && idCfg.checkpoints.length > 0);
+    let shouldPrompt = false;
+    if (usingCheckpoints) {
+      shouldPrompt = idCfg.checkpoints!.includes(current.id);
+    } else {
+      sceneCountRef.current += 1;
+      const interruptible =
+        current.type === "narrative" || current.type === "feedback";
+      if (
+        sceneCountRef.current >=
+          (idCfg.everyScenes ?? DEFAULT_IDENTITY_CHECK.everyScenes) &&
+        interruptible
+      ) {
+        shouldPrompt = true;
+        sceneCountRef.current = 0;
+      }
+    }
+    if (shouldPrompt) {
+      identityOpenRef.current = true; // set now so the focus effect below skips
+      setIdentityOpen(true);
+      clock.pause(); // pause cleanly while the prompt is up (one source, stopped)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [current.id]);
+
+  const acknowledgeIdentity = () => {
+    identityOpenRef.current = false;
+    setIdentityOpen(false);
+    clock.play(); // resume the same scene (acknowledge is the user gesture)
+  };
+
   // Move focus into the interaction panel on each scene change so keyboard
   // users don't lose their place (focus never drops to <body>) and screen
-  // readers land on the new content.
+  // readers land on the new content — but not while the presence prompt owns
+  // focus.
   const panelRef = useRef<HTMLElement>(null);
   useEffect(() => {
+    if (identityOpenRef.current) return;
     panelRef.current?.focus({ preventScroll: true });
   }, [current.id]);
 
@@ -149,8 +225,10 @@ export function LessonPlayer({
           visible without scrolling. Mobile/tablet: stacked. */}
       <main className="flex flex-1 flex-col gap-4 lg:min-h-0 lg:flex-row lg:items-stretch lg:gap-5">
         {/* video stage */}
-        <div className="overflow-hidden rounded-2xl border border-white/10 shadow-2xl shadow-black/40 ring-1 ring-black/20 lg:h-full lg:min-h-0 lg:flex-[1.55] lg:min-w-0">
+        <div className="relative overflow-hidden rounded-2xl border border-white/10 shadow-2xl shadow-black/40 ring-1 ring-black/20 lg:h-full lg:min-h-0 lg:flex-[1.55] lg:min-w-0">
           <MediaStage scene={current} clock={clock} mediaRef={mediaRef} />
+          {/* Contract-required AI disclosure — briefly at the opening, then fades. */}
+          <AiDisclosure />
         </div>
 
         {/* interaction area */}
@@ -177,6 +255,7 @@ export function LessonPlayer({
                   onSelect={machine.select}
                   attempted={machine.attemptsForCurrent}
                   onReplayQuestion={clock.replay}
+                  shuffleOnRetry={shuffleOptionsOnRetry}
                 />
               ) : current.type === "quiz" ? (
                 <QuizPanel
@@ -246,6 +325,16 @@ export function LessonPlayer({
             {lesson.meta?.module ? ` · ${lesson.meta.module}` : ""}
           </span>
         </footer>
+      )}
+
+      {/* Presence check — overlays everything, pauses media, resumes on ack. */}
+      {identityOpen && (
+        <IdentityCheck
+          title={idCfg.title}
+          body={idCfg.body}
+          acknowledgeLabel={idCfg.acknowledgeLabel}
+          onAcknowledge={acknowledgeIdentity}
+        />
       )}
     </div>
   );
