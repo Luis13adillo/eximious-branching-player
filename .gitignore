@@ -48,3 +48,6 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Eximious authoritative source docs (executed agreement + confidential scripts) — local reference only, never pushed
+docs/source/*.pdf
