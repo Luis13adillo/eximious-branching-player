@@ -7,12 +7,9 @@
 */
 import { createRoot } from "react-dom/client";
 
-// Self-hosted variable fonts (inlined into index.html at build time — no
-// external font requests, matching the Next app's next/font behavior).
-import "@fontsource-variable/fraunces";
-import "@fontsource-variable/inter";
-
-// Approved theme + Tailwind utilities for the shared components.
+// Approved theme + Tailwind utilities for the shared components. Typography is
+// the authoritative Georgia (headings) / Segoe UI (body) system-font pairing
+// defined in globals.css — no web fonts to embed.
 import "./styles.css";
 
 // The approved player boundary and the approved lesson data, reused verbatim.

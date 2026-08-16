@@ -23,7 +23,7 @@ _Last updated from the authoritative sources below. Where this document and the 
 
 **Also CLIENT APPROVED / LOCKED (this round):**
 - **Lower‑third = "Course Presenter"** (implemented; no instructor title / implied credential).
-- **AI disclosure — approved wording (unchanged).** Shown **ONCE on the opening segment only**: small‑type, subtle/secondary, **bottom‑left of the video just above the controls**, ~2–3s then fades and unmounts. It must **not** reappear when later segments/scenes load, and must not compete with Diane or the "Course Presenter" lower‑third. Wording is fixed — do not alter.
+- **AI disclosure — CLIENT APPROVED / LOCKED** (approved wording, unchanged; no longer pending, not a release blocker). Behavior: **small type**, visually **secondary**, **bottom‑left of the video**, sits **immediately above the caption band** (just above the controls), **appears once at the beginning of the application video only**, **does not reappear** on later segments/scenes, **briefly appears then fades / unmounts** (~2–3s), and must **not overlap the captions or the "Course Presenter" lower‑third** (nor compete with Diane). Use the exact currently approved wording already implemented — do not reconstruct or paraphrase it.
 - **12‑step case‑progress rail — approved.**
 - **Captions — approved and working** (toggleable).
 
@@ -35,15 +35,33 @@ _Last updated from the authoritative sources below. Where this document and the 
 
 ## 0. Authoritative sources (read for this analysis)
 
-| # | Document | Path | Status |
+| # | Document | Local path (git‑ignored) | Notes |
 |---|---|---|---|
-| A | **Independent Contractor Agreement — Video Production (FULLY EXECUTED, Aug 11 2026)** | `~/Downloads/2026-08-11 - Independent Contractor Agreement - Video Production - FULLY EXECUTED.pdf` | Read (7 pp). Signed by Roger M. Naut (Founder) & Luis Miguel Badillo. |
-| B | **Eximious Academy — Video Production Spec** (supplementary to A; supplies naming §2.4 + presenter‑to‑track §1.3) | `~/Downloads/Eximious Academy - Video Production Spec.pdf` | Read (5 pp). |
-| C | **Eximious Academy — Pilot Scripts (3 Videos)** | `~/Downloads/Eximious Academy - Pilot Scripts (3 Videos).pdf` | Read (16 pp). |
+| A | **Independent Contractor Agreement — Video Production (FULLY EXECUTED, Aug 11 2026)** — contractual authority | `docs/source/executed-agreement.pdf` | Signed by Roger M. Naut (Founder) & Luis Miguel Badillo. |
+| B | **Eximious Academy — Video Production Spec** — production authority (supplements A: naming §2.4, presenter‑to‑track §1.3) | `docs/source/video-production-spec.pdf` | |
+| C | **Eximious Academy — Pilot Scripts (3 Videos)** — pilot content authority | `docs/source/pilot-scripts.pdf` | Delaney / Delacroix / Prieto. |
+| D | **Eximious Academy — Corporate Brand Guidelines** — corporate visual authority | `docs/source/eximious-corporate-brand-guidelines.pdf` | 19 pp. Logo, corporate palette, typography, institutional identity/imagery. |
+| E | **Eximious Academy — Interactive Video Production Guidelines** — video‑production visual/system authority (inherits D) | `docs/source/eximious-video-production-guidelines.pdf` | 16 pp. Presenter treatment, player/interface, color roles, decisions, evidence/exhibits, feedback, progress, lower‑third, AI disclosure, captions, identity acknowledgment, responsive, media standards, 267‑catalog consistency. |
+| — | This consolidated spec | `docs/EXIMIOUS_PRODUCTION_SPEC.md` | Consolidated implementation requirements + later client‑approved decisions. |
 | — | Current repository | `~/Desktop/eximious-branching-player` | Audited. |
-| — | Brand kit (logos SVG/PNG, favicon, brand guidelines, **video production brand sheet**) | Referenced in B §8 as "supplied with this document" | **Not located on disk** — brand sheet would confirm fonts/palette. Flagged. |
 
-These four override prior chat history.
+> All five source PDFs (A–E) are stored **local‑only and git‑ignored** (`docs/source/*.pdf`) — they contain the signed agreement (signatures/PII) and confidential brand/scripts. Never commit or push them. (Filename note: the supplied brand files were named `EximiousBrandGuidelines.pdf` = the **corporate** doc and `EximiousAcademyBrandguidelines.pdf` = the **video‑production** doc — i.e. swapped vs their names; registered here by **content**.)
+
+**Source precedence** (if sources conflict, FLAG the conflict — do not silently reconcile):
+1. **Executed Agreement (A)** — contractual authority.
+2. **Video Production Spec (B)** — production authority.
+3. **Pilot Scripts (C)** — pilot content authority.
+4. **Corporate Brand Guidelines (D)** — corporate visual authority (logo, palette, typography, identity).
+5. **Interactive Video Production Guidelines (E)** — video‑production visual/system authority; inherits D; governs presenters, player UI, interaction states, media treatment, responsive behavior, and consistency across all 267 videos.
+6. **This consolidated spec** — consolidated implementation requirements + later client‑approved decisions.
+
+**Brand‑authority reconciliation (this round):**
+- **Palette — consistent, no conflict.** Corporate palette (navy `#0B1F3A`, deep navy `#07172A`, blue `#1D5FA8`, gold `#C7A254`, sky `#7BAFD4`, off‑white `#F4F7FA`) matches the locked player color roles.
+- **Typography — RESOLVED.** Corporate (D) and Spec (B) both specify **Georgia (headings) / Segoe UI (body)**; the player now implements it (Fraunces/Inter removed from the app and the export). See §3 C‑2.
+- **Video Production Guidelines (E) — fully consistent** with the locked decisions (dark player; gold = action/progress/current‑step/scrubber; sky = decisions/evidence/feedback; "COURSE PRESENTER"; 3×4 + individual feedback + reshuffle‑on‑retry + gated advance; 1 identity acknowledgment; toggleable captions; four‑icon rejoin; A≠B evidence comparison; 267 / 1080p / self‑contained HTML5).
+- **One superseded item (not a conflict):** the registered Video Production Guidelines PDF (E) still marks the **AI disclosure "PENDING CLIENT APPROVAL"** (p8) and lists "Approved disclosure" as a release input (p16). Roger has since **APPROVED** it and the exact wording is already implemented, so this consolidated spec records the AI disclosure as **CLIENT APPROVED / LOCKED** and **no longer a release blocker**. The PDF is a fixed source and cannot be edited; the correction lives here.
+
+These sources override prior chat history.
 
 ---
 
@@ -70,7 +88,7 @@ Pilot **content** (from C): #1 Marcus **Delaney** — burned Ford F‑250 theft/
 
 **On‑screen identification (A §1.4, B §6).** Every video: (a) lower‑third reading **"Course Presenter"**; (b) small‑type AI line at the opening that fades: _"Your presenter is AI‑generated. All course content is authored by Roger M. Naut, drawn from 35 years in insurance claims investigation and adjusting."_ Both built into the locked template.
 
-**Output & brand.** **1080p (1920×1080) minimum** (A §1.4.1, B §6). Brand navy `#0B1F3A`, gold `#C7A254`, logo (A §1.5). **Visual look — LOCKED to the DARK direction** (see the ★ LOCKED section above; supersedes Spec §7's "lighter look"): keep Diane's **original dark office** and the **dark interface / dark panels**. Sky `#7BAFD4` is a **secondary accent only** (decision states, evidence/exhibit tabs, right/wrong feedback, comparable secondary states); gold `#C7A254` stays **primary** (actions / CTA / progress indicators); off‑white `#F4F7FA` is **text only, never a background**. Full palette available for accents: navy `#0B1F3A` · navy‑deep `#07172A` · blue `#1D5FA8` · gold `#C7A254` · sky `#7BAFD4` · off‑white `#F4F7FA`. Fonts per Spec §7 = **Georgia (headings) / Segoe UI (body)** — still to reconcile with the current Fraunces/Inter (§3 C‑2). The Spec §7 "one still of Diane on a lighter backdrop" gate is now **resolved in favor of the dark original**; the brighter‑office candidate is **not used**.
+**Output & brand.** **1080p (1920×1080) minimum** (A §1.4.1, B §6). Brand navy `#0B1F3A`, gold `#C7A254`, logo (A §1.5). **Visual look — LOCKED to the DARK direction** (see the ★ LOCKED section above; supersedes Spec §7's "lighter look"): keep Diane's **original dark office** and the **dark interface / dark panels**. Sky `#7BAFD4` is a **secondary accent only** (decision states, evidence/exhibit tabs, right/wrong feedback, comparable secondary states); gold `#C7A254` stays **primary** (actions / CTA / progress indicators); off‑white `#F4F7FA` is **text only, never a background**. Full palette available for accents: navy `#0B1F3A` · navy‑deep `#07172A` · blue `#1D5FA8` · gold `#C7A254` · sky `#7BAFD4` · off‑white `#F4F7FA` (sky/blue tokens now in the theme; sky applied to decision states + evidence tabs). Fonts = **Georgia (headings) / Segoe UI (body)** — implemented (§3 C‑2). The Spec §7 "one still of Diane on a lighter backdrop" gate is now **resolved in favor of the dark original**; the brighter‑office candidate is **not used**.
 
 **Template components carried across all 267 (B §6).** Exhibits label above evidence tabs · visual comparison "≠" (two images side‑by‑side under a line stating the conflict) · four‑icon summary card on rejoin (categories + takeaway) · "Course Presenter" lower‑third · AI‑disclosure line · toggleable captions · 1080p.
 
@@ -102,7 +120,7 @@ Legend: **IV** = Implemented + Verified · **IQ** = Implemented / Needs QA · **
 | 8 | **Configurable side‑by‑side comparison with "≠"** (B §6, C) | **NI** | Only a static "conflict note" inside one SVG illustration. No reusable, data‑configurable two‑image `A ≠ B` component. Pilot scripts require it (evidence‑vs‑account conflicts; pilot 3 LEFT‖RIGHT outcomes). |
 | 9 | **Configurable rejoin summary cards (four‑icon)** (B §6, C) | **NI** | No summary‑card component. Scripts call for it (e.g. pilot 1 rejoin: "1. Issue 2. Burden 3. Standard 4. Evidence"). |
 | 10 | **Toggleable captions** (B §6) | **IQ** | `VideoControls` has a captions toggle (`captionsOn`, 'c' key). Mechanism present; **per‑video caption content + QA** needed for production. |
-| 11 | **~~Lighter interface~~ → DARK interface LOCKED; apply locked color roles** (★ LOCKED, supersedes B §7) | **P** | Dark interface is now correct and locked (no light‑panel redesign). Remaining small styling task: add the `#7BAFD4` token and apply **sky as the secondary accent** on decision states / evidence‑exhibit tabs / right‑wrong feedback (these currently use gold/verdict); keep gold primary, off‑white text‑only. The "lighten the interface / light panels / off‑white backgrounds" requirement is **SUPERSEDED**. |
+| 11 | **DARK interface LOCKED; locked color roles applied** (★ LOCKED, supersedes B §7) | **IV** (this round) | Dark interface locked (no light‑panel redesign). `#7BAFD4` (+ `#1D5FA8`, `#D8E1EA`) added to the theme; **sky now the secondary accent** on **decision states** (option select/hover/badge + decision label) and **evidence/exhibit tabs**; **gold** stays primary (CTAs, progress rail, scrubber); off‑white text‑only. Correct/incorrect feedback kept **green/red** for visual distinction + accessibility (per E p11), not recolored to sky. "Lighten the interface" requirement remains **SUPERSEDED**. |
 | 12 | **~~Brighter‑office Diane~~ → DARK original Diane LOCKED** (★ LOCKED, supersedes B §7) | **Resolved / SUPERSEDED** | Dark original (`presenter-diane.jpg`) is the approved look. The brighter‑office candidate (`presenter-diane-brighter-office-approval.png`) remains on disk but is **not used** and is superseded. |
 | 13 | **"Course Presenter" lower‑third** (A §1.4, B §6) | **IV** (this update) | `MediaStage` now renders a fixed template constant `LOWER_THIRD_TITLE = "Course Presenter"` for every presenter/lesson; the data credential "Senior Claims Instructor" was removed from both lessons. No instructor title / implied credential remains. |
 | 14 | **AI‑presenter disclosure line** (A §1.4, B §6; CLIENT APPROVED placement) | **IV** | `AiDisclosure.tsx` renders the exact contract copy (unchanged) **bottom‑left of the video, just above the controls** — small‑type, subtle/secondary, dark scrim for contrast. Shows **once on the opening segment only** (~2–3s, then fades and unmounts); rendered in `LessonPlayer`'s persistent stage wrapper (not keyed to scenes) so it **never reappears** on later segments — verified programmatically across 10 segment changes. Clear of Diane and the lower‑third. |
@@ -117,7 +135,7 @@ Legend: **IV** = Implemented + Verified · **IQ** = Implemented / Needs QA · **
 ## 3. Conflicts between Agreement / Spec / Scripts / Code
 
 - **C‑1 — Pilot content — SETTLED (implementation gap, not an approval question).** The **supplied Pilot Scripts (C) are authoritative** for all three pilots. The repo's current `claims-investigation-application-1` (water‑damage / finished‑basement, case 2043‑RW) is a **template proof only — it is NOT pilot content and must not be used as such.** All three pilots must be authored **from the scripts**: `claims-01` → **Marcus Delaney** (burned Ford F‑250 theft/arson, claim 4471‑88203); `siu-01` → **Marcus Delacroix** (Ram 1500 arson referral); `ew-01` → **Prieto** retained‑expert case (_Doss v. Ferrin Haulage_). Pilots #2 and #3 don't exist in the repo yet. This is a build task, no client approval outstanding.
-- **C‑2 — Fonts — SETTLED (implementation gap).** Fonts are **decided per Spec §7: Georgia (headings) / Segoe UI (body)** — not pending approval. The code currently uses **Fraunces / Inter** (`layout.tsx`, `globals.css`); switching to Georgia/Segoe UI is an **implementation gap to fix** before the pilot, not an open question.
+- **C‑2 — Fonts — RESOLVED (implemented).** Fonts are the authoritative **Georgia (headings) / Segoe UI (body)** (Corporate Brand Guidelines D + Spec §7). The player now uses them: `globals.css` `@theme` sets `--font-display: Georgia…` and `--font-sans: "Segoe UI"…` (system fonts, no web-font loading); the Fraunces/Inter `next/font` wiring was removed from `layout.tsx` and from the Thinkific export (`export-thinkific/src/main.tsx` + `styles.css`). Verified: computed heading font‑family = Georgia, body = Segoe UI. No longer a gap.
 - **C‑3 — Identity acknowledgment — SETTLED (CLIENT APPROVED; implementation gap).** **Approved: exactly ONE acknowledgment per application video.** (It is a learner presence check, distinct from the Agreement's on‑screen AI identification.) No longer pending approval. **Implementation gap:** the component (`IdentityCheck.tsx`) currently fires on an interval (`everyScenes: 6`, multiple times/video) and must be reconfigured to fire **exactly once per video** (single checkpoint).
 - **C‑4 — Lower‑third text — RESOLVED.** A §1.4 / B §6 require **"Course Presenter."** Implemented this update: the template renders a fixed "Course Presenter" title and the "Senior Claims Instructor" credential was removed from lesson data.
 - **C‑5 — Reshuffle vs template‑lock (LOW).** Reshuffle‑on‑retry is a real approved decision (goal) and is implemented, but it is **not named** in A/B/C. Since A §1.6 locks "interaction design" across all 267 after pilot approval, reshuffle should be **written into the spec** so it's part of the approved locked template rather than an unapproved deviation.
@@ -142,8 +160,8 @@ No conflicts found between the Agreement and the Spec themselves; the Spec is co
 7. **Configurable `A ≠ B` evidence‑comparison** component (two images + conflict line).
 8. **Configurable four‑icon rejoin summary card** (categories + takeaway).
 9. **Identity acknowledgment → exactly once per video** (config change). **Client‑approved**; implementation only — reconfigure `IdentityCheck` from the 6‑scene interval to a single once‑per‑video checkpoint.
-10. **Apply the LOCKED color roles** (dark base stays): add the `#7BAFD4` token and use **sky as a secondary accent** on decision states / evidence‑exhibit tabs / right‑wrong feedback; gold stays primary; off‑white text‑only. **No** light‑panel redesign.
-10a. **Fonts → Georgia (headings) / Segoe UI (body)** per Spec §7 (decided): replace the current Fraunces/Inter in `layout.tsx` + `globals.css`.
+10. ~~Apply the LOCKED color roles (sky secondary accent)~~ — **DONE** (this round): `#7BAFD4`/`#1D5FA8`/`#D8E1EA` added; sky applied to decision states + evidence/exhibit tabs; gold kept primary (CTA/progress/scrubber); off‑white text‑only; correct/incorrect kept green/red for accessibility. No light‑panel redesign.
+10a. ~~Fonts → Georgia / Segoe UI~~ — **DONE** (this round): implemented in `globals.css` `@theme`; Fraunces/Inter removed from `layout.tsx` and the export.
 11. **Captions**: ensure per‑video caption data + verify the toggle end‑to‑end.
 
 **C. Presenters & media.**
@@ -180,7 +198,7 @@ Regression guardrails already in place to protect during the above: retry/reshuf
 - ~~Brighter‑office Diane still~~ — LOCKED: dark original approved; brighter candidate not used.
 - ~~Lighter‑interface palette usage~~ — LOCKED: dark interface; color roles fixed (see ★ LOCKED).
 - ~~Identity acknowledgment~~ — **CLIENT APPROVED: exactly one per video** (C‑3). Remaining work is implementation only.
-- ~~Fonts~~ — **Decided: Georgia / Segoe UI** per Spec §7 (C‑2). Remaining work is implementation only.
+- ~~Fonts~~ — **Georgia / Segoe UI, implemented** (C‑2). Done.
 - ~~Pilot content source~~ — **Decided: the supplied Pilot Scripts are authoritative** (C‑1). The water‑damage demo is a template proof, not pilot content.
 - ~~Reshuffle‑on‑retry~~ — client‑requested and implemented; recorded here as part of the locked template.
 

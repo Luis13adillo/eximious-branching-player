@@ -35,6 +35,19 @@
   --color-gold-800: #634c2b;
   --color-gold-900: #453623;
 
+  /* ---- Sky (brand secondary accent) ----
+     Video Production Guidelines: sky is the SELECTIVE secondary accent for
+     decision states, evidence/exhibit tabs, and interactive feedback context —
+     never a dominant theme or a panel fill. */
+  --color-sky-300: #a9cbe6;
+  --color-sky-400: #93bede;
+  --color-sky-500: #7bafd4; /* brand sky #7BAFD4 */
+  --color-sky-600: #5f97c1;
+
+  /* ---- Supporting blue + neutral mist (corporate palette, for completeness) ---- */
+  --color-blue-500: #1d5fa8;
+  --color-mist-100: #d8e1ea;
+
   /* ---- Semantic feedback (muted / corporate, not candy) ---- */
   /* Brightened to clear WCAG AA (4.5:1) for badge text on the soft backgrounds. */
   --color-verdict-correct: #6cbd97;
@@ -50,8 +63,14 @@
   --color-ink-400: #8697b0;
 
   /* ---- Type ---- */
-  --font-display: var(--font-fraunces), ui-serif, Georgia, serif;
-  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  /* ---- Type (authoritative brand fonts) ----
+     Corporate Brand Guidelines + Video Production Spec §7: Georgia establishes
+     authority (headings/display); Segoe UI keeps body/UI/labels/captions precise
+     and accessible. Both are system fonts — no web-font loading; Segoe UI falls
+     back cleanly off Windows. */
+  --font-display: Georgia, "Times New Roman", ui-serif, serif;
+  --font-sans: "Segoe UI", ui-sans-serif, system-ui, -apple-system,
+    "Helvetica Neue", Arial, sans-serif;
 
   /* ---- Motion ---- */
   --ease-cinematic: cubic-bezier(0.22, 1, 0.36, 1);

@@ -91,7 +91,7 @@ export function EvidenceStage({
               aria-current={i === active}
               className={`flex h-7 items-center gap-1.5 rounded-full px-2.5 font-sans text-[11px] ring-1 backdrop-blur-md transition-colors ${
                 i === active
-                  ? "bg-gold-500 text-navy-950 ring-black/20"
+                  ? "bg-sky-500 text-navy-950 ring-black/20"
                   : "bg-navy-950/70 text-ink-200 ring-white/15 hover:text-ink-100"
               }`}
             >

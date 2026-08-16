@@ -1,25 +1,12 @@
 import type { Metadata, Viewport } from "next";
-import { Fraunces, Inter } from "next/font/google";
 import "./globals.css";
 
 /**
- * Display serif + clean sans, self-hosted by next/font (no external requests —
- * important for iframe embedding and privacy). Exposed as CSS variables that
- * the design tokens in globals.css consume.
+ * Typography is the authoritative brand pairing — Georgia (headings) / Segoe UI
+ * (body) — set as CSS custom properties in globals.css. Both are system fonts,
+ * so there is no web-font loading (and nothing to embed): Segoe UI renders on
+ * Windows and falls back cleanly elsewhere.
  */
-const fraunces = Fraunces({
-  variable: "--font-fraunces",
-  subsets: ["latin"],
-  display: "swap",
-  axes: ["opsz"],
-});
-
-const inter = Inter({
-  variable: "--font-inter",
-  subsets: ["latin"],
-  display: "swap",
-});
-
 export const metadata: Metadata = {
   title: "Eximious Academy · Interactive Case Studies",
   description:
@@ -35,10 +22,7 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html
-      lang="en"
-      className={`${fraunces.variable} ${inter.variable} h-full antialiased`}
-    >
+    <html lang="en" className="h-full antialiased">
       <body className="min-h-full">{children}</body>
     </html>
   );

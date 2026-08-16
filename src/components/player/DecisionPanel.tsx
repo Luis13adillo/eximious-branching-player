@@ -87,7 +87,7 @@ export function DecisionPanel({
         <h2 className="font-[family-name:var(--font-display)] text-lg leading-snug text-ink-100 sm:text-xl">
           {scene.prompt}
         </h2>
-        <span className="hidden shrink-0 font-sans text-[11px] uppercase tracking-[0.18em] text-gold-300 sm:block">
+        <span className="hidden shrink-0 font-sans text-[11px] uppercase tracking-[0.18em] text-sky-300 sm:block">
           {scene.decisionLabel ?? scene.kicker}
         </span>
       </div>
@@ -97,7 +97,7 @@ export function DecisionPanel({
         <button
           type="button"
           onClick={onReplayQuestion}
-          className="mb-3 inline-flex items-center gap-1.5 rounded-full border border-white/12 bg-white/5 px-3 py-1.5 font-sans text-[12px] text-ink-200 transition-colors hover:border-gold-500/50 hover:text-ink-100"
+          className="mb-3 inline-flex items-center gap-1.5 rounded-full border border-white/12 bg-white/5 px-3 py-1.5 font-sans text-[12px] text-ink-200 transition-colors hover:border-sky-500/50 hover:text-ink-100"
         >
           <ReplayIcon className="h-3.5 w-3.5" />
           Replay question
@@ -134,19 +134,19 @@ export function DecisionPanel({
               aria-label={isTried ? `${o.label} — already tried, incorrect` : o.label}
               className={`group/opt flex items-start gap-3 rounded-xl border p-3.5 text-left transition-all duration-200 sm:p-4 ${
                 isChosen
-                  ? "border-gold-500 bg-gold-500/12 ring-2 ring-gold-500/50"
+                  ? "border-sky-500 bg-sky-500/12 ring-2 ring-sky-500/50"
                   : isTried
                     ? "border-[color:var(--color-verdict-incorrect)]/30 bg-navy-900/40"
-                    : "border-white/12 bg-navy-900/50 hover:border-gold-500/60 hover:bg-navy-800/60"
+                    : "border-white/12 bg-navy-900/50 hover:border-sky-500/60 hover:bg-navy-800/60"
               } ${dim ? "opacity-50" : ""} ${chosen || isTried ? "cursor-default" : "cursor-pointer"}`}
             >
               <span
                 className={`mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg font-[family-name:var(--font-display)] text-base font-semibold transition-colors ${
                   isChosen
-                    ? "bg-gold-500 text-navy-950"
+                    ? "bg-sky-500 text-navy-950"
                     : isTried
                       ? "bg-[color:var(--color-verdict-incorrect-soft)] text-[color:var(--color-verdict-incorrect)]"
-                      : "bg-white/8 text-gold-300 group-hover/opt:bg-gold-500 group-hover/opt:text-navy-950"
+                      : "bg-white/8 text-sky-300 group-hover/opt:bg-sky-500 group-hover/opt:text-navy-950"
                 }`}
               >
                 {isTried ? <XIcon className="h-4 w-4" /> : letter}
