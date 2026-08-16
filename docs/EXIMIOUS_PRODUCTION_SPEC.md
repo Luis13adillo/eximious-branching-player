@@ -18,8 +18,14 @@ _Last updated from the authoritative sources below. Where this document and the 
 
 **Color roles — LOCKED.**
 - **Sky blue `#7BAFD4` — secondary accent ONLY.** Uses: decision states, evidence / exhibit tabs, right / wrong feedback states, and comparable secondary interactive states where appropriate. Do **not** overuse; **never** a panel or background fill.
-- **Gold `#C7A254` — primary.** Uses: primary actions, CTA / button emphasis, progress indicators — its existing premium accent role.
+- **Gold `#C7A254` — primary (actions + progress).** Uses: primary actions, CTA / button emphasis, and progress indicators — **including buttons, the current‑step indicator, and the scrubber**.
 - **Off‑white `#F4F7FA` — text / readability ONLY.** **Not** a panel or background color.
+
+**Also CLIENT APPROVED / LOCKED (this round):**
+- **Lower‑third = "Course Presenter"** (implemented; no instructor title / implied credential).
+- **AI disclosure — approved wording (unchanged).** Shown **ONCE on the opening segment only**: small‑type, subtle/secondary, **bottom‑left of the video just above the controls**, ~2–3s then fades and unmounts. It must **not** reappear when later segments/scenes load, and must not compete with Diane or the "Course Presenter" lower‑third. Wording is fixed — do not alter.
+- **12‑step case‑progress rail — approved.**
+- **Captions — approved and working** (toggleable).
 
 **Explicitly superseded / no longer in effect:** brighter‑office Diane as final · panels becoming light · off‑white used as a major panel/background · general lightening of the interface.
 
@@ -99,7 +105,7 @@ Legend: **IV** = Implemented + Verified · **IQ** = Implemented / Needs QA · **
 | 11 | **~~Lighter interface~~ → DARK interface LOCKED; apply locked color roles** (★ LOCKED, supersedes B §7) | **P** | Dark interface is now correct and locked (no light‑panel redesign). Remaining small styling task: add the `#7BAFD4` token and apply **sky as the secondary accent** on decision states / evidence‑exhibit tabs / right‑wrong feedback (these currently use gold/verdict); keep gold primary, off‑white text‑only. The "lighten the interface / light panels / off‑white backgrounds" requirement is **SUPERSEDED**. |
 | 12 | **~~Brighter‑office Diane~~ → DARK original Diane LOCKED** (★ LOCKED, supersedes B §7) | **Resolved / SUPERSEDED** | Dark original (`presenter-diane.jpg`) is the approved look. The brighter‑office candidate (`presenter-diane-brighter-office-approval.png`) remains on disk but is **not used** and is superseded. |
 | 13 | **"Course Presenter" lower‑third** (A §1.4, B §6) | **IV** (this update) | `MediaStage` now renders a fixed template constant `LOWER_THIRD_TITLE = "Course Presenter"` for every presenter/lesson; the data credential "Senior Claims Instructor" was removed from both lessons. No instructor title / implied credential remains. |
-| 14 | **AI‑presenter disclosure line** (A §1.4, B §6) | **IV** (this update) | `AiDisclosure.tsx` renders the exact contract copy at the top of the stage on lesson open, dark/navy pill for contrast, fades after ~6.5s and unmounts (never permanent). Wired at the template level in `LessonPlayer`, so it carries across all lessons. |
+| 14 | **AI‑presenter disclosure line** (A §1.4, B §6; CLIENT APPROVED placement) | **IV** | `AiDisclosure.tsx` renders the exact contract copy (unchanged) **bottom‑left of the video, just above the controls** — small‑type, subtle/secondary, dark scrim for contrast. Shows **once on the opening segment only** (~2–3s, then fades and unmounts); rendered in `LessonPlayer`'s persistent stage wrapper (not keyed to scenes) so it **never reappears** on later segments — verified programmatically across 10 segment changes. Clear of Diane and the lower‑third. |
 | 15 | **Existing audio / mute / single‑source must not regress** (A §2.2) | **IV** | Single persistent media element, one source at a time; 16/16 sound checks, watchdog `maxAudible=1`. |
 | 16 | **1080p output** (A §1.4.1, B §6) | **NI** (media) | Current demo media is 720p (InfiniTalk, 1280×704). Player is resolution‑agnostic; the **production media pipeline** must render 1920×1080. |
 | 17 | **267 videos authored to full scripts** (A §1.1) | **NI** (content) | Template proven with 1–2 placeholder lessons. **0 of 267** production videos authored. Pilots #2/#3 not authored (see C‑1). |

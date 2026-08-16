@@ -12,10 +12,10 @@ export const AI_DISCLOSURE_TEXT =
   "Your presenter is AI-generated. All course content is authored by Roger M. Naut, drawn from 35 years in insurance claims investigation and adjusting.";
 
 export function AiDisclosure({
-  holdMs = 6500,
-  fadeMs = 700,
+  holdMs = 2400,
+  fadeMs = 600,
 }: {
-  /** How long it stays fully visible before fading. */
+  /** How long it stays fully visible before fading (~2–3s total with fade). */
   holdMs?: number;
   /** Fade-out duration. */
   fadeMs?: number;
@@ -34,21 +34,23 @@ export function AiDisclosure({
   if (phase === "gone") return null;
 
   return (
-    // Announced once to screen readers; never intercepts clicks. Dark/navy
-    // treatment keeps the small type readable over the presenter footage.
-    // Pinned into its OWN vertical band (`top-16`) that sits clearly BELOW the
-    // presenter lower-third chip (which lives at `top-5`, desktop only), so the
-    // two never overlap on any breakpoint — the chip keeps its approved
-    // position and this notice occupies the row beneath it.
+    // Small, subtle, SECONDARY notice pinned to the BOTTOM-LEFT of the video,
+    // lifted to sit immediately ABOVE the caption band (which lives at
+    // bottom-14/16) so the two never overlap — and still clear of Diane (centre)
+    // and the Course Presenter lower-third (top-left). Never intercepts
+    // clicks; dark scrim keeps the small type readable over the footage. It is
+    // rendered once per application video in LessonPlayer's persistent stage
+    // wrapper (not keyed to scenes), so it shows at the opening only and never
+    // reappears when later segments load.
     <div
       role="note"
       aria-label="AI presenter disclosure"
-      className={`pointer-events-none absolute inset-x-0 top-16 z-20 flex justify-center px-3 transition-opacity ${
+      className={`pointer-events-none absolute bottom-24 left-4 z-20 max-w-[62%] transition-opacity sm:bottom-28 sm:left-6 sm:max-w-[46%] ${
         phase === "fading" ? "opacity-0" : "opacity-100"
       }`}
       style={{ transitionDuration: `${fadeMs}ms` }}
     >
-      <p className="max-w-[94%] rounded-lg bg-navy-950/85 px-3.5 py-2 text-center font-sans text-[11px] font-medium leading-snug text-ink-100 ring-1 ring-white/15 backdrop-blur-sm sm:max-w-[80%] sm:text-[12px]">
+      <p className="rounded-md bg-navy-950/70 px-2.5 py-1.5 text-left font-sans text-[10px] leading-snug text-ink-300 ring-1 ring-white/10 backdrop-blur-sm sm:text-[11px]">
         {AI_DISCLOSURE_TEXT}
       </p>
     </div>
