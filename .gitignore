@@ -56,3 +56,13 @@ docs/source/*.pdf
 # Same confidentiality basis as the source PDFs above — local reference only, never pushed.
 docs/VIDEO_1_PRODUCTION_MAP.md
 docs/VIDEO_1_GENERATION_CONFIGS.md
+
+# Unredacted originals of artifacts whose tracked versions have had verbatim
+# siu-01 / ew-01 pilot-script excerpts removed. Same confidentiality basis as
+# docs/source/*.pdf — local reference only, never pushed.
+docs/confidential/
+
+# Reproducible deliverable produced by export-thinkific/assemble.mjs (it rmSync's
+# and rebuilds this directory on every run). Trailing-number variants are Finder
+# duplicates of the same build output.
+eximious-claims-investigation-thinkific-html5*/

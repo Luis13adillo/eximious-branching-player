@@ -101,9 +101,15 @@ Passed two paid QA gates. Evidence: `docs/PRODUCTION_READINESS_COST_LOCK.md`,
 | Voice | `shimmer` | `onyx` | `sage` |
 | Required settings | `speed: 1.0`, `response_format: mp3` | `speed: 1.0`, `response_format: mp3` | `response_format: mp3` **+ the exact locked `instructions` string** |
 
-**Selena's `instructions` string is part of her locked presenter definition.** Read it
-byte-exact from `public/media/presenter-3-selena-navarro-voice-SELECTED.json`. Her voice
-is not reproducible without it. Never retype or paraphrase it.
+**Selena's `instructions` string is part of her locked presenter definition.** Her voice is
+not reproducible without it. It is reproduced byte-exact below, and **this tracked file is the
+canonical copy** — a fresh clone needs nothing else. Copy it; never retype or paraphrase it.
+The sidecar `public/media/presenter-3-selena-navarro-voice-SELECTED.json` carries the
+identical string. Verify with `sha256` of the string alone: `bdf6862d6f8dc101b66898b0d0b2d0df1c4946d62f02fa202bb4af932483eeda` (1133 characters).
+
+```text
+Speak as an American woman in her early thirties — bright, warm and quick-witted, talking directly to a colleague she likes and respects. Light, forward placement; keep the energy up and the tone friendly and personable. Around 158 words per minute with natural conversational rhythm and varied phrasing — brisk and alive, never plodding. Polished but completely unforced, the way a smart young professional sounds explaining something she knows cold. Let the short sentences move quickly and land lightly rather than settling in with weight. This is NOT narration or voice-over: no measured narrator cadence, no evenly paced professional delivery, no broadcast polish, no announcer authority, no theatrical emphasis. Neutral contemporary American English. No British, Irish, Australian or other non-American accent. Do not add a Spanish or Hispanic accent and do not stylise the delivery around ethnicity in any way. Do not sound older, matronly, or grandmotherly. Do not use a heavy, deep, slow or ponderous register. Do not deliver it as a formal lecture. Engaging, but never bubbly, girlish, giggly, breathy, or influencer-style.
+```
 
 Selena's **seated** version is the speaking video; her **standing** version is course
 pages / title cards only.

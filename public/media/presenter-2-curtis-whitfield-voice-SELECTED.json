@@ -1,0 +1,28 @@
+{
+  "kind": "presenter-voice-SELECTED",
+  "status": "CLIENT-SELECTED voice for Presenter 2. Audio preserved exactly as auditioned; NOT regenerated.",
+  "presenter": "Presenter 2 \u2014 Curtis Whitfield \u2014 Investigation & Fraud",
+  "selectedFrom": "Blind casting round, candidate Curtis-A",
+  "provider": "OpenAI",
+  "model": "tts-1-hd",
+  "voice": "onyx",
+  "speed": 1.0,
+  "pipeline": "Diane's accepted production pipeline",
+  "instructionsSupported": false,
+  "scriptSource": "siu-01 AV1 — Decision 1 rejoin block (all paths rejoin) (script title withheld; see docs/source/pilot-scripts.pdf)",
+  "excerpt": "[REDACTED — verbatim siu-01 pilot-script narration. Confidential client content; not reproduced in git. Source: docs/source/pilot-scripts.pdf (local-only, git-ignored).]",
+  "excerptNote": "Redacted for git. The audition was generated from a verbatim contiguous pilot-script passage, held IDENTICAL across every candidate for this presenter. That identity is what makes the blind comparison valid. Unredacted original: docs/confidential/presenter-2-curtis-whitfield-voice-SELECTED.unredacted.json (local-only, git-ignored).",
+  "responseFormat": "mp3",
+  "durationSec": 15.576,
+  "mastering": {
+    "linearGainDb": 1.76,
+    "measuredIntegratedLoudness": "-24.49 LUFS",
+    "target": "-24.5 LUFS (matches Diane)",
+    "procedure": "Calibrated single encode from raw. Linear gain only; dynamics unchanged. Identical for every candidate.",
+    "encode": "mp3 128 kbps, 24 kHz, mono"
+  },
+  "sha256": "8e26f505b209d0c66f38bd5857e3e3361cf0ac737f757fbd449b92c084b1439f",
+  "provenance": "Byte-identical to Curtis-A.mp3 as auditioned. Copied, never re-synthesized.",
+  "reproduce": "POST /v1/audio/speech {model:tts-1-hd, voice:onyx, speed:1.0, response_format:mp3}, then calibrated single encode to -24.5 LUFS (mp3 128k/24kHz/mono).",
+  "note": "Voice selection only. Does not constitute approval of any rendered narration or avatar video."
+}
