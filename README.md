@@ -15,7 +15,15 @@ and embeds in Thinkific (or any LMS) via an iframe-safe URL.
 > a matching voiceover, with full-screen evidence scenes narrated over the
 > exhibit. All narration is captioned in sync. Media is attached per scene via
 > data, so higher-fidelity assets drop in with **no engine changes** — see
-> [Replacing the media](#replacing-the-media-heygen--elevenlabs--mux).
+> [Attaching real media](#attaching-real-media).
+>
+> **Production media pipeline — see `CLAUDE.md` (★ LOCKED).** Delivered
+> Eximious media is produced by the locked pipeline (OpenAI TTS → a reusable
+> per-presenter Kling motion base → `fal-ai/latentsync` → remux of the locked
+> 24 kHz master → conform to exactly 1920×1080). **HeyGen is not used on this
+> project**, and no third-party provider may be substituted without written
+> approval. The provider names in this README describe what the *player* can
+> render, not what production uses.
 
 ---
 
@@ -25,7 +33,7 @@ and embeds in Thinkific (or any LMS) via an iframe-safe URL.
 2. [How the player works](#how-the-player-works)
 3. [Authoring a lesson](#authoring-a-lesson)
 4. [Scaling to 267 lessons × 3 decisions](#scaling-to-267-lessons--3-decisions)
-5. [Replacing the media (HeyGen / ElevenLabs / Mux)](#replacing-the-media-heygen--elevenlabs--mux)
+5. [Attaching real media](#attaching-real-media)
 6. [Analytics — the `onAnswerSelected` seam](#analytics--the-onanswerselected-seam)
 7. [Brand & theming](#brand--theming)
 8. [Deploying to Vercel](#deploying-to-vercel)
@@ -185,7 +193,12 @@ scene. Run it in a test or a build step to catch authoring mistakes early.
 
 ---
 
-## Replacing the media (HeyGen / ElevenLabs / Mux)
+## Attaching real media
+
+> ⛔ **This section is about the player's data seam, not about how Eximious
+> media is produced.** The production pipeline is locked and documented in
+> `CLAUDE.md` (★ LOCKED) — do not infer a production route from the provider
+> names in the `MediaSource` type. **HeyGen is not used on this project.**
 
 Media is described by data on each scene (`MediaSource` in `types.ts`). The
 player renders a real `<video>` when a URL is present and the placeholder stage
@@ -196,17 +209,20 @@ otherwise — **the branching engine never changes.**
 media: { provider: "placeholder", placeholderScene: "claim-desk", durationSec: 30,
          captions: [ /* narration */ ] }
 
-// After a HeyGen avatar render + ElevenLabs VO baked in, or a Mux upload:
-media: { provider: "heygen", videoUrl: "https://…/lesson7-intro.mp4",
-         posterUrl: "https://…/poster.jpg", captionsUrl: "https://…/intro.vtt",
-         durationSec: 30 }
+// After: a delivered segment from the locked pipeline. This is the shape the
+// claims-01 pilot actually ships (see src/lib/lessons/claims-01-av1.narration.ts);
+// `provider: "file"` is a repo-relative asset under public/media/.
+media: { provider: "file", videoUrl: "/media/claims-01-av1/intro.mp4",
+         posterUrl: "/media/presenter-diane.jpg", hasAudio: true,
+         durationSec: 30, captions: [ /* narration */ ] }
 ```
 
 - `videoUrl` present → a real `<video>` element plays; controls, scrubbing,
   captions (`captionsUrl` as a `<track>`), and auto/rejoin transitions all keep
   working.
 - The avatar-presenter layout and the fullscreen-evidence layout are both
-  supported today; a HeyGen presenter clip simply fills the same avatar frame.
+  supported today; a delivered presenter segment simply fills the same avatar
+  frame.
 - Swap evidence illustrations for real photos by setting `imageUrl` on an
   `EvidenceItem` instead of `illustration`.
 
@@ -230,9 +246,10 @@ npm run render:intro   # re-render → public/media/intro.mp4
 Remotion is a **dev/build-time** tool only — it is not in the browser bundle;
 the app just plays the resulting file. To make another scene a rendered clip,
 add a `<Composition>` in `remotion/Root.tsx`, a render script in `package.json`,
-and point that scene's `media.videoUrl` at the output. When final HeyGen /
-ElevenLabs footage arrives, drop its URL into `videoUrl` and you can delete the
-Remotion pipeline entirely — the player doesn't depend on it.
+and point that scene's `media.videoUrl` at the output. Once a scene is covered
+by a delivered segment from the locked production pipeline, point `videoUrl` at
+that file instead; the Remotion path is not required — the player doesn't depend
+on it.
 
 ---
 

@@ -17,7 +17,9 @@ import {
  * grain and a breathing vignette are layered over it so the brand look stays
  * consistent. The player still overlays identity/captions responsively.
  *
- * Swap `videoSrc` for a HeyGen (lip-synced) clip later and nothing else changes.
+ * Point `videoSrc` at a delivered segment from the locked production pipeline
+ * (CLAUDE.md ★ LOCKED) and nothing else changes. HeyGen is not used on this
+ * project; this composition is a dev/build-time tool, not a production route.
  * Frame-driven per Remotion rules; no CSS animation.
  */
 

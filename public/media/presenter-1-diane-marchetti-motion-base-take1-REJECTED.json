@@ -1,0 +1,62 @@
+{
+  "asset": "presenter-1-diane-marchetti-motion-base-take1-REJECTED.mp4",
+  "presenter": "Diane Marchetti (Presenter 1)",
+  "purpose": "Reusable motion base. Generated ONCE, reused across all 51 of Diane's courses and every application video she presents. A new base is required only if Roger changes her approved appearance - that would be a new client approval.",
+  "provider": "KIE",
+  "endpoint": "POST https://api.kie.ai/api/v1/jobs/createTask",
+  "taskId": "21f6ff3664150dac36b070d1f3b21d7b",
+  "request": {
+    "model": "kling/v2-1-pro",
+    "input": {
+      "prompt": "A professional woman seated at her desk in a dark, refined private office, holding still and listening between takes. She is NOT speaking: her lips stay closed and together for the entire clip. Natural involuntary blinking at a relaxed human rate. Subtle breathing and very small, organic head-posture settling. Her hands stay exactly as they are, folded and still on the desk. The camera is locked off on a tripod: no zoom, no push-in, no pan, no tilt, no handheld drift, no parallax. Preserve the existing lighting, contrast, colour and mood exactly as in the source image; do not brighten, lift the shadows, or re-grade. No change whatsoever to her face, hair, wardrobe, the room, the desk items, or the framing. The framed plaque and the mug keep their existing lettering unchanged. One continuous locked-off shot, no cuts, no transitions.",
+      "duration": "10",
+      "negative_prompt": "speaking, talking, mouth opening, lip movement, gesturing, hand movement, standing, leaning, camera movement, zoom, push-in, pan, tilt, reframing, crop, scene change, cut, transition, wardrobe change, hairstyle change, face change, lighting change, room change, brightening, re-grading, added text, added captions, added logos, added graphics, overlays, watermark, extra people, distortion, warping, morphing",
+      "cfg_scale": 0.5
+    }
+  },
+  "source_still": {
+    "file": "public/media/presenter-1-diane-marchetti-production-still-1920x1080.png",
+    "sha256": "16279b7e01b530c1d33b6dd258ffbc1d6cb8ac6bb217e44cdc33bad348053013"
+  },
+  "no_seed_parameter": "kling/v2-1-pro exposes no seed parameter. This clip is NOT reproducible; it is the artifact of record. Preserve it.",
+  "output": {
+    "container": "mp4",
+    "codec": "h264",
+    "width": 1920,
+    "height": 1080,
+    "fps": 24,
+    "frames": 241,
+    "duration_sec": 10.0417,
+    "audio_streams": 0,
+    "bytes": 13147256,
+    "sha256": "ac02e47ffb10b5dcd2d14fded1eab6b3e4939007c4a3c4878107d71abe4edf99"
+  },
+  "fps_note": "Base is 24 fps. LatentSync normalises output to 25 fps regardless of input, so the 16-frame padding must be computed at 25 fps (locked rule 3). Same as Selena's base.",
+  "credits": {
+    "before": 1753.0,
+    "after": 1653.0,
+    "spent": 100.0,
+    "usd": 0.5
+  },
+  "authority": "Approved by Luis 2026-08-18: run the $0.50 Diane motion-base generation.",
+  "date": "2026-08-18",
+  "status": "REJECTED - failed the documented base QA gate. Take 1. Do NOT use as the production base.",
+  "qa_gate": {
+    "verdict": "FAIL (6/10 rows)",
+    "root_cause": "Kling applied a continuous push-in across the full 10 s despite 'camera movement, zoom, push-in, pan, tilt' all appearing in negative_prompt and a locked-off tripod instruction in the positive prompt. By 10 s the shot is a medium close-up with the desk out of frame.",
+    "rows": {
+      "Dimensions": "PASS - 1920x1080, 24 fps, 241 frames, 10.04 s",
+      "Audio": "PASS - no audio stream",
+      "Reframing (frame 0)": "PASS - best fit 1.00x; Kling did not crop at the start",
+      "Identity (frame 0)": "PASS - meanDelta 2.46/255 vs the source still",
+      "Blink": "PASS - eye-region peak 2.6x mean at frame 80 (3.33 s)",
+      "Loop seam": "PASS - reversal 1.34x typical",
+      "Camera lock": "FAIL - textured camera-right region drifts 24.78/255 (threshold <1.5; Selena 0.069)",
+      "Registration": "FAIL - frame 0 vs last frame does not register within +/-2 px; residual ~42/255",
+      "Presenter motion": "FAIL - face meanDelta 4.03/255 (expected 0.5-1.5); inflated by the push-in",
+      "Mouth closed": "FAIL AS MEASURED, PASS VISUALLY - mouth-region drift 74/255 is the frame scaling, not speech. Lips are visibly closed in every sampled frame."
+    },
+    "drift_profile": "Residual vs frame 0 grows monotonically from the start: 1.9/255 at 0.25 s, 3.7 at 1.0 s, 6.6 at 2.0 s, 27.5 at 5.0 s, 33.1 at 10.0 s. There is no near-static window long enough to salvage, and the only blink (3.33 s) falls outside it.",
+    "note": "Three of the four failures are consequences of the push-in, not independent faults. Fix the camera motion and they should resolve together."
+  }
+}

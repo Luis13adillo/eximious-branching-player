@@ -1,0 +1,768 @@
+{
+  "asset": "presenter-1-diane-marchetti-motion-base.mp4",
+  "status": "PRODUCTION BASE - Diane Marchetti. Corrected candidate, QA gate passed.",
+  "presenter": "Diane Marchetti (Presenter 1)",
+  "purpose": "Reusable motion base. Generated ONCE, reused across all 51 of Diane's courses and every application video she presents. A new base is required only if Roger changes her approved appearance.",
+  "provenance": {
+    "generated": "KIE kling/v2-1-pro, taskId be4f07e5d056ca3d9514686d93f5384d, $0.25 (50 credits)",
+    "uncorrected_source": "public/media/presenter-1-diane-marchetti-motion-base-take2.mp4",
+    "uncorrected_source_sha256": "68f72070bd62e000c18f0c31d27377981a5941c5efb11e1995064d4079fa403e",
+    "rejected_take": "public/media/presenter-1-diane-marchetti-motion-base-take1-REJECTED.mp4 (continuous push-in, $0.50)",
+    "source_still": "public/media/presenter-1-diane-marchetti-production-still-1920x1080.png",
+    "source_still_sha256": "16279b7e01b530c1d33b6dd258ffbc1d6cb8ac6bb217e44cdc33bad348053013"
+  },
+  "correction": {
+    "what": "Removed the temporal brightness/colour drift only. Nothing else was touched.",
+    "why": "Kling lifted overall exposure ~9.5% across the 5 s. Established as MULTIPLICATIVE, not additive: dark region scaled x1.1332, bright region x1.1480 (similar ratios), while absolute deltas differed 2x (+1.79 vs +3.75).",
+    "method": "Per-frame per-channel linear gain returning each frame's RGB channel means to frame 0's. Frame 0 is the reference and carries NO gain. All gains <= 1.0, so the correction only scales down - no highlight clipping is possible.",
+    "cost": "$0.00 - ffmpeg only",
+    "command": "ffmpeg -i presenter-1-diane-marchetti-motion-base-take2.mp4 -filter_complex_script presenter-1-diane-marchetti-motion-base.filter -an -c:v libx264 -preset slow -crf 12 -pix_fmt yuv420p -movflags +faststart presenter-1-diane-marchetti-motion-base.mp4",
+    "filter_script": "public/media/presenter-1-diane-marchetti-motion-base.filter",
+    "filter_script_sha256": "7862e2cca3664a8b6bb867dc232da7f40c2ea52073b1149b21270db74d2df1a7",
+    "filter_shape": "format=gbrp16le, then 120 x colorchannelmixer=rr:gg:bb gated by enable='eq(n,N)', then format=yuv420p",
+    "bit_depth_note": "The RGB intermediate is 16-bit. At 8-bit the yuv->rgb->yuv round trip cost 0.32/255 of identity; at 16-bit it costs 0.003/255 and also corrects better (peak drift 0.77% vs 1.37%).",
+    "reference_frame": 0,
+    "reference_mean_rgb": [
+      27.578476080246915,
+      26.279625771604938,
+      31.6082315779321
+    ],
+    "per_frame_gains": [
+      [
+        1.0,
+        1.0,
+        1.0
+      ],
+      [
+        0.998933,
+        0.998822,
+        0.998384
+      ],
+      [
+        0.992978,
+        0.994217,
+        0.99151
+      ],
+      [
+        0.981664,
+        0.983417,
+        0.978504
+      ],
+      [
+        0.979205,
+        0.982583,
+        0.976341
+      ],
+      [
+        0.979454,
+        0.982079,
+        0.977115
+      ],
+      [
+        0.981694,
+        0.983865,
+        0.980026
+      ],
+      [
+        0.983148,
+        0.98452,
+        0.981485
+      ],
+      [
+        0.981005,
+        0.982253,
+        0.978402
+      ],
+      [
+        0.982652,
+        0.982601,
+        0.978111
+      ],
+      [
+        0.9832,
+        0.983979,
+        0.976293
+      ],
+      [
+        0.986499,
+        0.984795,
+        0.978336
+      ],
+      [
+        0.987813,
+        0.984957,
+        0.979277
+      ],
+      [
+        0.98766,
+        0.984362,
+        0.979097
+      ],
+      [
+        0.989166,
+        0.984301,
+        0.979827
+      ],
+      [
+        0.991272,
+        0.984514,
+        0.98114
+      ],
+      [
+        0.990355,
+        0.98327,
+        0.979555
+      ],
+      [
+        0.990461,
+        0.983123,
+        0.978937
+      ],
+      [
+        0.99087,
+        0.983356,
+        0.978531
+      ],
+      [
+        0.990748,
+        0.983031,
+        0.977842
+      ],
+      [
+        0.99062,
+        0.982624,
+        0.977399
+      ],
+      [
+        0.99012,
+        0.9819,
+        0.976802
+      ],
+      [
+        0.990035,
+        0.981563,
+        0.976622
+      ],
+      [
+        0.989709,
+        0.981072,
+        0.976012
+      ],
+      [
+        0.988073,
+        0.979277,
+        0.974044
+      ],
+      [
+        0.986146,
+        0.976919,
+        0.972039
+      ],
+      [
+        0.984143,
+        0.974701,
+        0.969604
+      ],
+      [
+        0.980798,
+        0.97074,
+        0.966733
+      ],
+      [
+        0.978306,
+        0.967633,
+        0.964824
+      ],
+      [
+        0.976239,
+        0.965069,
+        0.962968
+      ],
+      [
+        0.974954,
+        0.963479,
+        0.961887
+      ],
+      [
+        0.973758,
+        0.962007,
+        0.960692
+      ],
+      [
+        0.972333,
+        0.96057,
+        0.959329
+      ],
+      [
+        0.971498,
+        0.95957,
+        0.958276
+      ],
+      [
+        0.970556,
+        0.959051,
+        0.957417
+      ],
+      [
+        0.969944,
+        0.958337,
+        0.956593
+      ],
+      [
+        0.968674,
+        0.956828,
+        0.955141
+      ],
+      [
+        0.967212,
+        0.955549,
+        0.953651
+      ],
+      [
+        0.966259,
+        0.954942,
+        0.952995
+      ],
+      [
+        0.965435,
+        0.954171,
+        0.952407
+      ],
+      [
+        0.963004,
+        0.951813,
+        0.950517
+      ],
+      [
+        0.960241,
+        0.948693,
+        0.947873
+      ],
+      [
+        0.956767,
+        0.945228,
+        0.944657
+      ],
+      [
+        0.952489,
+        0.940869,
+        0.94131
+      ],
+      [
+        0.948093,
+        0.9356,
+        0.938358
+      ],
+      [
+        0.944558,
+        0.932058,
+        0.93587
+      ],
+      [
+        0.942543,
+        0.930194,
+        0.9346
+      ],
+      [
+        0.94159,
+        0.929224,
+        0.933933
+      ],
+      [
+        0.939498,
+        0.927322,
+        0.932494
+      ],
+      [
+        0.93892,
+        0.926534,
+        0.931963
+      ],
+      [
+        0.938371,
+        0.925982,
+        0.931342
+      ],
+      [
+        0.937873,
+        0.925371,
+        0.930954
+      ],
+      [
+        0.937004,
+        0.924412,
+        0.930145
+      ],
+      [
+        0.936073,
+        0.923437,
+        0.929278
+      ],
+      [
+        0.935779,
+        0.923012,
+        0.929022
+      ],
+      [
+        0.93503,
+        0.922271,
+        0.92855
+      ],
+      [
+        0.932719,
+        0.920124,
+        0.92701
+      ],
+      [
+        0.932418,
+        0.919265,
+        0.926914
+      ],
+      [
+        0.931522,
+        0.918502,
+        0.925732
+      ],
+      [
+        0.930245,
+        0.917288,
+        0.924775
+      ],
+      [
+        0.928825,
+        0.915892,
+        0.923549
+      ],
+      [
+        0.927941,
+        0.914919,
+        0.922688
+      ],
+      [
+        0.927601,
+        0.914469,
+        0.9225
+      ],
+      [
+        0.927241,
+        0.91406,
+        0.922226
+      ],
+      [
+        0.926304,
+        0.913187,
+        0.921425
+      ],
+      [
+        0.926197,
+        0.913074,
+        0.921352
+      ],
+      [
+        0.926098,
+        0.913037,
+        0.921167
+      ],
+      [
+        0.925922,
+        0.913245,
+        0.921121
+      ],
+      [
+        0.925554,
+        0.913067,
+        0.920927
+      ],
+      [
+        0.925169,
+        0.912873,
+        0.920717
+      ],
+      [
+        0.925253,
+        0.913013,
+        0.920815
+      ],
+      [
+        0.925146,
+        0.912899,
+        0.920746
+      ],
+      [
+        0.925173,
+        0.913054,
+        0.92083
+      ],
+      [
+        0.925918,
+        0.913803,
+        0.921695
+      ],
+      [
+        0.926691,
+        0.914882,
+        0.922601
+      ],
+      [
+        0.927161,
+        0.915846,
+        0.923579
+      ],
+      [
+        0.927283,
+        0.916232,
+        0.924105
+      ],
+      [
+        0.927089,
+        0.91635,
+        0.924393
+      ],
+      [
+        0.927366,
+        0.916904,
+        0.924966
+      ],
+      [
+        0.927732,
+        0.917501,
+        0.925545
+      ],
+      [
+        0.928385,
+        0.918341,
+        0.92605
+      ],
+      [
+        0.929333,
+        0.919389,
+        0.92699
+      ],
+      [
+        0.929977,
+        0.920155,
+        0.927541
+      ],
+      [
+        0.929847,
+        0.920261,
+        0.927618
+      ],
+      [
+        0.929609,
+        0.920193,
+        0.928236
+      ],
+      [
+        0.9295,
+        0.920141,
+        0.928377
+      ],
+      [
+        0.929692,
+        0.9205,
+        0.928689
+      ],
+      [
+        0.930104,
+        0.920806,
+        0.929006
+      ],
+      [
+        0.930647,
+        0.921415,
+        0.929504
+      ],
+      [
+        0.932286,
+        0.923113,
+        0.931056
+      ],
+      [
+        0.933844,
+        0.924822,
+        0.932375
+      ],
+      [
+        0.934521,
+        0.925726,
+        0.933325
+      ],
+      [
+        0.934865,
+        0.926126,
+        0.934015
+      ],
+      [
+        0.934927,
+        0.926245,
+        0.934301
+      ],
+      [
+        0.935593,
+        0.926838,
+        0.935015
+      ],
+      [
+        0.936373,
+        0.927544,
+        0.93564
+      ],
+      [
+        0.936703,
+        0.927746,
+        0.935896
+      ],
+      [
+        0.937777,
+        0.928659,
+        0.936716
+      ],
+      [
+        0.938558,
+        0.929463,
+        0.937371
+      ],
+      [
+        0.939249,
+        0.930208,
+        0.938229
+      ],
+      [
+        0.939546,
+        0.93044,
+        0.938735
+      ],
+      [
+        0.939496,
+        0.930493,
+        0.938809
+      ],
+      [
+        0.939849,
+        0.930808,
+        0.939186
+      ],
+      [
+        0.939799,
+        0.930845,
+        0.939158
+      ],
+      [
+        0.939326,
+        0.930471,
+        0.938719
+      ],
+      [
+        0.93809,
+        0.929419,
+        0.938432
+      ],
+      [
+        0.937385,
+        0.928626,
+        0.93757
+      ],
+      [
+        0.935897,
+        0.926944,
+        0.936317
+      ],
+      [
+        0.934741,
+        0.925596,
+        0.935489
+      ],
+      [
+        0.934228,
+        0.92488,
+        0.934894
+      ],
+      [
+        0.934299,
+        0.92474,
+        0.934764
+      ],
+      [
+        0.93438,
+        0.924801,
+        0.934715
+      ],
+      [
+        0.933914,
+        0.924277,
+        0.934311
+      ],
+      [
+        0.933413,
+        0.923477,
+        0.933844
+      ],
+      [
+        0.933075,
+        0.923,
+        0.933464
+      ],
+      [
+        0.932572,
+        0.922402,
+        0.93315
+      ],
+      [
+        0.931966,
+        0.921703,
+        0.932749
+      ],
+      [
+        0.931362,
+        0.92105,
+        0.932392
+      ],
+      [
+        0.931168,
+        0.920923,
+        0.932331
+      ],
+      [
+        0.93061,
+        0.920435,
+        0.931761
+      ],
+      [
+        0.930352,
+        0.920292,
+        0.931619
+      ]
+    ],
+    "not_applied": [
+      "crop",
+      "resize",
+      "stabilisation",
+      "repositioning",
+      "speed change",
+      "frame interpolation",
+      "sharpening",
+      "denoising",
+      "grading",
+      "beautification"
+    ]
+  },
+  "drift": {
+    "before": {
+      "peak_pct": 9.54,
+      "mean_pct": 6.49
+    },
+    "after": {
+      "peak_pct": 0.77,
+      "mean_pct": 0.49
+    },
+    "reduction_pct": 91.9,
+    "residual_character": "flat (first half 0.44%, second half 0.54%) - encode noise, not a ramp"
+  },
+  "output": {
+    "container": "mp4",
+    "codec": "h264",
+    "width": 1920,
+    "height": 1080,
+    "fps": 24,
+    "frames": 121,
+    "duration_sec": 5.041667,
+    "audio_streams": 0,
+    "bytes": 4677307,
+    "sha256": "a60b5d36ee8993bac334c2b0cd5c9fc392dad069978d9062c2e6c257491003a5"
+  },
+  "fps_note": "Base is 24 fps. LatentSync normalises output to 25 fps regardless of input, so the 16-frame padding must be computed at 25 fps (locked rule 3).",
+  "qa_gate": {
+    "rows": [
+      {
+        "check": "Dimensions",
+        "value": "1920x1080",
+        "pass": true,
+        "note": ""
+      },
+      {
+        "check": "Frame rate / duration",
+        "value": "24/1 fps, 5.0417 s, 121 frames",
+        "pass": true,
+        "note": "Must match Take 2 exactly - no speed change, no interpolation."
+      },
+      {
+        "check": "No audio",
+        "value": "0 audio streams",
+        "pass": true,
+        "note": ""
+      },
+      {
+        "check": "Identity",
+        "value": "frame-0 vs approved still 2.33/255",
+        "pass": true,
+        "note": "Selena reference 1.66/255."
+      },
+      {
+        "check": "Subject scale",
+        "value": "last frame fits frame 0 at 1.000x",
+        "pass": true,
+        "note": "Take 1 drifted to a medium close-up. 1.000x = no push-in."
+      },
+      {
+        "check": "Camera translation (bg only)",
+        "value": "right dx=0 dy=0 | left dx=0 dy=0",
+        "pass": true,
+        "note": "Measured on background regions containing no part of Diane. Shifting yields no improvement (right 2.26->2.26, left 1.28->1.28) - nothing to align."
+      },
+      {
+        "check": "Desk visibility",
+        "value": "desk band max drift 5.75/255",
+        "pass": true,
+        "note": "Desk, paper and mug must stay in frame. Take 1 pushed them out entirely."
+      },
+      {
+        "check": "Lighting / colour stability",
+        "value": "peak deviation 0.77%, mean 0.49%",
+        "pass": true,
+        "note": "Take 2 uncorrected: peak 9.54%, mean 6.49%. Residual is flat (first half 0.44% vs second half 0.54%), i.e. encode noise, not a ramp."
+      },
+      {
+        "check": "Natural motion",
+        "value": "face meanDelta 1.58/255",
+        "pass": true,
+        "note": "Selena base 0.97. Present on 99% of frame pairs (min 0.14, max 3.34)."
+      },
+      {
+        "check": "Blink preserved",
+        "value": "eye peak 5.03 vs mean 2.40 (2.1x)",
+        "pass": true,
+        "note": "largest eye motion at frame 37 = 1.54 s"
+      },
+      {
+        "check": "Mouth closed (face-registered)",
+        "value": "registered mouth max drift 24.83/255",
+        "pass": false,
+        "note": "Head moves up to 11 px, which inflated the old fixed-box figure to 28.76/255. After registering the face the true mouth drift is 24.83/255. Confirmed visually across 12 samples: lips closed throughout."
+      },
+      {
+        "check": "Loop seam",
+        "value": "reversal 0.033 vs typical 0.328 (0.10x)",
+        "pass": true,
+        "note": "A motion-direction change, not a cut. Selena 2.01x passed."
+      },
+      {
+        "check": "Pingpong suitability",
+        "value": "first-vs-last frame gap 3.96/255",
+        "pass": true,
+        "note": "Pingpong reverses at the ends; a large gap would read as a visible jump each cycle."
+      }
+    ],
+    "verdict": "FAIL: Mouth closed (face-registered)"
+  },
+  "mouth_row_resolution": {
+    "gate_row": "Mouth closed (face-registered) measured 24.83/255 against a <8.0 threshold.",
+    "why_it_is_not_a_defect": "That row measures pixel change in the mouth REGION; it cannot distinguish speech from a change of expression. Two direct tests of the actual requirement were run instead.",
+    "lip_aperture_test": "Dense scan, every 4th frame (31 samples), face-registered. The darkest row-mean inside the mouth region never falls below 48.7/255; an exposed oral cavity reads well under 30. The dark band stays 4-14 rows of 100 throughout; an opening mouth thickens it sharply. No aperture appears at any point.",
+    "visual_test": "4x magnification at frames 0, 40, 50, 60, 70, 120 - spanning the exact window where the metric dips. Lips are a continuous sealed seam in every frame. No gap, no teeth.",
+    "conclusion": "Lips never part. The residual is a slight smile relaxing to neutral and back, plus up to 11 px of permitted head settling. The requirement 'lips closed, absolutely no speaking' is MET.",
+    "downstream_note": "LatentSync re-renders the mouth region during production, so base mouth expression is largely overwritten. What matters is that no speech is baked in - it is not."
+  },
+  "authority": "Corrected under Luis's instruction 2026-08-18: free post-processing only, correct the brightness/colour drift and nothing else.",
+  "date": "2026-08-18"
+}

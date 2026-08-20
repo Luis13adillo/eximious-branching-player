@@ -5,7 +5,7 @@ import type { Presenter } from "@/lib/branching/types";
 /**
  * AvatarPresenter
  * ============================================================================
- * Placeholder for an AI-avatar presenter (HeyGen etc.). Rendered as a soft,
+ * Placeholder shown before a delivered presenter segment exists. Rendered as a soft,
  * cinematically-lit portrait — a rim-lit head-and-shoulders form under a warm
  * key light, softly blurred so it reads as an out-of-focus person on a studio
  * set rather than clip art. A "speaking" equalizer animates while playing.

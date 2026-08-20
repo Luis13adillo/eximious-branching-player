@@ -1,0 +1,38 @@
+{
+  "asset": "presenter-1-diane-marchetti-production-still-1920x1080.png",
+  "presenter": "Diane Marchetti (Presenter 1)",
+  "purpose": "Production-fit still. Sole input to Diane's reusable Kling motion base. Not an approval record.",
+  "derived_from": {
+    "file": "public/media/presenter-diane.jpg",
+    "sha256": "447d583bd6ebff73141bd64f3f956c87082787e1798c26843eeaf274dbaf14f1",
+    "dimensions": "1920x1088",
+    "status": "LOCKED approved master - original dark office. Byte-identical, never modified."
+  },
+  "operation": {
+    "tool": "ffmpeg",
+    "filter": "crop=1920:1080:0:4",
+    "rows_removed_top": 4,
+    "rows_removed_bottom": 4,
+    "resample": "none",
+    "colour_conversion": "none",
+    "output_pix_fmt": "rgb24",
+    "output_codec": "png (lossless)"
+  },
+  "verification": {
+    "output_dimensions": "1920x1080",
+    "output_sha256": "16279b7e01b530c1d33b6dd258ffbc1d6cb8ac6bb217e44cdc33bad348053013",
+    "pixel_exact_vs_source_rows_4_to_1083": true,
+    "raw_rgb_sha256_both_sides": "11b327a93481fced35a31ca23fee3b7e94d0c9c7a27d3fec7a6cf80edd99ac0a",
+    "source_sha256_after_operation": "447d583bd6ebff73141bd64f3f956c87082787e1798c26843eeaf274dbaf14f1",
+    "source_unchanged": true,
+    "symmetry_proof": "Output matches source rows 4..1083 only; offsets 0,1,2,3,5,6,8 all mismatch."
+  },
+  "authority": "APPROVED INTERNALLY 2026-08-18 by Luis (contractor). The 1920x1088 -> 1920x1080 conform is a technical production conform, not a change to Diane's approved appearance: exactly 4px cropped from the top and 4px from the bottom, no resample, no colour conversion, surviving pixels bit-for-bit identical to source rows 4..1083, and the approved master left byte-identical (sha256 447d583b... verified before and after). Expressly permitted by locked rule 6 (derive to new files; approved masters stay byte-identical) and required by locked rule 5 (delivery exactly 1920x1080). NO SEPARATE ROGER APPROVAL IS REQUIRED for this technical conform - explicitly decided 2026-08-18. Open item O-1 is CLOSED.",
+  "compliance": {
+    "video_production_guidelines": "Crop is a mechanical conform, not a redesign or regeneration. 'Do not redesign or regenerate Diane' is honoured - no pixels were altered, only edge rows removed.",
+    "locked_rule_5": "Delivery is exactly 1920x1080.",
+    "locked_rule_6": "Approved masters stay byte-identical; derived artifacts go to new files."
+  },
+  "date": "2026-08-18",
+  "status": "APPROVED - cleared for use as the sole input to Diane's reusable motion base."
+}

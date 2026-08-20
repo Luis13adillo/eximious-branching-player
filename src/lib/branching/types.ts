@@ -18,19 +18,28 @@ export type SceneId = string;
 
 export type OptionId = "A" | "B" | "C" | "D";
 
-/** How a media provider is fulfilled. Swapping providers is a data change. */
+/**
+ * How a media provider is fulfilled. Swapping providers is a data change.
+ *
+ * NOTE: this union describes what the PLAYER can render, not how Eximious media
+ * is produced. Delivered production assets are always `"file"` — mp4s under
+ * public/media/ built by the locked pipeline (see CLAUDE.md ★ LOCKED).
+ * `"heygen"` and `"elevenlabs"` are unused legacy members kept only so old
+ * lesson data still type-checks; HeyGen is NOT used on this project and no
+ * provider may be substituted without written approval.
+ */
 export type MediaProvider =
   | "placeholder" // no final asset yet — render the polished placeholder stage
-  | "heygen" // AI avatar video (HeyGen output URL)
-  | "elevenlabs" // narrated audio over stills (ElevenLabs output URL)
+  | "file" // any direct video/audio file URL — THE PRODUCTION PROVIDER
   | "mux" // hosted video (Mux playback)
-  | "file"; // any direct video/audio file URL
+  | "heygen" // LEGACY / UNUSED — not a production route
+  | "elevenlabs"; // LEGACY / UNUSED — not a production route
 
 /**
  * A media descriptor. The player renders a real <video>/<audio> element when
- * `videoUrl`/`audioUrl` is present, and the placeholder stage otherwise. Final
- * assets from HeyGen / ElevenLabs / Mux drop in here without touching the
- * branching engine or the player components.
+ * `videoUrl`/`audioUrl` is present, and the placeholder stage otherwise.
+ * Delivered segments from the locked production pipeline drop in here without
+ * touching the branching engine or the player components.
  */
 export interface MediaSource {
   provider: MediaProvider;

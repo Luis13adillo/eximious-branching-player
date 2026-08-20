@@ -57,9 +57,18 @@ export const waterDamageClaim: Lesson = {
       subhead:
         "A residential water-damage claim where the right answer depends entirely on the order you work it.",
       media: {
-        // Real lip-synced avatar clip: presenter still + voiceover → InfiniTalk
-        // (KIE, no HeyGen). Her mouth is driven by the audio, which is baked in.
-        // Swap in a HeyGen clip later and nothing else changes.
+        // LEGACY DEMO ASSET — NOT the production pipeline. This clip was made
+        // in Aug 2026 with KIE `infinitalk/from-audio` at 720p (1280×704), which
+        // is BELOW the contractual 1920×1080 floor and is SUPERSEDED. Do not
+        // reproduce this route, and do not reuse this asset for pilot delivery.
+        //
+        // The locked production pipeline is in CLAUDE.md (★ LOCKED): OpenAI TTS
+        // → a reusable per-presenter Kling motion base → `fal-ai/latentsync` →
+        // discard the returned audio and remux the locked 24 kHz −24.5 LUFS
+        // master → conform to exactly 1920×1080. HeyGen is not used on this
+        // project. See `claims-investigation-application-1.ts` for the real one.
+        //
+        // This lesson is a TEMPLATE PROOF only — never pilot content.
         provider: "file",
         // Versioned filename so a new clip is never served from a stale cache.
         videoUrl: "/media/intro-shimmer-v1.mp4",

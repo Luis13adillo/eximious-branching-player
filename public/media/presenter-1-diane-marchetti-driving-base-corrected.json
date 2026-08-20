@@ -1,0 +1,89 @@
+{
+ "asset": "presenter-1-diane-marchetti-driving-base-corrected.mp4",
+ "status": "PRODUCTION DRIVING BASE - Diane Marchetti. Blink-cadence corrected. In use by all 22 CLAIMS-01 AV1 segments.",
+ "presenter": "Diane Marchetti (Presenter 1)",
+ "purpose": "Reusable driving video for LatentSync. Derived from the approved motion base by RE-ORDERING its frames only. Generated once; reused across Diane's catalog.",
+ "derived_from": {
+  "asset": "public/media/presenter-1-diane-marchetti-motion-base.mp4",
+  "sha256": "a60b5d36ee8993bac334c2b0cd5c9fc392dad069978d9062c2e6c257491003a5",
+  "unchanged": "The approved motion base is untouched and verified byte-identical after this build."
+ },
+ "why": {
+  "defect": "The approved 5.04 s motion base contains FOUR blinks (frames 13-18, 34-38, 56-59, 105-110) = 47.6 blinks/min in the source itself. LatentSync pingpong-looped it to cover the narration, delivering 48.9 blinks/min on a fixed 10.0 s repeat, with half of every delivered blink played BACKWARDS on the reverse leg of the pingpong.",
+  "evidence": "docs/REAL_DEVICE_QA_CLAIMS_01.md"
+ },
+ "method": {
+  "cost": "$0.00 - ffmpeg only. No new generation, no Kling call, no TTS.",
+  "pixels": "Every output frame is a BIT-EXACT copy of a frame of the approved base. Only the ORDER changes. No filtering, no colour work, no scaling, no upscale.",
+  "source_region": "Frames 60-120 only - the settled on-camera pose, which contains exactly ONE blink (105-110). Frames 0-60 are a one-way settling drift carrying three of the four blinks and cannot be revisited without a visible pose jump; discarded.",
+  "walk": "A CONTINUOUS walk along the source frame index, every step +-1, so no move contains a cut. Direction runs are 12-55 frames (0.50-2.29 s); turns read as the head settling.",
+  "blinks": "Emitted by walking FORWARD through 105->110 only. Verified structurally: 22 traversals, each exactly [105,106,107,108,109,110], zero entered backwards.",
+  "joins": "22 joins, one per blink, returning from the post-blink tail to the working range. Max join = 1.675 whole-frame RMS vs 2.045 for the LARGEST step the approved base takes between two of its own consecutive frames - i.e. every join is a smaller visual change than the source's own motion. Median consecutive step: 0.728.",
+  "frame_plan": "public/media/presenter-1-diane-marchetti-driving-base-corrected.seq",
+  "build_script": "public/media/presenter-1-diane-marchetti-driving-base-corrected.build.py",
+  "encode": "libx264 -preset slow -crf 12 -pix_fmt yuv420p -an  (same settings as the approved base)",
+  "encode_fidelity": "PSNR vs the exact re-ordered approved pixels: average 55.64 dB, Y 54.74, min 52.91"
+ },
+ "delivery": {
+  "dims": "1920x1080",
+  "fps": "24/1",
+  "frames": 2391,
+  "dur_s": 99.625,
+  "audio": "none (silent driving video)"
+ },
+ "blink_schedule": {
+  "count": 22,
+  "rate_per_min": 13.25,
+  "onsets_s": [
+   2.625,
+   7.333,
+   9.0,
+   15.292,
+   19.167,
+   24.792,
+   26.917,
+   34.875,
+   38.917,
+   40.542,
+   45.333,
+   48.792,
+   55.833,
+   60.208,
+   63.25,
+   71.583,
+   75.5,
+   77.333,
+   83.042,
+   87.5,
+   93.583,
+   97.208
+  ],
+  "gaps_s": [
+   4.708,
+   1.667,
+   6.292,
+   3.875,
+   5.625,
+   2.125,
+   7.958,
+   4.042,
+   1.625,
+   4.792,
+   3.458,
+   7.042,
+   4.375,
+   3.042,
+   8.333,
+   3.917,
+   1.833,
+   5.708,
+   4.458,
+   6.083,
+   3.625
+  ],
+  "note": "Irregular by design, including three clustered doubles. Measured on the delivered segments: 103/103 planned blinks present, 13.3/min aggregate."
+ },
+ "why_longer_than_every_call": "99.62 s exceeds the longest LatentSync call (85.12 s), so loop_mode never triggers. That removes the repeating pattern and the reversed blinks structurally rather than statistically.",
+ "sha256": "e61587b98a127f674d8fa97939d854f01443ec7633e54fe1c121f716b92dbc2f",
+ "date": "2026-08-19"
+}

@@ -6,7 +6,8 @@
  * One playback model for two cases:
  *   1. No final asset yet → a simulated clock advances currentTime to duration
  *      so the placeholder stage plays, scrubs, and captions in sync.
- *   2. A real <video>/<audio> element (HeyGen, Mux, ElevenLabs) → the same API
+ *   2. A real <video>/<audio> element (a delivered .mp4, or hosted video) →
+ *      the same API
  *      binds to the element's real time.
  * The controls and caption logic never need to know which case is live, so
  * dropping in real media later requires no player changes.

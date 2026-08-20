@@ -51,3 +51,8 @@ next-env.d.ts
 
 # Eximious authoritative source docs (executed agreement + confidential scripts) — local reference only, never pushed
 docs/source/*.pdf
+
+# Contains verbatim confidential pilot-script narration transcribed from docs/source/pilot-scripts.pdf.
+# Same confidentiality basis as the source PDFs above — local reference only, never pushed.
+docs/VIDEO_1_PRODUCTION_MAP.md
+docs/VIDEO_1_GENERATION_CONFIGS.md

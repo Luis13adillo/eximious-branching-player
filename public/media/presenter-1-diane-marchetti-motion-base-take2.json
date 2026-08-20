@@ -1,0 +1,78 @@
+{
+  "asset": "presenter-1-diane-marchetti-motion-base-take2.mp4",
+  "presenter": "Diane Marchetti (Presenter 1)",
+  "purpose": "Reusable motion base. Generated ONCE, reused across all 51 of Diane's courses and every application video she presents. A new base is required only if Roger changes her approved appearance.",
+  "provider": "KIE",
+  "endpoint": "POST https://api.kie.ai/api/v1/jobs/createTask",
+  "taskId": "be4f07e5d056ca3d9514686d93f5384d",
+  "request": {
+    "model": "kling/v2-1-pro",
+    "input": {
+      "prompt": "A professional woman seated at her desk in a dark, refined private office, holding still and listening between takes. She is NOT speaking: her lips stay closed and together for the entire clip. Natural involuntary blinking at a relaxed human rate. Subtle breathing and only minimal, organic head and posture settling. Her hands stay exactly as they are, folded and still on the desk. Her seated position does not change. The camera is completely locked and stationary for the entire clip. ZERO zoom, push-in, pull-out, pan, tilt, crop, reframing, perspective shift, or camera drift. The framing, camera position, subject scale, desk visibility, and background composition at the LAST FRAME must be visually identical to the FIRST FRAME. Preserve the existing lighting, contrast, colour and mood exactly as in the source image; do not brighten, lift the shadows, or re-grade. No change whatsoever to her face, hair, wardrobe, the room, or the desk items. The framed plaque and the mug keep their existing lettering unchanged. No added or changed text, logos or graphics. One continuous locked-off shot, no cuts, no transitions.",
+      "duration": "5",
+      "negative_prompt": "camera movement, zoom, push-in, pull-out, pan, tilt, reframing, crop, camera drift, perspective shift, speaking, talking, mouth opening, lip movement, gesturing, hand movement, standing, leaning, scene change, cut, transition, wardrobe change, hairstyle change, face change, lighting change, room change, brightening, re-grading, added text, added logos, added graphics, overlays, watermark, extra people, distortion, warping, morphing",
+      "cfg_scale": 0.8
+    }
+  },
+  "source_still": {
+    "file": "public/media/presenter-1-diane-marchetti-production-still-1920x1080.png",
+    "sha256": "16279b7e01b530c1d33b6dd258ffbc1d6cb8ac6bb217e44cdc33bad348053013"
+  },
+  "no_seed_parameter": "kling/v2-1-pro exposes no seed. This clip is not reproducible; it is the artifact of record.",
+  "credits": {
+    "before": 1653.0,
+    "after": 1603.0,
+    "spent": 50.0,
+    "usd": 0.25
+  },
+  "output_sha256": "68f72070bd62e000c18f0c31d27377981a5941c5efb11e1995064d4079fa403e",
+  "date": "2026-08-18",
+  "status": "QA gate: 9/12 rows pass as written. All three failing rows were investigated; two are measurement artifacts and one is a benign photometric drift. AWAITING LUIS PREVIEW - not yet promoted to the production base.",
+  "take": 2,
+  "supersedes": "presenter-1-diane-marchetti-motion-base-take1-REJECTED.mp4 (continuous push-in)",
+  "changes_vs_take1": {
+    "duration": "10 -> 5",
+    "cfg_scale": "0.5 -> 0.8",
+    "prompt": "strengthened camera constraint - explicit first/last frame identity",
+    "negative_prompt": "+ pull-out, camera drift, perspective shift",
+    "unchanged": "model, image_url, source still, provider"
+  },
+  "qa_gate": {
+    "verdict_as_written": "FAIL 3/12 rows (Camera lock, Registration, Mouth closed)",
+    "verdict_after_diagnosis": "The push-in that killed Take 1 is fixed. No geometric camera fault remains. One real but minor deviation: a slight uniform brightening.",
+    "pass": {
+      "Dimensions": "1920x1080, 24 fps, 5.04 s, 121 frames",
+      "Audio": "no audio stream",
+      "Identity": "frame-0 vs still meanDelta 2.33/255 (Selena 1.66)",
+      "Subject scale": "last frame best-fits frame 0 at 1.000x - NO push-in (Take 1 reached a medium close-up)",
+      "Desk visibility": "desk band max drift 5.27/255 - desk, paper and mug in frame throughout",
+      "Natural motion": "face meanDelta 1.67/255, present on 100% of frame pairs, continuous",
+      "Blink": "eye-region peak 2.1x mean at 3.33 s",
+      "Loop seam": "reversal 0.11x typical - no cut",
+      "Pingpong fit": "first-vs-last gap 4.51/255"
+    },
+    "failed_as_written_but_diagnosed": {
+      "Registration": {
+        "measured": "best x-shift -3 px on a crop that INCLUDED Diane",
+        "diagnosis": "ARTIFACT. Re-run on a background-only region (1500,80,1900,700) with a wide 2D search: best fit is dx=0, dy=0. Diane's permitted head/posture settling was pulling the fit off-centre. The camera does not translate.",
+        "resolved": true
+      },
+      "Camera lock": {
+        "measured": "camera-right region drift 3.11/255 (threshold <1.5; Take 1 was 24.78)",
+        "diagnosis": "NOT camera movement. A wide 2D search over +/-12 px in both axes gives dx=0, dy=0 with ZERO improvement from shifting - there is no translation to find. 87% of the residual is a uniform brightness/colour lift (corner mean RGB 30.6/29.5/23.9 -> 32.9/32.8/26.5, about +2.7/255). It rises early then plateaus rather than ramping.",
+        "resolved": "Reclassified: photometric drift, not geometric. Real but ~1% of range.",
+        "residual_issue": true
+      },
+      "Mouth closed": {
+        "measured": "mouth-region drift 28.61/255 against a FIXED crop box",
+        "diagnosis": "ARTIFACT. The box is fixed while the head is allowed to settle, so any head movement inflates it. Visual inspection of 12 samples spread across the clip shows lips closed and together in every one - no opening, no teeth, no speech. The variation is a slight smile relaxing to neutral plus small head shifts.",
+        "resolved": true
+      }
+    },
+    "only_real_deviation": "Scene brightens/warms very slightly across the 5 s (whole-frame first-vs-last 4.51/255, ~1% of range). The prompt asked to preserve lighting exactly. Under pingpong this would be a slow ~1% brightness breathe. Almost certainly invisible at player scale. Correctable for free with a per-frame mean-level normalisation in ffmpeg if wanted - NOT applied, as that would modify generated media without authorisation.",
+    "comparison_to_take1": {
+      "background first-vs-last drift": "Take 1 25.01/255 -> Take 2 2.98/255 (8.4x better)",
+      "subject scale": "Take 1 pushed in to a medium close-up -> Take 2 1.000x"
+    }
+  }
+}

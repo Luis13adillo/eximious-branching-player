@@ -27,9 +27,142 @@ _Last updated from the authoritative sources below. Where this document and the 
 - **12‑step case‑progress rail — approved.**
 - **Captions — approved and working** (toggleable).
 
-**Explicitly superseded / no longer in effect:** brighter‑office Diane as final · panels becoming light · off‑white used as a major panel/background · general lightening of the interface.
+**Presenter 2 & 3 identities, visual direction AND voices — CLIENT APPROVED / LOCKED.** Roger approved the final identities, the exact approved appearance below, and both presenter voices (selected from blind auditions). **§6 is now closed — no client approvals remain open.** One technical gap persists: the registered image files do **not** yet meet the production-resolution requirement (see below and §7 F‑1).
 
-**Now also settled (not pending approval):** identity acknowledgment is **CLIENT APPROVED — exactly one per application video**; **fonts are decided** — Georgia (headings) / Segoe UI (body) per Spec §7 (current Fraunces/Inter is an implementation gap, not an open question); **pilot content is decided** — the supplied Pilot Scripts are authoritative (the water‑damage demo is a template proof, never pilot content). **Only remaining client approval: Presenter 2 & 3 identities.** See §6.
+| | Presenter 2 | Presenter 3 |
+|---|---|---|
+| **Name (locked)** | **Curtis Whitfield** | **Selena Navarro** |
+| Track group | Investigation & Fraud (Tracks 5, 7, 8, 9, 15) | Professional Practice & Business (Tracks 2, 3, 11, 13, 14) |
+| Courses | **32** | **42** |
+| Pilot | `siu-01` AV1 (Delacroix) | `ew-01` AV1 (Prieto) |
+| **Approved appearance — reference file** | `public/media/presenter-2-curtis-whitfield-master.png` | `public/media/presenter-3-selena-navarro-master.png` |
+| Reference file resolution | 1672×941 — **BELOW the 1080p floor** | 1672×941 — **BELOW the 1080p floor** |
+| Production-resolution master | ❌ **NOT YET REGISTERED** | ❌ **NOT YET REGISTERED** |
+| Lower‑third | "Course Presenter" (same fixed template constant as Diane) | "Course Presenter" (same fixed template constant as Diane) |
+
+**What is locked:** the **identity** (name, track group, allocation) and the **visual direction** (the approved appearance, environment, framing and styling shown in the reference files above).
+
+**What is NOT locked / still open:**
+- ⚠️ **The registered files above are approved-appearance REFERENCES, not final production-resolution masters.** Both are 1672×941, below the **1920×1080 minimum** required by A §1.4.1 / B §6. **Compliant 1920×1080-or-greater copies must be produced and registered before pilot render.** Until then the **media-resolution requirement for Presenters 2 and 3 is UNRESOLVED** (§7 F‑1, §4 C‑12a).
+- ✅ **Voices are now CLIENT APPROVED / LOCKED** (selected from blind auditions):
+  - **Curtis Whitfield — OpenAI `tts-1-hd`, voice `onyx`, speed 1.0.** Selected audio `public/media/presenter-2-curtis-whitfield-voice-SELECTED.mp3` (SHA-256 `8e26f505…b1439f`, 15.58 s, −24.49 LUFS).
+  - **Selena Navarro — OpenAI `gpt-4o-mini-tts-2025-12-15`, voice `sage`, with a locked `instructions` string.** Selected audio `public/media/presenter-3-selena-navarro-voice-SELECTED.mp3` (SHA-256 `803de3e5…c96bb2`, 21.05 s, −24.49 LUFS).
+  - Both preserved byte-for-byte from their auditions; neither was regenerated or re-encoded. Full reproduction parameters live in the matching `*-SELECTED.json` sidecars. **Selena's `instructions` string is part of her locked presenter definition** — the voice is not reproducible without it. See §7 F‑6 for the model split.
+
+**Constraint on producing the compliant masters.** The approved **appearance** must be reproduced exactly — same identity, environment, framing, wardrobe, lighting and color. The existing reference files must **not** be regenerated, edited, cropped, recolored, enhanced, upscaled in place, or otherwise altered; they stay on disk unchanged as the approval record against which any 1920×1080+ master is checked.
+
+- **Selena Navarro supersedes the earlier "Simone" working identity** — operationally and for all forward production. Simone is not a current identity under any circumstance; the Simone demo assets are retained solely as historical approval record (`docs/PRESENTER_VOICE_APPROVAL.md`).
+- **Selena — seated version = speaking video.** Her approved speaking-video visual is the final **tighter seated-desk** version (the reference file registered above), with the approved office/window environment and appearance preserved exactly.
+- **Selena — standing version = course pages / title cards.** Her previously approved **standing** version is designated for **course pages and title cards only**, never the speaking video. *(Registration gap: no standing asset is currently present in `public/media/`. The designation is locked; the file still needs to be supplied and registered.)*
+- **Surnames requirement satisfied.** Spec §2's "professional first and last name" per presenter is now met for all three presenters.
+
+### ★ LOCKED — Playback start behavior: NO autoplay at initial load
+
+**Locked 2026‑08‑19. Applies to every one of the 267 application videos, not just
+the pilots. This SUPERSEDES the earlier player behavior in which the opening
+segment began playing (muted) as soon as the lesson loaded.**
+
+**The rule.** An application video **must not begin playing automatically when
+the lesson loads.** It opens on its first frame with a clear, labelled
+Play/Start control. The learner's press is what starts it, and that single press
+starts **picture and sound together** — there is no separate "tap for sound"
+step and no period of silent moving video.
+
+**After the start.** Once the learner has deliberately started the video, later
+**segment transitions continue automatically**, exactly as before. The
+deliberate start is asked for **once per application video**, never again inside
+it. Places where the approved interaction flow already pauses — a decision, a
+retry re‑entry, the presence check — are unchanged and still pause.
+
+**Why it is locked.** Autoplay‑at‑load is muted by every current browser, so the
+first thing a learner met was Diane speaking with no sound until they happened
+to touch something. It also starts contractual content before the learner has
+engaged with it. Requiring the start makes the opening deterministic on desktop
+Chrome, mobile Chrome and iOS Safari alike, and removes the class of
+"no audio on iPhone" reports entirely, since audio now always begins inside a
+real user gesture.
+
+**Implementation (template level, not per lesson).** `LessonPlayer`'s
+`requireStart` prop, default **`true`**, carried into `useMediaClock`. Because it
+is a template default, every future video inherits it with no per‑lesson
+configuration. `false` is reserved for a deployment that must genuinely play
+unattended (e.g. a kiosk loop) and is **not** approved for course delivery.
+
+**What an unstarted stage shows.** The opening frame, the "Course Presenter"
+lower‑third, the video controls, and the Start control. Nothing else: the AI
+disclosure and the caption band belong to the video, and the video has not
+opened yet. This is also what keeps the locked bottom‑left disclosure position
+and the caption band clear of the Start control, which owns the centre of the
+frame — on a phone the stage is barely 300 px tall and all three would
+otherwise collide.
+
+**Knock‑on rules that move with it, and nothing else:**
+- **AI disclosure** — now appears when the **video** opens rather than when the
+  page loads, and then holds ~2–3 s and fades exactly as approved. Wording,
+  placement (bottom‑left, above the caption band), size, secondary styling,
+  one‑appearance‑only and fade behavior are all **unchanged**. This is the
+  faithful reading of "appears once at the beginning of the application video":
+  timed from page load it could hold and fade while the lesson still sat
+  unstarted, satisfying the requirement on paper only.
+- **Captions** — the band is empty until the lesson starts, because nothing is
+  being said yet. The toggle, styling, cue timing and behavior during playback
+  are **unchanged**.
+- **Identity acknowledgment (presence check)** — its 120 s countdown now arms at
+  the start of the video instead of at page load. The interval, the triggers and
+  the locked **exactly one per application video** budget are **unchanged**.
+  Without this, a learner reading the case header for two minutes would spend
+  the single acknowledgment before a frame had played, and the check would never
+  fire during the lesson it exists to police.
+
+**Unchanged by this rule:** captions during playback, video controls, branching, the 12‑step
+progress rail, the "Course Presenter" lower‑third, exhibits, the evidence
+inventory, the A ≠ B comparison, the process chain, retry reshuffle, the
+completion hand‑off, and all generated media. **No media is re‑rendered by this
+change** — it is player behavior only, which is exactly what locked pipeline
+rule 8 (nothing baked into the footage) exists to make possible.
+
+---
+
+**Explicitly superseded / no longer in effect:** brighter‑office Diane as final · panels becoming light · off‑white used as a major panel/background · general lightening of the interface · **"Simone" as the Presenter 3 identity** · **autoplay at initial load (the video now waits for the learner's Start — see the locked rule above)**.
+
+**Now also settled (not pending approval):** identity acknowledgment is **CLIENT APPROVED — exactly one per application video**; **fonts are decided** — Georgia (headings) / Segoe UI (body) per Spec §7 (current Fraunces/Inter is an implementation gap, not an open question); **pilot content is decided** — the supplied Pilot Scripts are authoritative (the water‑damage demo is a template proof, never pilot content); **Presenter 2 & 3 identities, visual direction and voices are CLIENT APPROVED / LOCKED** (Curtis Whitfield · `onyx` · Selena Navarro · `sage` — see the table above). **NO client approvals remain open.** See §6.
+
+---
+
+### ★ LOCKED — Production media pipeline (verified by two paid QA gates, 2026-08-18)
+
+**Summary of record: `CLAUDE.md` (★ LOCKED). Step-by-step procedure: the Production
+Playbook.** This section exists so that no reader of this spec can reach the media
+pipeline through an obsolete route; where it and `CLAUDE.md` differ, **`CLAUDE.md`
+governs**.
+
+```
+locked script → OpenAI TTS (per-presenter locked voice config)
+  → ffmpeg master to 24 kHz / mono / 128 kbps @ −24.5 LUFS  → audio QA gate
+  → [ONCE per presenter] KIE kling/v2-1-pro, 1920×1080, no audio → motion base
+  → batch narration into calls of ≥40 s, pad past the 16-frame boundary AT 25 FPS
+  → fal-ai/latentsync (loop_mode pingpong, seed recorded)
+  → DISCARD LatentSync's returned audio; REMUX the locked 24 kHz master
+  → split + conform to exactly 1920×1080 / 25 fps → player → Thinkific HTML5 zip
+```
+
+| | Locked value |
+|---|---|
+| Lip-sync engine | **`fal-ai/latentsync`** — no substitution without written approval |
+| Motion base | **KIE `kling/v2-1-pro`**, generated **once per presenter**, reused across all 267 |
+| Delivery | **exactly 1920×1080, 25 fps** |
+| Returned lip-sync audio | **DISCARDED** (it returns AAC 16 kHz) |
+| Delivered audio | the locked **24 kHz mono 128 kbps −24.5 LUFS** master, **remuxed** |
+| Diane Marchetti | OpenAI `tts-1-hd` · `shimmer` · speed 1.0 |
+| Curtis Whitfield | OpenAI `tts-1-hd` · `onyx` · speed 1.0 |
+| Selena Navarro | OpenAI **`gpt-4o-mini-tts-2025-12-15`** (pinned) · `sage` · **+ the locked `instructions` string**, read byte-exact from `presenter-3-selena-navarro-voice-SELECTED.json` (§7 F‑6) |
+
+⛔ **Not the pipeline, and not to be revived: `InfiniTalk` (KIE), HeyGen, or baking the
+lip-sync model's returned audio into the delivery.** InfiniTalk caps at 720p against the
+contractual 1920×1080 floor and costs ~12× more per second. Where this document mentions
+InfiniTalk (audit row 16) it is describing the **superseded 2026-08 demo media**, never a
+production route. Evidence: `docs/PRODUCTION_READINESS_COST_LOCK.md`,
+`docs/LIPSYNC_QA_GATE_LATENTSYNC.md`, `docs/MOTION_BASE_PIPELINE_TEST.md`.
 
 ---
 
@@ -73,16 +206,16 @@ These sources override prior chat history.
 
 **Presenters (B §2).** Three AI presenters, each covering 5 of the 15 tracks so a learner hears one consistent voice per track:
 - **Presenter 1 — Diane Marchetti · Claims & Coverage** (Tracks 1, 4, 6, 10, 12 = 51 courses). Established; stays.
-- **Presenter 2 — (to be named) · Investigation & Fraud** (Tracks 5, 7, 8, 9, 15 = 32 courses).
-- **Presenter 3 — (to be named) · Professional Practice & Business** (Tracks 2, 3, 11, 13, 14 = 42 courses).
-- Names for 2 & 3 proposed **with the pilot** for Roger's approval; same lower‑third title **"Course Presenter."** Each presenter keeps one distinct voice, constant across their tracks.
+- **Presenter 2 — Curtis Whitfield · Investigation & Fraud** (Tracks 5, 7, 8, 9, 15 = 32 courses). **CLIENT APPROVED / LOCKED** — see ★ LOCKED.
+- **Presenter 3 — Selena Navarro · Professional Practice & Business** (Tracks 2, 3, 11, 13, 14 = 42 courses). **CLIENT APPROVED / LOCKED** — see ★ LOCKED. Supersedes the earlier "Simone" working identity.
+- Names for 2 & 3 were proposed **with the pilot** and are now **approved by Roger**; same lower‑third title **"Course Presenter."** Each presenter keeps one distinct voice, constant across their tracks.
 
 **Pilot set (B §5, C).** Three videos, one per presenter, three tracks:
 | # | Course · Video | Track | Presenter | Package |
 |---|---|---|---|---|
 | 1 | `claims-01` — Fundamentals of Claims Investigation · App Video **1 of 3** | Track 1 | Diane Marchetti | `EA_claims-01_AV1.zip` |
-| 2 | `siu-01` — SIU Foundations & the Regulatory Framework · App Video **1 of 2** | Track 5 | Presenter 2 | `EA_siu-01_AV1.zip` |
-| 3 | `ew-01` — Becoming a Retained Expert · App Video **1 of 2** | Track 11 | Presenter 3 | `EA_ew-01_AV1.zip` |
+| 2 | `siu-01` — SIU Foundations & the Regulatory Framework · App Video **1 of 2** | Track 5 | Curtis Whitfield (Presenter 2) | `EA_siu-01_AV1.zip` |
+| 3 | `ew-01` — Becoming a Retained Expert · App Video **1 of 2** | Track 11 | Selena Navarro (Presenter 3) | `EA_ew-01_AV1.zip` |
 
 Pilot **content** (from C): #1 Marcus **Delaney** — burned Ford F‑250 theft/arson (claim 4471‑88203); #2 Marcus **Delacroix** — Ram 1500 arson referral; #3 Renata **Prieto** — expert‑witness engagement, _Doss v. Ferrin Haulage_.
 
@@ -121,13 +254,13 @@ Legend: **IV** = Implemented + Verified · **IQ** = Implemented / Needs QA · **
 | 9 | **Configurable rejoin summary cards (four‑icon)** (B §6, C) | **NI** | No summary‑card component. Scripts call for it (e.g. pilot 1 rejoin: "1. Issue 2. Burden 3. Standard 4. Evidence"). |
 | 10 | **Toggleable captions** (B §6) | **IQ** | `VideoControls` has a captions toggle (`captionsOn`, 'c' key). Mechanism present; **per‑video caption content + QA** needed for production. |
 | 11 | **DARK interface LOCKED; locked color roles applied** (★ LOCKED, supersedes B §7) | **IV** (this round) | Dark interface locked (no light‑panel redesign). `#7BAFD4` (+ `#1D5FA8`, `#D8E1EA`) added to the theme; **sky now the secondary accent** on **decision states** (option select/hover/badge + decision label) and **evidence/exhibit tabs**; **gold** stays primary (CTAs, progress rail, scrubber); off‑white text‑only. Correct/incorrect feedback kept **green/red** for visual distinction + accessibility (per E p11), not recolored to sky. "Lighten the interface" requirement remains **SUPERSEDED**. |
-| 12 | **~~Brighter‑office Diane~~ → DARK original Diane LOCKED** (★ LOCKED, supersedes B §7) | **Resolved / SUPERSEDED** | Dark original (`presenter-diane.jpg`) is the approved look. The brighter‑office candidate (`presenter-diane-brighter-office-approval.png`) remains on disk but is **not used** and is superseded. |
+| 12 | **~~Brighter‑office Diane~~ → DARK original Diane LOCKED** (★ LOCKED, supersedes B §7) | **Resolved / SUPERSEDED** | **The ORIGINAL DARK-OFFICE Diane (`presenter-diane.jpg`) is the locked production base.** Both lighter explorations — `presenter-diane-brighter-office-approval.png` and `presenter-diane-light-studio-approval.png` — remain on disk **only as superseded historical exploration**; neither is the production base and neither may be used in production. |
 | 13 | **"Course Presenter" lower‑third** (A §1.4, B §6) | **IV** (this update) | `MediaStage` now renders a fixed template constant `LOWER_THIRD_TITLE = "Course Presenter"` for every presenter/lesson; the data credential "Senior Claims Instructor" was removed from both lessons. No instructor title / implied credential remains. |
 | 14 | **AI‑presenter disclosure line** (A §1.4, B §6; CLIENT APPROVED placement) | **IV** | `AiDisclosure.tsx` renders the exact contract copy (unchanged) **bottom‑left of the video, just above the controls** — small‑type, subtle/secondary, dark scrim for contrast. Shows **once on the opening segment only** (~2–3s, then fades and unmounts); rendered in `LessonPlayer`'s persistent stage wrapper (not keyed to scenes) so it **never reappears** on later segments — verified programmatically across 10 segment changes. Clear of Diane and the lower‑third. |
 | 15 | **Existing audio / mute / single‑source must not regress** (A §2.2) | **IV** | Single persistent media element, one source at a time; 16/16 sound checks, watchdog `maxAudible=1`. |
-| 16 | **1080p output** (A §1.4.1, B §6) | **NI** (media) | Current demo media is 720p (InfiniTalk, 1280×704). Player is resolution‑agnostic; the **production media pipeline** must render 1920×1080. |
+| 16 | **1080p output** (A §1.4.1, B §6) | **MET for pilot 1** (Diane); open for pilots 2–3 (presenter stills) | ✅ **`EA_claims-01_AV1` ships 22/22 segments at exactly 1920×1080 / 25 fps** via the locked pipeline (see ★ LOCKED — Production media pipeline, and `docs/REAL_DEVICE_QA_CLAIMS_01.md`). ~~Current demo media is 720p (InfiniTalk, 1280×704)~~ — that describes the **superseded water‑damage demo asset only**, which is a template proof and must not be reused for delivery. Player is resolution‑agnostic. **Still open for pilots 2–3:** the Curtis and Selena approved-appearance reference files are 1672×941 — **no 1920×1080+ master exists for either presenter** (row 18, §7 F‑1). |
 | 17 | **267 videos authored to full scripts** (A §1.1) | **NI** (content) | Template proven with 1–2 placeholder lessons. **0 of 267** production videos authored. Pilots #2/#3 not authored (see C‑1). |
-| 18 | **3 presenters exist** (B §2) | **P + RA** | Presenter 1 (Diane) asset exists. **Presenters 2 & 3 unnamed, no assets.** |
+| 18 | **3 presenters exist** (B §2) | **P + RA** (identity/visual approved; voice + resolution open) | **Identities and visual direction CLIENT APPROVED / LOCKED** — Diane Marchetti · **Curtis Whitfield** · **Selena Navarro** (see ★ LOCKED). Approved-appearance reference files on disk: `presenter-diane.jpg`, `presenter-2-curtis-whitfield-master.png`, `presenter-3-selena-navarro-master.png`. **Voices now APPROVED / LOCKED** — Curtis `onyx` (`tts-1-hd`), Selena `sage` (`gpt-4o-mini-tts-2025-12-15` + locked `instructions`); selected audio registered and byte-preserved. **RA cleared.** Remaining gap is media, not approval: **the Curtis and Selena reference images are 1672×941, below the 1080p floor — NO production-resolution master is registered for either** (see row 16 and §7 F‑1). Also unregistered: Selena's standing course-page / title-card asset. |
 | 19 | **Source‑file deliverable + documentation** (A §2.3, §2.3.1) | **P** | Player source + per‑lesson data + discrete media exist in‑repo; a per‑video `_source.zip` with the required written docs is not assembled/named. |
 
 ---
@@ -165,8 +298,11 @@ No conflicts found between the Agreement and the Spec themselves; the Spec is co
 11. **Captions**: ensure per‑video caption data + verify the toggle end‑to‑end.
 
 **C. Presenters & media.**
-12. **Name + reference stills for Presenters 2 & 3** (approval‑gated).
-13. **Approved brighter‑office Diane** as the production base (sign‑off + optional pixel‑locked redo).
+12. **Names + visual direction for Presenters 2 & 3** — **APPROVED.** Roger approved **Curtis Whitfield** (Presenter 2) and **Selena Navarro** (Presenter 3) together with their exact approved appearance, registered as reference files at `public/media/presenter-2-curtis-whitfield-master.png` and `public/media/presenter-3-selena-navarro-master.png`. See ★ LOCKED.
+12a. **OPEN — production-resolution presenter masters.** Both reference files are **1672×941**, below the 1920×1080 floor (A §1.4.1 / B §6). **Compliant 1920×1080+ masters must be produced and registered for Curtis and Selena** before pilot render, reproducing the approved appearance exactly. The approved reference files must not be altered or upscaled in place — they are the approval record to check the new masters against. **Blocker for the pilot render** (§7 F‑1).
+12b. **OPEN — Selena's standing asset.** The standing version is the locked designation for **course pages / title cards**; the file is not yet present in `public/media/` and needs to be supplied and registered (also at 1920×1080+).
+12c. ~~OPEN — Presenter 2 & 3 voices.~~ **CLOSED / DONE.** Both approved and locked from blind auditions: **Curtis = `onyx`** (`tts-1-hd`, speed 1.0); **Selena = `sage`** (`gpt-4o-mini-tts-2025-12-15` + locked `instructions` string). Selected audio registered and byte-preserved in `public/media/`. Model split recorded at §7 F‑6.
+13. **Diane's production base — SETTLED, no action.** The locked production base is the **ORIGINAL DARK-OFFICE Diane** (`presenter-diane.jpg`) per ★ LOCKED. The brighter-office and light-studio versions are **superseded historical exploration only** and must not be used as the production base. *(This item previously read "Approved brighter-office Diane as the production base" — that was stale and contradicted ★ LOCKED; corrected here. Diane's image files were not modified.)*
 14. **1080p** production render for the 3 pilots (per the video‑to‑video pipeline in the earlier cost analysis; media generation is out of scope for this doc task).
 
 **D. Packaging & QA.**
@@ -178,7 +314,7 @@ No conflicts found between the Agreement and the Spec themselves; the Spec is co
 
 ## 5. Recommended implementation order
 
-1. **Client approvals first (they gate the build):** brighter‑office Diane; Presenter 2 & 3 names + stills; fonts (Georgia/Segoe UI vs keep Fraunces/Inter); confirm the identity‑acknowledgment requirement + cadence; confirm lighter‑palette usage; agree reshuffle is part of the locked template. _(See §6.)_
+1. **Client approvals first (they gate the build).** **Closed:** Diane's look (dark original, locked); **Presenter 2 & 3 names + visual direction (Curtis Whitfield · Selena Navarro — approved)**; fonts (Georgia/Segoe UI); identity‑acknowledgment cadence (once per video); palette/color roles; reshuffle as part of the locked template. **Presenter 2 & 3 voice approval — now CLOSED** (`onyx` / `sage`; see ★ LOCKED). No client approval gates the build. _(See §6.)_ The remaining pre-render blocker is technical, not contractual: no 1920×1080+ presenter master exists (§7 F‑1).
 2. **Author the 3 pilot lessons** to the supplied scripts (data only; no engine changes). This also surfaces exactly which exhibit/comparison/summary components each pilot needs.
 3. **Build the locked‑template components** in this order (cheapest‑to‑riskiest, all reusable): "Course Presenter" lower‑third → AI‑disclosure line → Exhibits label → four‑icon rejoin card → `A ≠ B` comparison → identity‑check "once per video" → lighter theme + fonts → captions data/QA.
 4. **Presenter media**: finalize Diane base + generate Presenter 2 & 3 bases; render the 3 pilots at **1080p** via video‑to‑video lip‑sync (only after approvals; separate task).
@@ -191,10 +327,14 @@ Regression guardrails already in place to protect during the above: retry/reshuf
 
 ## 6. Still requires client (Roger) approval
 
-**The ONLY remaining open client approval:**
-- **Presenter 2 & 3 names + reference stills** (B §2 asks for proposals with the pilot).
+**NO CLIENT APPROVALS REMAIN OPEN.**
+
+~~OPEN — Presenter 2 & 3 voices.~~ **CLOSED.** Roger selected both from blind auditions: **Curtis Whitfield = `onyx` on `tts-1-hd`**; **Selena Navarro = `sage` on `gpt-4o-mini-tts-2025-12-15`** with a locked `instructions` string. Both selections are registered, byte-preserved, and documented in ★ LOCKED and `docs/PRESENTER_VOICE_APPROVAL.md`.
+
+> **Not an approval item, but a hard production blocker** — tracked at §4 C‑12a and §7 F‑1: no **1920×1080+** master exists for Curtis or Selena. Their approved reference files are 1672×941, below the A §1.4.1 / B §6 floor. This needs compliant masters produced, not a client decision — unless Roger elects to accept the lower resolution, which would be a new approval.
 
 **Now settled — no longer pending (moved out of this list):**
+- ~~Presenter 2 & 3 names + visual direction~~ — **CLIENT APPROVED / LOCKED: Curtis Whitfield (Presenter 2, Investigation & Fraud, 32 courses) and Selena Navarro (Presenter 3, Professional Practice & Business, 42 courses)**, with the approved appearance registered as reference files in `public/media/`. Selena supersedes the earlier "Simone" working identity operationally and for all forward production. **Their voices and their production-resolution masters are NOT covered by this approval** — see above.
 - ~~Brighter‑office Diane still~~ — LOCKED: dark original approved; brighter candidate not used.
 - ~~Lighter‑interface palette usage~~ — LOCKED: dark interface; color roles fixed (see ★ LOCKED).
 - ~~Identity acknowledgment~~ — **CLIENT APPROVED: exactly one per video** (C‑3). Remaining work is implementation only.
@@ -204,4 +344,34 @@ Regression guardrails already in place to protect during the above: retry/reshuf
 
 ---
 
-_Prepared as a read‑only pre‑pilot gap analysis. No pilots rendered, no production media generated, no deployment, no major implementation changes._
+## 7. Presenter master registration — open flags
+
+Recorded when the approved Curtis Whitfield and Selena Navarro masters were registered. **Flagged, not reconciled** (per the source‑precedence rule).
+
+**F‑1 — UNRESOLVED: no production-resolution master exists for Curtis or Selena.** Both registered files are **1672×941**. Agreement **A §1.4.1** and Spec **B §6** require **1080p (1920×1080) minimum**. These files are therefore **approved-appearance references, not final production-resolution masters**, and this spec does not treat them as production masters anywhere.
+
+**Status: OPEN — blocks pilot render.** Resolution path, in order of preference:
+1. **Produce compliant 1920×1080+ masters** that reproduce the approved appearance exactly (identity, environment, framing, wardrobe, lighting, color), and register them alongside — not over — the reference files. This is the expected path.
+2. Failing that, Roger explicitly accepts the sub-1080p stills as the production source. **That is a new client approval**, not something this document can assume.
+
+**Not acceptable:** upscaling, cropping, re-encoding or otherwise altering the approved reference files in place. They are the approval record against which any new master is verified. Related: audit row 16 (current demo media is 720p) and §4 C‑12a. Selena's standing course-page / title-card asset is likewise unregistered and must also meet 1920×1080+.
+
+**F‑2 — Aspect ratio is marginally off 16:9.** 1672×941 = **1.7768**, against 16:9 = 1.7778. The difference is sub‑pixel at 1080p height and is unlikely to matter, but it is recorded so any pipeline fit (pad vs. crop) is a deliberate choice rather than a silent one. **Cropping to exact 16:9 would alter an approved master** and must not be done without Roger's written approval.
+
+**F‑3 — "Okafor" surname was never in the repository.** The superseded Presenter 3 working identity is recorded in this project as the **first name "Simone" only** (`docs/PRESENTER_VOICE_APPROVAL.md` explicitly flagged the missing surname as an open item). No occurrence of "Okafor" exists in the working tree. Noted so the supersession record is accurate.
+
+**F‑6 — Selena runs on a DIFFERENT TTS MODEL from Diane and Curtis (client-approved exception).** Diane (`shimmer`) and Curtis (`onyx`) use **`tts-1-hd`**. Selena uses **`gpt-4o-mini-tts-2025-12-15`** (`sage`).
+
+**Why the split was unavoidable.** `tts-1-hd` serves nine voices; its female-presenting set is `shimmer`, `nova`, `sage`, `coral` (+ neutral `alloy`). `shimmer` is Diane's and locked; the rest were rejected against Selena's casting brief as too mature, too formal, or British-inflected (`fable`). The roster was exhausted. `tts-1-hd` also has **no `instructions` parameter**, so delivery could not be directed — which is precisely what the brief required. `gpt-4o-mini-tts` restores that control, and `sage` — rejected on `tts-1-hd` — was selected on it once delivery could be shaped.
+
+**Risk accepted, with mitigations.** (a) The masculine-onset defect of commit `6692f8a` was **explicitly QA-tested on every Selena candidate and did not reproduce** — pitch analysis showed onset F0 at or above body F0 on all takes; that fault was `shimmer`-specific, not model-wide. (b) The model is **pinned to the dated snapshot** `gpt-4o-mini-tts-2025-12-15`, so acoustic behaviour will not drift mid-catalog. (c) Full reproduction parameters, **including the exact `instructions` string**, are stored in her `*-SELECTED.json` sidecar. (d) Per A §7.2, raw narration ships as discrete source files, so the catalog does not depend on the API remaining up.
+
+**Consequence for A §7.1 continuity.** The catalog now spans two OpenAI TTS models rather than one. Same provider, same licensing chain, one extra deprecation surface. This is a deliberate client-approved trade: presenter fit over single-model uniformity.
+
+**F‑4 — ~~Voice approval status is unchanged by this round.~~ SUPERSEDED — both voices are now approved (see F‑6 and ★ LOCKED).** Historical note follows. Roger's approval covered the **identities and visuals**. The `ash` (Presenter 2) and `sage` (Presenter 3) voice candidates in `docs/PRESENTER_VOICE_APPROVAL.md` are **not** recorded here as approved, because no such approval was stated. The Presenter 3 demo was rendered under the "Simone" working name; the voice itself is independent of the name change.
+
+**F‑5 — RESOLVED: stale Diane production-base line corrected.** §4 C item 13 previously read "**Approved brighter‑office Diane** as the production base," contradicting the ★ LOCKED decision. Corrected: the locked production base is the **ORIGINAL DARK-OFFICE Diane** (`presenter-diane.jpg`); the brighter-office and light-studio versions are retained as **superseded historical exploration only**. Audit row 12 was updated to name both lighter files explicitly. **Documentation only — no Diane image file was modified** (all three verified byte-identical by checksum).
+
+---
+
+_Prepared as a read‑only pre‑pilot gap analysis. No pilots rendered, no production media generated, no deployment, no major implementation changes. §7 and the Presenter 2 & 3 identity lock were added when Roger's approved presenter masters were registered — documentation and media registration only._
