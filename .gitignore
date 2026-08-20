@@ -66,3 +66,27 @@ docs/confidential/
 # and rebuilds this directory on every run). Trailing-number variants are Finder
 # duplicates of the same build output.
 eximious-claims-investigation-thinkific-html5*/
+
+# Confidential presenter VOICE artifacts — siu-01 / ew-01 pilot-script narration.
+# Same confidentiality basis as docs/source/*.pdf: local reference only, never pushed.
+#
+# Every presenter narration .mp3 is confidential client script text spoken aloud.
+public/media/presenter-*.mp3
+#
+# Voice casting rounds and superseded candidates. Their sidecars carry the same
+# passage verbatim in an `excerpt` field.
+public/media/presenter-*-casting-*.json
+public/media/presenter-*-voice-approval.json
+public/media/presenter-*-marin-*.json
+public/media/presenter-*-oai-*.json
+public/media/presenter-*-voice-v[0-9].json
+#
+# NOT confidential and deliberately TRACKED: the two REDACTED *-voice-SELECTED.json
+# sidecars carry the locked voice config with the excerpt removed, and CLAUDE.md
+# depends on Selena's. These negations are a guard — keep them if the rules above
+# are ever broadened.
+!public/media/presenter-2-curtis-whitfield-voice-SELECTED.json
+!public/media/presenter-3-selena-navarro-voice-SELECTED.json
+#
+# Also NOT matched, and must stay tracked: presenter-1-diane-* motion-base /
+# driving-base / production-still .json .seq .filter .build.py provenance sidecars.
