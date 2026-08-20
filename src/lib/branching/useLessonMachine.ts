@@ -26,6 +26,12 @@ const now = () => (typeof Date !== "undefined" ? Date.now() : 0);
 export interface LessonMachine {
   state: MachineState;
   current: Scene;
+  /**
+   * Increments on every `restart()`. Lets template-level, once-per-video
+   * behaviour (e.g. the identity acknowledgment) reset for a fresh run without
+   * the player having to inspect machine internals.
+   */
+  runId: number;
   /** Ordered decision scene ids, for numbering + progress. */
   decisionIds: SceneId[];
   isComplete: boolean;
@@ -43,6 +49,7 @@ export function useLessonMachine(
   const [state, setState] = useState<MachineState>(() =>
     initMachine(lesson, now()),
   );
+  const [runId, setRunId] = useState(0);
 
   // Keep handlers in a ref so changing them never resets lesson state.
   const handlersRef = useRef<PlayerEventHandlers | undefined>(handlers);
@@ -132,6 +139,7 @@ export function useLessonMachine(
 
   const restart = useCallback(() => {
     setState(restartMachine(lesson, now()));
+    setRunId((n) => n + 1);
   }, [lesson]);
 
   const current = getScene(lesson, state.currentSceneId);
@@ -139,6 +147,7 @@ export function useLessonMachine(
   return {
     state,
     current,
+    runId,
     decisionIds,
     isComplete: state.status === "complete",
     attemptsForCurrent: state.attempts[state.currentSceneId] ?? [],

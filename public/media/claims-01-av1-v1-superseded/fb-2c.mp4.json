@@ -1,0 +1,53 @@
+{
+  "asset": "fb-2c.mp4",
+  "video": "EA_claims-01_AV1",
+  "presenter": "Diane Marchetti (Presenter 1)",
+  "lipsync": {
+    "provider": "fal.ai",
+    "model": "fal-ai/latentsync",
+    "loop_mode": "pingpong",
+    "seed": 20260818,
+    "guidance_scale": "default (1)",
+    "request_id": null,
+    "request_id_note": "Not captured: run_rest.py discarded the returned metadata and the run log was truncated by a tail pipe. Every reproducibility-critical field is recorded below; for the catalog, persist per-call metadata to disk at submit time.",
+    "batch_call": 5,
+    "batch_segments": [
+      "fb-2c",
+      "fb-2d"
+    ],
+    "submit_s": 50.76,
+    "blocks": 79,
+    "returned_frames": 1264,
+    "frame_assertion": "returned == blocks x 16 : PASS",
+    "driving_video": "public/media/presenter-1-diane-marchetti-motion-base.mp4",
+    "driving_video_sha256": "a60b5d36ee8993bac334c2b0cd5c9fc392dad069978d9062c2e6c257491003a5",
+    "cost_usd": 0.2538
+  },
+  "split": {
+    "batch_start_s": 0.0,
+    "video_start_s": 0.0,
+    "align_err_ms": 0.0,
+    "frames": 644,
+    "video_dur_s": 25.76,
+    "audio_dur_s": 25.729,
+    "method": "re-encoded at the cut (a stream copy snaps to the nearest keyframe and would desync the remuxed audio); trimmed UP to a whole 25 fps frame so video >= audio"
+  },
+  "audio": {
+    "source": "fb-2c.mp3",
+    "note": "LatentSync's returned audio (aac 16 kHz) is DISCARDED; the locked 24 kHz -24.5 LUFS master is remuxed with -c:a copy (locked rule 4). Verified: the master's decoded PCM is an exact prefix of the mp4's, the only difference being 47 samples (1.96 ms) of mp3 decoder padding at the tail.",
+    "lufs_integrated": -24.5,
+    "true_peak_dbfs": -6.7,
+    "stream": "mp3,24000,1,128000",
+    "tts": {
+      "model": "tts-1-hd",
+      "voice": "shimmer",
+      "speed": 1.0
+    }
+  },
+  "delivery": {
+    "dims": "1920x1080",
+    "fps": "25/1"
+  },
+  "sha256": "c798571d75028740ae59bb7fb915993531debcda094483766d73a73fb0a51bb1",
+  "date": "2026-08-19"
+}

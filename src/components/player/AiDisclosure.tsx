@@ -12,9 +12,19 @@ export const AI_DISCLOSURE_TEXT =
   "Your presenter is AI-generated. All course content is authored by Roger M. Naut, drawn from 35 years in insurance claims investigation and adjusting.";
 
 export function AiDisclosure({
+  started = true,
   holdMs = 2400,
   fadeMs = 600,
 }: {
+  /**
+   * Whether the lesson has actually begun. The notice appears WITH the video,
+   * not with the page: the player no longer autoplays, so a disclosure timed
+   * from page load could hold and fade while the lesson still sat unstarted,
+   * satisfying "shown at the opening of the application video" on paper only.
+   * Mounting it at the start also keeps the locked bottom-left position clear
+   * of the Start control, which owns the centre of an unstarted stage.
+   */
+  started?: boolean;
   /** How long it stays fully visible before fading (~2–3s total with fade). */
   holdMs?: number;
   /** Fade-out duration. */
@@ -22,16 +32,21 @@ export function AiDisclosure({
 }) {
   const [phase, setPhase] = useState<"visible" | "fading" | "gone">("visible");
 
+  // `phase` starts at "visible" and only ever moves forward, and these timers
+  // are the only thing that moves it — so arming them when the lesson starts is
+  // the whole behaviour. No reset needed: the notice shows once per video.
   useEffect(() => {
+    if (!started) return;
     const t1 = setTimeout(() => setPhase("fading"), holdMs);
     const t2 = setTimeout(() => setPhase("gone"), holdMs + fadeMs);
     return () => {
       clearTimeout(t1);
       clearTimeout(t2);
     };
-  }, [holdMs, fadeMs]);
+  }, [started, holdMs, fadeMs]);
 
-  if (phase === "gone") return null;
+  // Nothing before the lesson starts — the video has not opened yet.
+  if (!started || phase === "gone") return null;
 
   return (
     // Small, subtle, SECONDARY notice pinned to the BOTTOM-LEFT of the video,

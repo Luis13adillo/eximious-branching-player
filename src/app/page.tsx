@@ -75,7 +75,7 @@ export default function Home() {
                 <div className="relative aspect-video w-full shrink-0 overflow-hidden rounded-lg border border-white/10 sm:h-24 sm:w-44">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
-                    src="/media/evidence-basement.jpg"
+                    src="/media/evidence-burned-pickup.jpg"
                     alt=""
                     className="absolute inset-0 h-full w-full object-cover"
                   />

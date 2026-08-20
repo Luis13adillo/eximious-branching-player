@@ -1,17 +1,22 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import type { EvidenceItem } from "@/lib/branching/types";
 import { Illustration } from "@/components/media/illustrations";
+import { ExhibitTabs, ExhibitsLabel } from "./exhibits";
 
 /**
  * EvidenceStage
  * ============================================================================
  * Presents a supporting exhibit full-bleed across the stage — photos fill it
  * (object-cover), drawn diagrams sit contained so nothing is cropped. Chrome is
- * kept to a minimum: legibility scrims, a single caption line, and a compact
- * corner switcher when a scene has more than one exhibit. Resets to the first
- * exhibit when the scene changes.
+ * kept to a minimum: legibility scrims, the required "Exhibits" label, a single
+ * caption line, and a compact corner switcher when a scene has more than one
+ * exhibit. Resets to the first exhibit when the scene changes.
+ *
+ * Used when a scene has no presenter footage on the stage. When it does, the
+ * exhibits render in the content panel instead (see `ExhibitPanel`) — both
+ * share the same label constant and tab component.
  */
 
 function ExhibitVisual({ item }: { item: EvidenceItem }) {
@@ -39,11 +44,6 @@ function ExhibitVisual({ item }: { item: EvidenceItem }) {
   return null;
 }
 
-/** Short chip label — the exhibit's lead noun (before any em dash). */
-function shortLabel(item: EvidenceItem) {
-  return item.title.split("—")[0].trim();
-}
-
 export function EvidenceStage({
   evidence,
   sceneKey,
@@ -51,12 +51,16 @@ export function EvidenceStage({
   evidence: EvidenceItem[];
   sceneKey: string;
 }) {
-  const [active, setActive] = useState(0);
-  useEffect(() => setActive(0), [sceneKey]);
+  // Selection is stored WITH the scene it belongs to, so changing scene resets
+  // to the first exhibit by derivation rather than a reset effect.
+  const [picked, setPicked] = useState<{ scene: string; index: number } | null>(
+    null,
+  );
+  const active = picked?.scene === sceneKey ? picked.index : 0;
+  const setActive = (index: number) => setPicked({ scene: sceneKey, index });
 
   const item = evidence[active] ?? evidence[0];
   if (!item) return null;
-  const multi = evidence.length > 1;
 
   return (
     <div className="absolute inset-0">
@@ -78,31 +82,19 @@ export function EvidenceStage({
         }}
       />
 
-      {/* compact exhibit switcher — top-right, clears the centered "tap for
-          sound" pill. Numbered pill on mobile; adds a short label from ~sm up. */}
-      {multi && (
-        <div className="absolute right-3 top-3 z-[6] flex gap-1.5">
-          {evidence.map((ev, i) => (
-            <button
-              key={ev.id}
-              type="button"
-              onClick={() => setActive(i)}
-              aria-label={`Show exhibit: ${ev.title}`}
-              aria-current={i === active}
-              className={`flex h-7 items-center gap-1.5 rounded-full px-2.5 font-sans text-[11px] ring-1 backdrop-blur-md transition-colors ${
-                i === active
-                  ? "bg-sky-500 text-navy-950 ring-black/20"
-                  : "bg-navy-950/70 text-ink-200 ring-white/15 hover:text-ink-100"
-              }`}
-            >
-              <span className="font-semibold">{i + 1}</span>
-              <span className="hidden max-w-[110px] truncate sm:inline">
-                {shortLabel(ev)}
-              </span>
-            </button>
-          ))}
-        </div>
-      )}
+      {/* Required "Exhibits" label directly above the evidence tabs (Spec §6).
+          Top-right, clearing the centred "tap for sound" pill. The tab row only
+          renders when the scene carries more than one exhibit; the label always
+          marks the exhibit region so exhibits stay discoverable. */}
+      <div className="absolute right-3 top-3 z-[6] flex flex-col items-end gap-1.5">
+        <ExhibitsLabel tone="overlay" />
+        <ExhibitTabs
+          evidence={evidence}
+          active={active}
+          onSelect={setActive}
+          tone="overlay"
+        />
+      </div>
 
       {/* single caption line, above the controls */}
       {item.caption && (

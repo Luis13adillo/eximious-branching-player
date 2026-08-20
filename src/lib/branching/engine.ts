@@ -152,6 +152,67 @@ export function outlineIndexForScene(
   return outline.findIndex((o) => o.id === sceneId);
 }
 
+/**
+ * One step on the learner-facing progress rail. Either a configured milestone
+ * (`lesson.progress`) or, when a lesson configures none, a single spine scene.
+ */
+export interface ProgressStep {
+  id: string;
+  label: string;
+  kind: "narrative" | "decision" | "quiz";
+  /** Every spine scene this step covers. */
+  sceneIds: SceneId[];
+}
+
+/**
+ * The learner-facing progress steps.
+ *
+ * The rail's resolution is a LESSON-level decision, not a player-level one: a
+ * script may split one teaching beat across several delivered segments, and the
+ * learner's map should show beats. When `lesson.progress` is configured it is
+ * used verbatim (validated to cover the whole spine); otherwise every spine
+ * scene is its own step, which is the behaviour lessons had before milestones
+ * existed.
+ */
+export function progressSteps(lesson: Lesson): ProgressStep[] {
+  const outline = lessonOutline(lesson);
+  if (!lesson.progress || lesson.progress.length === 0) {
+    return outline.map((o) => ({
+      id: o.id,
+      label: o.label,
+      kind: o.kind,
+      sceneIds: [o.id],
+    }));
+  }
+  const kindOf = (o: OutlineStep) => o.kind;
+  return lesson.progress.map((m) => {
+    const steps = m.scenes
+      .map((id) => outline.find((o) => o.id === id))
+      .filter((o): o is OutlineStep => !!o);
+    // A milestone containing a decision reads as a decision; a quiz as a quiz.
+    const kind =
+      steps.find((o) => kindOf(o) === "quiz")?.kind ??
+      steps.find((o) => kindOf(o) === "decision")?.kind ??
+      "narrative";
+    return { id: m.id, label: m.label, kind, sceneIds: [...m.scenes] };
+  });
+}
+
+/**
+ * Index of the progress step the given scene belongs to. Feedback branches
+ * resolve to their decision's step, so the rail never moves backwards or jumps
+ * while a learner works through a branch.
+ */
+export function progressIndexForScene(
+  lesson: Lesson,
+  sceneId: SceneId,
+): number {
+  const scene = lesson.scenes[sceneId];
+  const target =
+    scene && scene.type === "feedback" ? scene.forDecisionId : sceneId;
+  return progressSteps(lesson).findIndex((s) => s.sceneIds.includes(target));
+}
+
 export function initMachine(lesson: Lesson, nowMs: number): MachineState {
   const start = getScene(lesson, lesson.startSceneId);
   return {
@@ -352,6 +413,45 @@ export function validateLesson(lesson: Lesson): string[] {
           `Decision "${d.id}" correct feedback "${fb.id}" must advance forward, not back to the decision.`,
         );
       }
+    }
+  }
+
+  // Progress milestones (optional) must map the spine exactly once. Without
+  // this a scene could silently disappear from the learner's map, or a typo'd
+  // scene id could leave a milestone that never lights up.
+  if (lesson.progress) {
+    const spine = lessonOutline(lesson).map((o) => o.id);
+    const seenMilestones = new Set<string>();
+    const claimed = new Map<SceneId, string>();
+    for (const m of lesson.progress) {
+      if (seenMilestones.has(m.id)) {
+        problems.push(`Progress milestone id "${m.id}" is repeated.`);
+      }
+      seenMilestones.add(m.id);
+      if (!m.scenes || m.scenes.length === 0) {
+        problems.push(`Progress milestone "${m.id}" claims no scenes.`);
+        continue;
+      }
+      for (const sceneId of m.scenes) {
+        if (!spine.includes(sceneId)) {
+          problems.push(
+            `Progress milestone "${m.id}" claims "${sceneId}", which is not on the lesson spine.`,
+          );
+        }
+        const owner = claimed.get(sceneId);
+        if (owner) {
+          problems.push(
+            `Scene "${sceneId}" is claimed by both milestone "${owner}" and "${m.id}".`,
+          );
+        }
+        claimed.set(sceneId, m.id);
+      }
+    }
+    const unclaimed = spine.filter((id) => !claimed.has(id));
+    if (unclaimed.length > 0) {
+      problems.push(
+        `Progress milestones do not cover spine scene(s): ${unclaimed.join(", ")}.`,
+      );
     }
   }
 

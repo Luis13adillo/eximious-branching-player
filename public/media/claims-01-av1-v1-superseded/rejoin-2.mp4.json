@@ -1,0 +1,53 @@
+{
+  "asset": "rejoin-2.mp4",
+  "video": "EA_claims-01_AV1",
+  "presenter": "Diane Marchetti (Presenter 1)",
+  "lipsync": {
+    "provider": "fal.ai",
+    "model": "fal-ai/latentsync",
+    "loop_mode": "pingpong",
+    "seed": 20260818,
+    "guidance_scale": "default (1)",
+    "request_id": "01a0181d-d5dd-7f42-94c8-ad1f93898c3a",
+    "request_id_note": null,
+    "batch_call": 6,
+    "batch_segments": [
+      "rejoin-2",
+      "decision-3"
+    ],
+    "submit_s": 46.28,
+    "blocks": 72,
+    "returned_frames": 1152,
+    "frame_assertion": "returned == blocks x 16 : PASS",
+    "driving_video": "public/media/presenter-1-diane-marchetti-motion-base.mp4",
+    "driving_video_sha256": "a60b5d36ee8993bac334c2b0cd5c9fc392dad069978d9062c2e6c257491003a5",
+    "cost_usd": 0.2314
+  },
+  "split": {
+    "batch_start_s": 0.0,
+    "video_start_s": 0.0,
+    "align_err_ms": 0.0,
+    "frames": 970,
+    "video_dur_s": 38.8,
+    "audio_dur_s": 38.785,
+    "method": "re-encoded at the cut (a stream copy snaps to the nearest keyframe and would desync the remuxed audio); trimmed UP to a whole 25 fps frame so video >= audio"
+  },
+  "audio": {
+    "source": "rejoin-2.mp3",
+    "note": "LatentSync's returned audio (aac 16 kHz) is DISCARDED; the locked 24 kHz -24.5 LUFS master is remuxed with -c:a copy (locked rule 4). Verified: the master's decoded PCM is an exact prefix of the mp4's, the only difference being 47 samples (1.96 ms) of mp3 decoder padding at the tail.",
+    "lufs_integrated": -24.5,
+    "true_peak_dbfs": -5.3,
+    "stream": "mp3,24000,1,128000",
+    "tts": {
+      "model": "tts-1-hd",
+      "voice": "shimmer",
+      "speed": 1.0
+    }
+  },
+  "delivery": {
+    "dims": "1920x1080",
+    "fps": "25/1"
+  },
+  "sha256": "2566afea428928662639cbe2345859a01992032e0270a533c233a4fb4bc6cf8e",
+  "date": "2026-08-19"
+}

@@ -246,17 +246,20 @@ export function MediaStage({
         />
       ) : null}
 
-      {/* click-to-play surface */}
-      <button
-        type="button"
-        aria-label={clock.playing ? "Pause" : "Play"}
-        onClick={() => {
-          clock.toggle();
-          nudgeControls();
-        }}
-        className="absolute inset-0 h-full w-full cursor-default"
-        tabIndex={-1}
-      />
+      {/* click-to-play surface — replaced by the Start control until the
+          learner has started the lesson, so there is exactly one thing to press. */}
+      {clock.started && (
+        <button
+          type="button"
+          aria-label={clock.playing ? "Pause" : "Play"}
+          onClick={() => {
+            clock.toggle();
+            nudgeControls();
+          }}
+          className="absolute inset-0 h-full w-full cursor-default"
+          tabIndex={-1}
+        />
+      )}
 
       {/* One tasteful presenter lower-third — DESKTOP ONLY. On phones the video
           frame is kept clean (the case title / kicker live in the panel beside
@@ -286,7 +289,7 @@ export function MediaStage({
       )}
 
       {/* big center play when paused (not ended, not buffering) */}
-      {!clock.playing && !clock.ended && !clock.waiting && (
+      {clock.started && !clock.playing && !clock.ended && !clock.waiting && (
         <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
           <span className="flex h-16 w-16 items-center justify-center rounded-full bg-navy-950/55 ring-1 ring-white/20 backdrop-blur-sm sm:h-20 sm:w-20">
             <PlayIcon className="ml-1 h-7 w-7 text-ink-100 sm:h-9 sm:w-9" />
@@ -294,13 +297,51 @@ export function MediaStage({
         </div>
       )}
 
-      {/* captions — suppressed on exhibit scenes, where they'd cover the image
-          (the exhibit card carries its own caption and the panel has the body) */}
+      {/* THE START GATE — the lesson opens here.
+          Nothing plays on load; the scene sits on its poster frame behind this
+          control until the learner presses it, and that one press starts the
+          picture and the sound together. It sits BELOW the controls bar (z-9 vs
+          z-10) so the control bar's own play button still works, and below the
+          AI disclosure (z-20) so the contractual notice is never covered. Gold
+          is the locked primary-action colour, so the start of the lesson reads
+          as the action it is. It disappears for the rest of the run — later
+          segments continue on their own. */}
+      {!clock.started && (
+        <button
+          type="button"
+          onClick={() => {
+            clock.play();
+            nudgeControls();
+          }}
+          style={{ outlineOffset: "-3px" }}
+          className="absolute inset-0 z-[9] flex h-full w-full flex-col items-center justify-center gap-3.5 bg-navy-950/45 transition-colors duration-200 hover:bg-navy-950/30"
+        >
+          <span className="flex h-16 w-16 items-center justify-center rounded-full bg-gold-500 shadow-lg shadow-black/40 ring-1 ring-gold-300/40 transition-transform duration-200 sm:h-20 sm:w-20">
+            <PlayIcon className="ml-1 h-7 w-7 text-navy-950 sm:h-9 sm:w-9" />
+          </span>
+          <span className="px-6 text-center">
+            <span className="block font-sans text-[15px] font-semibold text-ink-100 sm:text-base">
+              Start the lesson
+            </span>
+            <span className="mt-0.5 block font-sans text-[11px] text-ink-300 sm:text-xs">
+              Video and sound begin together
+            </span>
+          </span>
+        </button>
+      )}
+
+      {/* Captions — suppressed in two cases. When the STAGE is showing the
+          exhibit full-bleed they would cover the image (that exhibit carries its
+          own caption line); when the stage is showing the presenter, the
+          exhibits live in the content panel and captions play normally. And
+          before the learner starts the lesson there is nothing being said yet,
+          so the caption band stays empty and the Start control has the frame to
+          itself. Toggle state, styling and timing are untouched. */}
       <div className="pointer-events-none absolute inset-x-0 bottom-14 sm:bottom-16">
         <CaptionOverlay
           captions={scene.media.captions}
           currentTime={clock.currentTime}
-          visible={clock.captionsOn && !hasEvidence}
+          visible={clock.captionsOn && clock.started && !(hasEvidence && !showVideo)}
         />
       </div>
 

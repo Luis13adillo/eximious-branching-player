@@ -1,0 +1,42 @@
+{
+  "asset": "fb-1c.mp3",
+  "video": "EA_claims-01_AV1",
+  "presenter": "Diane Marchetti (Presenter 1)",
+  "provider": "OpenAI",
+  "endpoint": "POST https://api.openai.com/v1/audio/speech",
+  "model": "tts-1-hd",
+  "voice": "shimmer",
+  "speed": 1.0,
+  "response_format": "mp3",
+  "instructions": null,
+  "note": "tts-1-hd takes no `instructions` parameter; that belongs to Selena's locked config only.",
+  "script_chars": 336,
+  "script_sha256": "858d8fdf20b5c3cf29888ae1618e1e22fa27593c952fca4a99caf7c445e91799",
+  "mastering": "single calibrated encode from raw; linear gain only (ffmpeg volume=NdB); no compression, no limiting",
+  "audio": {
+    "lufs_integrated": -24.5,
+    "lra": 3.6,
+    "true_peak_dbfs": -6.4,
+    "sample_rate": 24000,
+    "channels": 1,
+    "bit_rate": 128000,
+    "duration_s": 21.792
+  },
+  "f0": {
+    "onset_hz": 186.0,
+    "body_hz": 150.9
+  },
+  "qa": {
+    "loudness": true,
+    "true_peak": true,
+    "format": true,
+    "flat": true,
+    "no_trunc": true,
+    "pause": true,
+    "f0": true,
+    "fidelity": true,
+    "duration": true
+  },
+  "sha256": "b454a9c2e58d440f926ca5efe6041500bda51e30066b92656a4961eea940821d",
+  "date": "2026-08-18"
+}

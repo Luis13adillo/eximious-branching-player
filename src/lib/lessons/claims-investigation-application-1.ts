@@ -1,176 +1,288 @@
-import type { Lesson } from "@/lib/branching/types";
+import type { Lesson, MediaSource } from "@/lib/branching/types";
+import { NARRATION, type NarrationId } from "./claims-01-av1.narration";
 
 /**
- * Fundamentals of Claims Investigation — Application Video 1 of 3
+ * claims-01 · Application Video 1 of 3 — "The File Lands on Your Desk"
  * ============================================================================
- * A branching application lesson. The learner works a live water-damage claim
- * file, makes each call, and sees exactly why every answer is right or wrong
- * before the correct reasoning and a graded completion quiz.
+ * Course:    Fundamentals of Claims Investigation (Track 1)
+ * Presenter: Diane Marchetti (Presenter 1) — appearance and voice LOCKED
+ * Package:   EA_claims-01_AV1.zip
+ * Covers:    Lessons 1–3
  *
- * Structure:
- *   intro → assignment
- *   DECISION 1 (correct = B) → feedback A/B/C/D → rejoin-1 →
- *   DECISION 2 (correct = C) → feedback A/B/C/D → rejoin-2 →
- *   DECISION 3 (correct = B) → feedback A/B/C/D → rejoin-3 →
- *   resolution (3 beats) → graded 5-question quiz (80% to pass)
+ * AUTHORITY — every spoken line, every decision, every option and every piece
+ * of on-screen cue text below comes from the authoritative CLAIMS-01 pilot
+ * script (`docs/source/pilot-scripts.pdf`, pp. 1–5). Nothing is invented,
+ * omitted, reordered or reworded. The narration strings live in
+ * `claims-01-av1.narration.ts` and are byte-exact against the `script_sha256`
+ * recorded in each delivered audio sidecar, so what the data says and what
+ * Diane says cannot drift.
  *
- * Media: every narration/decision/feedback/resolution scene carries a media
- * slot (poster + captions) plus its speaking-avatar video or voiceover audio.
- * Swapping a scene's asset is a pure data change — set `videoUrl` or `audioUrl`
- * on its `media` and nothing else changes.
+ * `headline`/`consequence` values are the script's own bracketed `[On screen:]`
+ * cues, which its cover page defines as "visual direction, not spoken
+ * narration" — so they are rendered by the player, never baked into video
+ * (locked pipeline rule 8).
+ *
+ * STRUCTURE (script §"How to read these scripts")
+ *   intro → assignment-1 → assignment-2
+ *   DECISION 1 (correct = D) → fb-1a/b/c/d → rejoin-1a → rejoin-1b
+ *   DECISION 2 (correct = B) → fb-2a/b/c/d → rejoin-2
+ *   DECISION 3 (correct = B) → fb-3a/b/c/d → rejoin-3
+ *   resolution-1 → resolution-2 → resolution-3 → hand-off
+ *
+ * Twelve feedback segments in total. Wrong answers return the learner to the
+ * same decision to try again (engine-level retry-until-correct, options
+ * reshuffled); only the correct option advances to the rejoin.
+ *
+ * THE THREE CORRECT-ANSWER BEATS (`fb-1d`, `fb-2b`, `fb-3b`) CARRY NO MEDIA
+ * BY DESIGN. The script writes the confirmation only as `[On screen: Correct]`
+ * with no narration, so there is no Diane segment to play — the correct-state
+ * verdict is player-native UI. See `docs/VIDEO_1_GENERATION_CONFIGS.md` (O-4,
+ * decided 2026-08-18); this is why the delivered media set is 22 segments and
+ * not 25.
+ *
+ * NO IN-VIDEO QUIZ. The script ends "[→ Continue to the next lessons]" and the
+ * Agreement/Spec hand off to the graded COURSE quiz, which Thinkific owns. The
+ * water-damage template proof carried a five-question in-player quiz whose
+ * questions were written for the demo; those are not pilot content and are not
+ * reproduced here.
  */
 
-const INSTRUCTOR = {
+const PRESENTER = {
   name: "Diane Marchetti",
+  // The lower-third title is fixed at the template level ("Course Presenter",
+  // Agreement §1.4) — this role never renders a credential.
   role: "Course Presenter",
 };
 
+/** Locked production still — also the poster behind every segment. */
 const PRESENTER_POSTER = "/media/presenter-diane.jpg";
+
+/** Delivered exhibit for the script's burned-pickup photo cue. */
+const BURNED_PICKUP = "/media/evidence-burned-pickup.jpg";
+
+/**
+ * Binds one delivered segment to a scene.
+ * ----------------------------------------------------------------------------
+ * Every asset is a QA-passed 1920×1080 / 25 fps file under
+ * `public/media/claims-01-av1/`, produced by the locked pipeline: locked script
+ * → OpenAI `tts-1-hd` `shimmer` → 24 kHz mono −24.5 LUFS master → fal-ai/
+ * latentsync against Diane's reusable motion base → trim → remux the locked
+ * master → split → conform to exactly 1920×1080. Per-file provenance lives in
+ * the matching `<id>.mp4.json` sidecar.
+ *
+ * Duration and captions come from `NARRATION`, which reads the MEASURED length
+ * out of that sidecar — a re-delivered asset therefore cannot silently desync
+ * the scrubber or the captions. Swapping an asset is a pure data change.
+ */
+function segment(id: NarrationId): MediaSource {
+  const seg = NARRATION[id];
+  return {
+    provider: "file",
+    // Literal URL from the generated manifest — see NarrationSegment.videoUrl.
+    videoUrl: seg.videoUrl,
+    posterUrl: PRESENTER_POSTER,
+    hasAudio: true,
+    loop: false,
+    durationSec: seg.durationSec,
+    captions: seg.captions.map((c) => ({ ...c })),
+  };
+}
+
+/**
+ * The correct-answer beat. The script writes it only as `[On screen: Correct]`
+ * with no narration, so there is no segment to play and no media to load — the
+ * verdict is player-native UI. Zero duration means the scene is immediately
+ * "ended", so the continue control is live the moment it appears.
+ */
+function correctBeat(): MediaSource {
+  return {
+    provider: "placeholder",
+    posterUrl: PRESENTER_POSTER,
+    durationSec: 0,
+  };
+}
 
 export const claimsInvestigationApplication1: Lesson = {
   id: "claims-investigation-application-1",
   slug: "claims-investigation-application-1",
   courseTitle: "Fundamentals of Claims Investigation",
   title: "Case Application — You Have the File",
-  subtitle: "Application Video 1 of 3",
+  subtitle: "Application Video 1 of 3 — The File Lands on Your Desk",
   summary:
-    "Work a live water-damage file on video. Three decisions, each with its own feedback branch, then the correct reasoning — flowing into a graded quiz.",
+    "Work a live vehicle theft-and-fire file on video. Three decisions, each with its own feedback branch and a retry until you get it right, then the correct reasoning and the resolution.",
   estimatedMinutes: 8,
   completion: {
+    // The script's own rejoin-3 on-screen line.
     takeaway:
       "Motive triggers investigation. Only evidence supports a conclusion.",
     headlineAllCorrect: "You worked it the way it's done.",
     headlinePartial: "The case resolves — carry the method forward.",
   },
   startSceneId: "intro",
+  /**
+   * LEARNER-FACING PROGRESS — the approved 12-step rail.
+   * --------------------------------------------------------------------------
+   * The scene graph is 25 scenes and its spine is 13, because the script cues a
+   * new on-screen state in the MIDDLE of the assignment (the burned-pickup
+   * photo) and the media pipeline splits segments at those cues. That split is
+   * production plumbing, not a teaching beat: `assignment-1` and `assignment-2`
+   * are one thing to the learner — "here is the file" — with an exhibit inside
+   * it. They are therefore one milestone.
+   *
+   * Nothing else is grouped. Every other on-screen cue in the script opens a
+   * distinct teaching beat (`rejoin-1b` introduces the escalation boxes, which
+   * is new instruction rather than a restatement of `rejoin-1a`), so merging any
+   * of them would hide content from the learner's map.
+   *
+   * No scene is removed or merged — all 25 still play in full. `validateLesson`
+   * fails the build if these milestones ever stop covering the spine exactly
+   * once, so the rail cannot drift from the graph.
+   */
+  progress: [
+    { id: "open", label: "You have the file", scenes: ["intro"] },
+    {
+      id: "assignment",
+      label: "The assignment",
+      scenes: ["assignment-1", "assignment-2"],
+    },
+    {
+      id: "decision-1",
+      label: "Decision 1 · Investigation trigger",
+      scenes: ["decision-1"],
+    },
+    { id: "trigger", label: "The documented trigger", scenes: ["rejoin-1a"] },
+    { id: "escalation", label: "Know your box", scenes: ["rejoin-1b"] },
+    {
+      id: "decision-2",
+      label: "Decision 2 · Burden of proof",
+      scenes: ["decision-2"],
+    },
+    {
+      id: "burden",
+      label: "Issue · Burden · Standard · Evidence",
+      scenes: ["rejoin-2"],
+    },
+    { id: "decision-3", label: "Decision 3 · Motive", scenes: ["decision-3"] },
+    { id: "motive", label: "Motive vs. evidence", scenes: ["rejoin-3"] },
+    {
+      id: "inventory",
+      label: "Where the file stands",
+      scenes: ["resolution-1"],
+    },
+    { id: "answer", label: "Keep investigating", scenes: ["resolution-2"] },
+    {
+      id: "method",
+      label: "Same method. Different answer.",
+      scenes: ["resolution-3"],
+    },
+  ],
   meta: {
     module: "Application Video 1 of 3",
-    author: "Eximious Academy",
+    lessonNumber: 1,
+    author: "Roger M. Naut",
+    caseId: "4471-88203",
   },
   scenes: {
-    // ---------------------------------------------------------------- intro
+    // ================================================================ intro
     intro: {
       id: "intro",
       type: "narrative",
       role: "intro",
       label: "You have the file",
       layout: "avatar",
-      presenter: INSTRUCTOR,
+      presenter: PRESENTER,
+      // [Title: Case Application — You Have the File]
       kicker: "Case Application",
       headline: "You Have the File",
       subhead:
-        "How this lesson works: work a live claim file and make each call. Choose an answer and you'll see exactly why that choice is right or wrong, followed by the correct reasoning — then a short graded quiz.",
-      body: "You've read the lessons. Now let's find out if it stuck. I'm handing you a live file and you're making the calls. Pause when I ask.",
+        "Covers Lessons 1–3. Work the file and make each call. Choose an answer and you'll see exactly why that choice is right or wrong, then try again until it's right.",
+      body: NARRATION["intro"].text,
       continueLabel: "See the assignment",
-      media: {
-        // Real lip-synced avatar: shimmer voice (OpenAI tts-1-hd) → InfiniTalk
-        // (KIE, no HeyGen), baked audio. Swap in a longer/HeyGen clip by
-        // replacing videoUrl; nothing else changes.
-        provider: "file",
-        videoUrl: "/media/intro-appvideo-v1.mp4",
-        posterUrl: PRESENTER_POSTER,
-        placeholderScene: "claim-desk",
-        durationSec: 8.08,
-        loop: false,
-        hasAudio: true,
-        captions: [
-          { start: 0, end: 2.7, text: "You've read the lessons. Now let's find out if it stuck." },
-          { start: 2.7, end: 6.2, text: "I'm handing you a live file and you're making the calls." },
-          { start: 6.2, end: 8.08, text: "Pause when I ask." },
-        ],
-      },
-      next: "assignment",
+      media: segment("intro"),
+      next: "assignment-1",
     },
 
-    // ----------------------------------------------------------- assignment
-    assignment: {
-      id: "assignment",
+    // =========================================================== assignment
+    "assignment-1": {
+      id: "assignment-1",
       type: "narrative",
       role: "briefing",
       label: "The assignment",
-      layout: "fullscreen",
-      kicker: "On screen · The Assignment",
+      layout: "avatar",
+      presenter: PRESENTER,
+      // [On screen: THE ASSIGNMENT]
+      kicker: "On screen",
       headline: "The Assignment",
-      subhead: "Residential water damage · finished basement",
-      body: "A homeowner reports water damage in a finished basement, reported eleven days after the date of loss. The insured says a supply line behind the washing machine burst. The photos show staining running well up the drywall, with mold on the lower two feet. The policy covers sudden and accidental discharge and excludes damage occurring over a period of time.",
-      continueLabel: "Decision 1",
-      media: {
-        // Audio-only: shimmer voiceover over the evidence exhibits (no talking
-        // head on a full-screen evidence scene).
-        provider: "file",
-        audioUrl: "/media/assignment.mp3",
-        hasAudio: true,
-        placeholderScene: "flooded-interior",
-        durationSec: 22.42,
-        captions: [
-          { start: 0, end: 7, text: "A homeowner reports water damage in a finished basement, reported eleven days after the date of loss." },
-          { start: 7, end: 12.5, text: "The insured says a supply line behind the washing machine burst." },
-          { start: 12.5, end: 20, text: "The photos show staining running well up the drywall, with mold on the lower two feet." },
-          { start: 20, end: 30, text: "The policy covers sudden and accidental discharge and excludes damage occurring over a period of time." },
-        ],
-      },
+      subhead: "Claim 4471-88203 · Marcus Delaney · 2019 Ford F-250",
+      body: NARRATION["assignment-1"].text,
+      continueLabel: "Continue",
+      media: segment("assignment-1"),
+      next: "assignment-2",
+    },
+
+    "assignment-2": {
+      id: "assignment-2",
+      type: "narrative",
+      role: "evidence",
+      label: "The desk file",
+      layout: "avatar",
+      presenter: PRESENTER,
+      kicker: "On screen · Exhibit",
+      headline: "What's in the desk file",
+      body: NARRATION["assignment-2"].text,
+      continueLabel: "Make the call",
+      media: segment("assignment-2"),
+      // [On screen: Photo — burned pickup on gravel road, tires melted, glass
+      //  gone, no other vehicles in frame]
       evidence: [
         {
-          id: "assignment-photo",
+          id: "burned-pickup",
           kind: "photo",
-          title: "Basement — staining well up the drywall, mold on the lower two feet",
-          caption: "Reported eleven days after the date of loss.",
-          imageUrl: "/media/evidence-basement.jpg",
-          illustration: "damage-photo",
-        },
-        {
-          id: "assignment-policy",
-          kind: "document",
-          title: "Policy — coverage & exclusion",
-          caption: "Covers sudden and accidental discharge; excludes damage occurring over a period of time.",
-          illustration: "coverage-clause",
+          title:
+            "Photo — burned pickup on gravel road, tires melted, glass gone, no other vehicles in frame",
+          caption:
+            "Recovered March 5, eleven miles out of town. Cause of the fire is undetermined.",
+          imageUrl: BURNED_PICKUP,
         },
       ],
       next: "decision-1",
     },
 
-    // ---------------------------------------------------------- DECISION 1
+    // =========================================================== DECISION 1
     "decision-1": {
       id: "decision-1",
       type: "decision",
       label: "Decision 1 · Investigation trigger",
       layout: "avatar",
-      presenter: INSTRUCTOR,
+      presenter: PRESENTER,
       kicker: "Decision 1 of 3",
       decisionLabel: "Decision 1 of 3",
-      prompt: "What most clearly signals this needs investigation?",
-      media: {
-        provider: "placeholder",
-        posterUrl: PRESENTER_POSTER,
-        placeholderScene: "claim-desk",
-        durationSec: 6,
-        captions: [
-          { start: 0, end: 6, text: "What most clearly signals this needs investigation?" },
-        ],
-      },
+      prompt: NARRATION["decision-1"].text,
+      media: segment("decision-1"),
       options: [
         {
           id: "A",
-          label: "The claim was reported eleven days late",
+          label: "The adjuster's instinct that something is off",
           isCorrect: false,
           feedbackSceneId: "fb-1a",
         },
         {
           id: "B",
-          label: "The described cause of loss doesn't match the physical damage",
-          isCorrect: true,
+          label: "The insured owes more on the truck than it's worth",
+          isCorrect: false,
           feedbackSceneId: "fb-1b",
         },
         {
           id: "C",
-          label: "The insured has a finished basement, which raises the claim value",
+          label: "The claim exceeds $35,000, which is the referral threshold",
           isCorrect: false,
           feedbackSceneId: "fb-1c",
         },
         {
           id: "D",
-          label: "Water claims are the most common type of fraud",
-          isCorrect: false,
+          label:
+            "The reported cause of loss — theft — is a fact genuinely in dispute, and the file has no evidence resolving it either way",
+          isCorrect: true,
           feedbackSceneId: "fb-1d",
         },
       ],
@@ -182,46 +294,30 @@ export const claimsInvestigationApplication1: Lesson = {
       verdict: "incorrect",
       forDecisionId: "decision-1",
       forOptionId: "A",
-      consequence: "Not quite",
-      label: "D1 · A — late reporting",
+      label: "D1 · A — the adjuster's instinct",
       layout: "avatar",
-      presenter: INSTRUCTOR,
-      kicker: "On screen · Not quite",
-      headline: "Not quite",
-      body: "Late reporting is worth noting, but on its own it's weak. People delay claims for a hundred innocent reasons — they were traveling, they thought it was minor, they tried to dry it themselves. If late reporting alone triggered your investigations, you'd investigate half your files and justify none of them. Look for the conflict in the evidence, not the calendar.",
-      media: {
-        provider: "placeholder",
-        posterUrl: PRESENTER_POSTER,
-        placeholderScene: "claim-desk",
-        durationSec: 24,
-        captions: [
-          { start: 0, end: 5, text: "Late reporting is worth noting, but on its own it's weak." },
-          { start: 5, end: 12, text: "People delay claims for a hundred innocent reasons — they were traveling, they thought it was minor, they tried to dry it themselves." },
-          { start: 12, end: 19, text: "If late reporting alone triggered your investigations, you'd investigate half your files and justify none of them." },
-          { start: 19, end: 24, text: "Look for the conflict in the evidence, not the calendar." },
-        ],
-      },
-      next: "rejoin-1",
+      presenter: PRESENTER,
+      consequence: "A hunch is not a trigger",
+      headline: "A hunch is not a trigger",
+      body: NARRATION["fb-1a"].text,
+      media: segment("fb-1a"),
+      next: "rejoin-1a",
     },
 
     "fb-1b": {
       id: "fb-1b",
       type: "feedback",
-      verdict: "correct",
+      verdict: "incorrect",
       forDecisionId: "decision-1",
       forOptionId: "B",
-      consequence: "Correct",
-      label: "D1 · B — cause vs. damage (correct)",
+      label: "D1 · B — negative equity",
       layout: "avatar",
-      presenter: INSTRUCTOR,
-      media: {
-        provider: "placeholder",
-        posterUrl: PRESENTER_POSTER,
-        placeholderScene: "claim-desk",
-        durationSec: 2.8,
-        captions: [{ start: 0, end: 2.8, text: "Correct." }],
-      },
-      next: "rejoin-1",
+      presenter: PRESENTER,
+      consequence: "That's motive, and you've jumped three lessons ahead",
+      headline: "That's motive, and you've jumped three lessons ahead",
+      body: NARRATION["fb-1b"].text,
+      media: segment("fb-1b"),
+      next: "rejoin-1a",
     },
 
     "fb-1c": {
@@ -230,122 +326,126 @@ export const claimsInvestigationApplication1: Lesson = {
       verdict: "incorrect",
       forDecisionId: "decision-1",
       forOptionId: "C",
-      consequence: "That's a value question, not a coverage question",
-      label: "D1 · C — claim value",
+      label: "D1 · C — dollar threshold",
       layout: "avatar",
-      presenter: INSTRUCTOR,
-      kicker: "On screen",
-      headline: "That's a value question, not a coverage question",
-      body: "Claim size affects your reserve and how much scrutiny the file gets — it is not, by itself, an investigative trigger. Investigating a claim because it's expensive is how carriers end up defending a bad-faith allegation. The dollar amount doesn't tell you anything is wrong.",
-      media: {
-        provider: "placeholder",
-        posterUrl: PRESENTER_POSTER,
-        placeholderScene: "policy-document",
-        durationSec: 22,
-        captions: [
-          { start: 0, end: 8, text: "Claim size affects your reserve and how much scrutiny the file gets — it is not, by itself, an investigative trigger." },
-          { start: 8, end: 16, text: "Investigating a claim because it's expensive is how carriers end up defending a bad-faith allegation." },
-          { start: 16, end: 22, text: "The dollar amount doesn't tell you anything is wrong." },
-        ],
-      },
-      next: "rejoin-1",
+      presenter: PRESENTER,
+      consequence: "Dollar thresholds route files; they don't define investigations",
+      headline: "Dollar thresholds route files; they don't define investigations",
+      body: NARRATION["fb-1c"].text,
+      media: segment("fb-1c"),
+      next: "rejoin-1a",
     },
 
+    // The script gives the correct answer as `[On screen: Correct]` with NO
+    // narration, so this beat has no media and is rendered by the player.
     "fb-1d": {
       id: "fb-1d",
       type: "feedback",
-      verdict: "incorrect",
+      verdict: "correct",
       forDecisionId: "decision-1",
       forOptionId: "D",
-      consequence: "This is the dangerous one",
-      label: "D1 · D — fraud statistic",
+      label: "D1 · D — cause of loss in dispute (correct)",
       layout: "avatar",
-      presenter: INSTRUCTOR,
-      kicker: "On screen",
-      headline: "This is the dangerous one",
-      body: "Careful. That's a statistic about a category, not a fact about this insured. Starting from “water claims are often fraud” means you've decided the conclusion before you've gathered a single fact — and every step after that is confirmation bias. It's exactly the one-sided investigation that creates bad-faith exposure. Investigate the file in front of you, not the category it belongs to.",
-      media: {
-        provider: "placeholder",
-        posterUrl: PRESENTER_POSTER,
-        placeholderScene: "claim-desk",
-        durationSec: 26,
-        captions: [
-          { start: 0, end: 5, text: "Careful. That's a statistic about a category, not a fact about this insured." },
-          { start: 5, end: 13, text: "Starting from “water claims are often fraud” means you've decided the conclusion before you've gathered a single fact — and every step after that is confirmation bias." },
-          { start: 13, end: 20, text: "It's exactly the one-sided investigation that creates bad-faith exposure." },
-          { start: 20, end: 26, text: "Investigate the file in front of you, not the category it belongs to." },
-        ],
-      },
-      next: "rejoin-1",
+      presenter: PRESENTER,
+      consequence: "Correct",
+      headline: "Correct",
+      continueLabel: "Continue",
+      media: correctBeat(),
+      next: "rejoin-1a",
     },
 
-    "rejoin-1": {
-      id: "rejoin-1",
+    // ============================================================= REJOIN 1
+    "rejoin-1a": {
+      id: "rejoin-1a",
       type: "narrative",
       role: "continuation",
-      label: "The real trigger",
+      label: "The documented trigger",
       layout: "avatar",
-      presenter: INSTRUCTOR,
+      presenter: PRESENTER,
+      // [All paths rejoin — On screen: Facts, coverage, damages, or timing
+      //  genuinely in dispute]
       kicker: "All paths rejoin · On screen",
-      headline: "The described cause doesn't match the physical damage",
-      body: "That's the trigger. A sudden burst leaves a different damage signature than long-term seepage — and mold two feet up the drywall suggests time, not an instant. That's a genuine conflict between the reported facts and the observable evidence. Facts, coverage, damages, or timing genuinely in dispute — that's what starts an investigation. Not a hunch, not a statistic.",
-      continueLabel: "Decision 2",
-      media: {
-        provider: "placeholder",
-        posterUrl: PRESENTER_POSTER,
-        placeholderScene: "moisture-map",
-        durationSec: 28,
-        captions: [
-          { start: 0, end: 3, text: "That's the trigger." },
-          { start: 3, end: 11, text: "A sudden burst leaves a different damage signature than long-term seepage — and mold two feet up the drywall suggests time, not an instant." },
-          { start: 11, end: 18, text: "That's a genuine conflict between the reported facts and the observable evidence." },
-          { start: 18, end: 28, text: "Facts, coverage, damages, or timing genuinely in dispute — that's what starts an investigation. Not a hunch, not a statistic." },
+      headline: "Facts, coverage, damages, or timing genuinely in dispute",
+      body: NARRATION["rejoin-1a"].text,
+      continueLabel: "Continue",
+      media: segment("rejoin-1a"),
+      summaryCard: {
+        kicker: "On screen",
+        title: "What turns adjustment into investigation",
+        items: [
+          { icon: "facts", label: "Facts" },
+          { icon: "coverage", label: "Coverage" },
+          { icon: "damages", label: "Damages" },
+          { icon: "timing", label: "Timing" },
         ],
+        takeaway: "Facts, coverage, damages, or timing genuinely in dispute.",
+      },
+      next: "rejoin-1b",
+    },
+
+    "rejoin-1b": {
+      id: "rejoin-1b",
+      type: "narrative",
+      role: "continuation",
+      label: "Know your box",
+      layout: "avatar",
+      presenter: PRESENTER,
+      // [On screen: Adjusting → Investigation → SIU. Know which box you're in.]
+      kicker: "On screen",
+      headline: "Adjusting → Investigation → SIU. Know which box you're in.",
+      body: NARRATION["rejoin-1b"].text,
+      continueLabel: "Make the call",
+      media: segment("rejoin-1b"),
+      // Stage details are the script's own words: "You're the investigator. You
+      // develop facts. You are not the adjuster deciding payment, and you are
+      // not SIU running a fraud case."
+      chain: {
+        kicker: "On screen",
+        stages: [
+          { label: "Adjusting", detail: "Deciding payment" },
+          { label: "Investigation", detail: "Developing facts", current: true },
+          { label: "SIU", detail: "Running a fraud case" },
+        ],
+        takeaway: "Know which box you're in.",
       },
       next: "decision-2",
     },
 
-    // ---------------------------------------------------------- DECISION 2
+    // =========================================================== DECISION 2
     "decision-2": {
       id: "decision-2",
       type: "decision",
-      label: "Decision 2 · Coverage question",
+      label: "Decision 2 · Burden of proof",
       layout: "avatar",
-      presenter: INSTRUCTOR,
+      presenter: PRESENTER,
       kicker: "Decision 2 of 3",
       decisionLabel: "Decision 2 of 3",
-      prompt: "What's the coverage question you're actually investigating?",
-      media: {
-        provider: "placeholder",
-        posterUrl: PRESENTER_POSTER,
-        placeholderScene: "claim-desk",
-        durationSec: 6,
-        captions: [
-          { start: 0, end: 6, text: "What's the coverage question you're actually investigating?" },
-        ],
-      },
+      prompt: NARRATION["decision-2"].text,
+      media: segment("decision-2"),
       options: [
         {
           id: "A",
-          label: "Whether the insured is telling the truth",
+          label:
+            "The insured has the burden to prove the truck was stolen, so you can simply wait for him to fail",
           isCorrect: false,
           feedbackSceneId: "fb-2a",
         },
         {
           id: "B",
-          label: "Whether the damage exceeds the deductible",
-          isCorrect: false,
+          label:
+            "The carrier has the burden to prove the exclusion applies, so your file has to carry it",
+          isCorrect: true,
           feedbackSceneId: "fb-2b",
         },
         {
           id: "C",
-          label: "Whether the discharge was sudden and accidental, or occurred over a period of time",
-          isCorrect: true,
+          label: "Nobody has a burden until litigation is filed",
+          isCorrect: false,
           feedbackSceneId: "fb-2c",
         },
         {
           id: "D",
-          label: "Whether the insured maintained the washing machine properly",
+          label: "The burden is on whoever has the better evidence",
           isCorrect: false,
           feedbackSceneId: "fb-2d",
         },
@@ -358,71 +458,45 @@ export const claimsInvestigationApplication1: Lesson = {
       verdict: "incorrect",
       forDecisionId: "decision-2",
       forOptionId: "A",
-      consequence: "You're investigating the policy, not the person",
-      label: "D2 · A — is he lying",
+      label: "D2 · A — wait for him to fail",
       layout: "avatar",
-      presenter: INSTRUCTOR,
-      kicker: "On screen",
-      headline: "You're investigating the policy, not the person",
-      body: "This feels right and it's a trap. “Is he lying” isn't a coverage question — it's a character judgment, and it will drag your investigation toward the insured instead of the loss. Frame it that way and you'll gather material about him rather than evidence about the water.",
-      media: {
-        provider: "placeholder",
-        posterUrl: PRESENTER_POSTER,
-        placeholderScene: "claim-desk",
-        durationSec: 22,
-        captions: [
-          { start: 0, end: 4, text: "This feels right and it's a trap." },
-          { start: 4, end: 13, text: "“Is he lying” isn't a coverage question — it's a character judgment, and it will drag your investigation toward the insured instead of the loss." },
-          { start: 13, end: 22, text: "Frame it that way and you'll gather material about him rather than evidence about the water." },
-        ],
-      },
+      presenter: PRESENTER,
+      consequence: "You had it right — then the issue changed under you",
+      headline: "You had it right — then the issue changed under you",
+      body: NARRATION["fb-2a"].text,
+      media: segment("fb-2a"),
       next: "rejoin-2",
     },
 
     "fb-2b": {
       id: "fb-2b",
       type: "feedback",
-      verdict: "incorrect",
+      verdict: "correct",
       forDecisionId: "decision-2",
       forOptionId: "B",
-      consequence: "That's an adjusting step, not the investigation",
-      label: "D2 · B — deductible",
+      label: "D2 · B — the carrier carries the exclusion (correct)",
       layout: "avatar",
-      presenter: INSTRUCTOR,
-      kicker: "On screen",
-      headline: "That's an adjusting step, not the investigation",
-      body: "The deductible matters for payment. It decides nothing about whether this loss is covered at all. If the exclusion applies, the deductible is irrelevant — there's nothing to apply it to.",
-      media: {
-        provider: "placeholder",
-        posterUrl: PRESENTER_POSTER,
-        placeholderScene: "policy-document",
-        durationSec: 18,
-        captions: [
-          { start: 0, end: 4, text: "The deductible matters for payment." },
-          { start: 4, end: 10, text: "It decides nothing about whether this loss is covered at all." },
-          { start: 10, end: 18, text: "If the exclusion applies, the deductible is irrelevant — there's nothing to apply it to." },
-        ],
-      },
+      presenter: PRESENTER,
+      consequence: "Correct",
+      headline: "Correct",
+      continueLabel: "Continue",
+      media: correctBeat(),
       next: "rejoin-2",
     },
 
     "fb-2c": {
       id: "fb-2c",
       type: "feedback",
-      verdict: "correct",
+      verdict: "incorrect",
       forDecisionId: "decision-2",
       forOptionId: "C",
-      consequence: "Correct",
-      label: "D2 · C — sudden vs. over time (correct)",
+      label: "D2 · C — no burden until litigation",
       layout: "avatar",
-      presenter: INSTRUCTOR,
-      media: {
-        provider: "placeholder",
-        posterUrl: PRESENTER_POSTER,
-        placeholderScene: "claim-desk",
-        durationSec: 2.8,
-        captions: [{ start: 0, end: 2.8, text: "Correct." }],
-      },
+      presenter: PRESENTER,
+      consequence: "Wrong by a mile, and dangerous",
+      headline: "Wrong by a mile, and dangerous",
+      body: NARRATION["fb-2c"].text,
+      media: segment("fb-2c"),
       next: "rejoin-2",
     },
 
@@ -432,92 +506,82 @@ export const claimsInvestigationApplication1: Lesson = {
       verdict: "incorrect",
       forDecisionId: "decision-2",
       forOptionId: "D",
-      consequence: "Close, but you've jumped ahead",
-      label: "D2 · D — maintenance",
+      label: "D2 · D — whoever has better evidence",
       layout: "avatar",
-      presenter: INSTRUCTOR,
-      kicker: "On screen",
-      headline: "Close, but you've jumped ahead",
-      body: "Maintenance may become relevant, but you've skipped the primary question. Don't start hunting for a secondary theory before you've resolved the one the policy language actually turns on.",
-      media: {
-        provider: "placeholder",
-        posterUrl: PRESENTER_POSTER,
-        placeholderScene: "moisture-map",
-        durationSec: 16,
-        captions: [
-          { start: 0, end: 6, text: "Maintenance may become relevant, but you've skipped the primary question." },
-          { start: 6, end: 16, text: "Don't start hunting for a secondary theory before you've resolved the one the policy language actually turns on." },
-        ],
-      },
+      presenter: PRESENTER,
+      consequence: "That's not how burdens work",
+      headline: "That's not how burdens work",
+      body: NARRATION["fb-2d"].text,
+      media: segment("fb-2d"),
       next: "rejoin-2",
     },
 
+    // ============================================================= REJOIN 2
     "rejoin-2": {
       id: "rejoin-2",
       type: "narrative",
       role: "continuation",
-      label: "The coverage question",
+      label: "Issue · Burden · Standard · Evidence",
       layout: "avatar",
-      presenter: INSTRUCTOR,
-      kicker: "Rejoin · On screen",
-      headline: "Sudden and accidental, or over a period of time?",
-      body: "You're not investigating “what happened” in the abstract. You're investigating whether this policy responds to this loss. This entire claim turns on one factual question, and framing it first tells you exactly what to photograph, who to call, and which dates to pin down. Frame it second and you'll collect a mountain of material that decides nothing.",
-      continueLabel: "Decision 3",
-      media: {
-        provider: "placeholder",
-        posterUrl: PRESENTER_POSTER,
-        placeholderScene: "policy-document",
-        durationSec: 26,
-        captions: [
-          { start: 0, end: 6, text: "You're not investigating “what happened” in the abstract. You're investigating whether this policy responds to this loss." },
-          { start: 6, end: 17, text: "This entire claim turns on one factual question, and framing it first tells you exactly what to photograph, who to call, and which dates to pin down." },
-          { start: 17, end: 26, text: "Frame it second and you'll collect a mountain of material that decides nothing." },
+      presenter: PRESENTER,
+      // [Rejoin — On screen: Insureds carry coverage. Insurers carry exclusions.]
+      kicker: "All paths rejoin · On screen",
+      headline: "Insureds carry coverage. Insurers carry exclusions.",
+      body: NARRATION["rejoin-2"].text,
+      continueLabel: "Make the call",
+      media: segment("rejoin-2"),
+      // [On screen: The four steps — 1. Issue 2. Burden 3. Standard 4. Evidence]
+      summaryCard: {
+        kicker: "On screen",
+        title: "The four steps",
+        numbered: true,
+        items: [
+          { icon: "issue", label: "Issue" },
+          { icon: "burden", label: "Burden" },
+          { icon: "standard", label: "Standard" },
+          { icon: "evidence", label: "Evidence" },
         ],
+        takeaway: "Insureds carry coverage. Insurers carry exclusions.",
       },
       next: "decision-3",
     },
 
-    // ---------------------------------------------------------- DECISION 3
+    // =========================================================== DECISION 3
     "decision-3": {
       id: "decision-3",
       type: "decision",
       label: "Decision 3 · Motive",
       layout: "avatar",
-      presenter: INSTRUCTOR,
+      presenter: PRESENTER,
       kicker: "Decision 3 of 3",
       decisionLabel: "Decision 3 of 3",
-      prompt: "You learn the insured had recent financial trouble. What does that give you?",
-      media: {
-        provider: "placeholder",
-        posterUrl: PRESENTER_POSTER,
-        placeholderScene: "claim-desk",
-        durationSec: 7,
-        captions: [
-          { start: 0, end: 7, text: "You learn the insured had recent financial trouble. What does that give you?" },
-        ],
-      },
+      prompt: NARRATION["decision-3"].text,
+      media: segment("decision-3"),
       options: [
         {
           id: "A",
-          label: "Evidence the loss was gradual",
+          label: "Corroboration that the fire was intentionally set",
           isCorrect: false,
           feedbackSceneId: "fb-3a",
         },
         {
           id: "B",
-          label: "Motive — a reason to investigate thoroughly, but not proof of anything",
+          label:
+            "Motive — a reason to investigate thoroughly, but not proof of anything",
           isCorrect: true,
           feedbackSceneId: "fb-3b",
         },
         {
           id: "C",
-          label: "Enough to deny under the exclusion",
+          label:
+            "Enough, combined with the burned vehicle, to meet preponderance",
           isCorrect: false,
           feedbackSceneId: "fb-3c",
         },
         {
           id: "D",
-          label: "Grounds to refer it to law enforcement",
+          label:
+            "A basis to tell him in the recorded statement that you know what he did",
           isCorrect: false,
           feedbackSceneId: "fb-3d",
         },
@@ -530,24 +594,13 @@ export const claimsInvestigationApplication1: Lesson = {
       verdict: "incorrect",
       forDecisionId: "decision-3",
       forOptionId: "A",
-      consequence: "Financial facts don't date water damage",
-      label: "D3 · A — gradual loss",
+      label: "D3 · A — corroboration of arson",
       layout: "avatar",
-      presenter: INSTRUCTOR,
-      kicker: "On screen",
-      headline: "Financial facts don't date water damage",
-      body: "His bank account tells you nothing about when the pipe failed. Only physical and technical evidence can answer that. Connecting the two in your file is exactly the leap a plaintiff's attorney will read aloud.",
-      media: {
-        provider: "placeholder",
-        posterUrl: PRESENTER_POSTER,
-        placeholderScene: "policy-document",
-        durationSec: 18,
-        captions: [
-          { start: 0, end: 6, text: "His bank account tells you nothing about when the pipe failed." },
-          { start: 6, end: 11, text: "Only physical and technical evidence can answer that." },
-          { start: 11, end: 18, text: "Connecting the two in your file is exactly the leap a plaintiff's attorney will read aloud." },
-        ],
-      },
+      presenter: PRESENTER,
+      consequence: "A repo notice can't tell you how a fire started",
+      headline: "A repo notice can't tell you how a fire started",
+      body: NARRATION["fb-3a"].text,
+      media: segment("fb-3a"),
       next: "rejoin-3",
     },
 
@@ -557,17 +610,13 @@ export const claimsInvestigationApplication1: Lesson = {
       verdict: "correct",
       forDecisionId: "decision-3",
       forOptionId: "B",
-      consequence: "Correct",
       label: "D3 · B — motive, not proof (correct)",
       layout: "avatar",
-      presenter: INSTRUCTOR,
-      media: {
-        provider: "placeholder",
-        posterUrl: PRESENTER_POSTER,
-        placeholderScene: "claim-desk",
-        durationSec: 2.8,
-        captions: [{ start: 0, end: 2.8, text: "Correct." }],
-      },
+      presenter: PRESENTER,
+      consequence: "Correct",
+      headline: "Correct",
+      continueLabel: "Continue",
+      media: correctBeat(),
       next: "rejoin-3",
     },
 
@@ -577,24 +626,13 @@ export const claimsInvestigationApplication1: Lesson = {
       verdict: "incorrect",
       forDecisionId: "decision-3",
       forOptionId: "C",
-      consequence: "This is how bad-faith claims are born",
-      label: "D3 · C — deny under exclusion",
+      label: "D3 · C — meets preponderance",
       layout: "avatar",
-      presenter: INSTRUCTOR,
-      kicker: "On screen",
-      headline: "This is how bad-faith claims are born",
-      body: "Remember who carries the burden. If you're denying under the “over a period of time” exclusion, the carrier has to prove the exclusion applies — with corroborated evidence, not an inference about someone's finances. Motive plus a loss is not preponderance.",
-      media: {
-        provider: "placeholder",
-        posterUrl: PRESENTER_POSTER,
-        placeholderScene: "policy-document",
-        durationSec: 22,
-        captions: [
-          { start: 0, end: 4, text: "Remember who carries the burden." },
-          { start: 4, end: 14, text: "If you're denying under the “over a period of time” exclusion, the carrier has to prove the exclusion applies — with corroborated evidence, not an inference about someone's finances." },
-          { start: 14, end: 22, text: "Motive plus a loss is not preponderance." },
-        ],
-      },
+      presenter: PRESENTER,
+      consequence: "Motive plus a loss is not preponderance",
+      headline: "Motive plus a loss is not preponderance",
+      body: NARRATION["fb-3c"].text,
+      media: segment("fb-3c"),
       next: "rejoin-3",
     },
 
@@ -604,75 +642,100 @@ export const claimsInvestigationApplication1: Lesson = {
       verdict: "incorrect",
       forDecisionId: "decision-3",
       forOptionId: "D",
-      consequence: "Wrong standard, wrong stage",
-      label: "D3 · D — criminal referral",
+      label: "D3 · D — tell him you know",
       layout: "avatar",
-      presenter: INSTRUCTOR,
-      kicker: "On screen",
-      headline: "Wrong standard, wrong stage",
-      body: "You're nowhere near a criminal referral. That requires far more than motive, and reaching for it this early — on a civil claim with no corroborating evidence — is both premature and a liability.",
-      media: {
-        provider: "placeholder",
-        posterUrl: PRESENTER_POSTER,
-        placeholderScene: "claim-desk",
-        durationSec: 18,
-        captions: [
-          { start: 0, end: 5, text: "You're nowhere near a criminal referral." },
-          { start: 5, end: 18, text: "That requires far more than motive, and reaching for it this early — on a civil claim with no corroborating evidence — is both premature and a liability." },
-        ],
-      },
+      presenter: PRESENTER,
+      consequence: "That's coercion, and it ends the investigation",
+      headline: "That's coercion, and it ends the investigation",
+      body: NARRATION["fb-3d"].text,
+      media: segment("fb-3d"),
       next: "rejoin-3",
     },
 
+    // ============================================================= REJOIN 3
     "rejoin-3": {
       id: "rejoin-3",
       type: "narrative",
       role: "continuation",
       label: "Motive vs. evidence",
       layout: "avatar",
-      presenter: INSTRUCTOR,
-      kicker: "Rejoin · On screen",
-      headline: "Motive triggers investigation. Only evidence supports a conclusion.",
-      body: "Motive is a reason to look harder. It is never, by itself, the answer. Keep it in your analysis section, labeled as what it is.",
+      presenter: PRESENTER,
+      // [Rejoin — On screen: "Motive triggers investigation. Only evidence
+      //  supports a conclusion."]
+      kicker: "All paths rejoin · On screen",
+      headline:
+        "“Motive triggers investigation. Only evidence supports a conclusion.”",
+      body: NARRATION["rejoin-3"].text,
       continueLabel: "See the resolution",
-      media: {
-        provider: "placeholder",
-        posterUrl: PRESENTER_POSTER,
-        placeholderScene: "moisture-map",
-        durationSec: 12,
-        captions: [
-          { start: 0, end: 4, text: "Motive is a reason to look harder." },
-          { start: 4, end: 8, text: "It is never, by itself, the answer." },
-          { start: 8, end: 12, text: "Keep it in your analysis section, labeled as what it is." },
-        ],
-      },
+      media: segment("rejoin-3"),
       next: "resolution-1",
     },
 
-    // --------------------------------------------------------- resolution
+    // ========================================================== RESOLUTION
     "resolution-1": {
       id: "resolution-1",
       type: "narrative",
       role: "resolution",
-      label: "The plumber's report",
+      label: "Where the file stands",
       layout: "avatar",
-      presenter: INSTRUCTOR,
+      presenter: PRESENTER,
+      // [On screen: Exhibit — evidence inventory, three columns:
+      //  HAVE / NEED / UNAVAILABLE]
       kicker: "The resolution · On screen",
-      headline: "The plumber's report — slow pinhole leak, weeks old",
-      body: "Now you have it: corroborated, independent, technical evidence that speaks directly to the coverage question. That meets the burden — and your file shows it. A dated activity log from day one. Photographs with scale and context. The preserved supply line with unbroken chain of custody. A lawfully-taken statement. A sourced timeline flagging the conflict. And your opinions in the analysis section, labeled, tied to the evidence.",
+      headline: "Evidence inventory — HAVE / NEED / UNAVAILABLE",
+      body: NARRATION["resolution-1"].text,
       continueLabel: "Continue",
-      media: {
-        provider: "placeholder",
-        posterUrl: "/media/presenter-resolution.jpg",
-        placeholderScene: "resolution",
-        durationSec: 30,
-        captions: [
-          { start: 0, end: 7, text: "Now you have it: corroborated, independent, technical evidence that speaks directly to the coverage question." },
-          { start: 7, end: 11, text: "That meets the burden — and your file shows it." },
-          { start: 11, end: 15, text: "A dated activity log from day one. Photographs with scale and context." },
-          { start: 15, end: 21, text: "The preserved supply line with unbroken chain of custody. A lawfully-taken statement." },
-          { start: 21, end: 30, text: "A sourced timeline flagging the conflict. And your opinions in the analysis section, labeled, tied to the evidence." },
+      media: segment("resolution-1"),
+      // The five items Diane grades in this segment, in the order she grades
+      // them. UNAVAILABLE is empty on day fourteen — nothing in this file is
+      // unobtainable yet, which is itself the finding, so the column still
+      // renders rather than being hidden.
+      inventory: {
+        kicker: "The resolution · On screen",
+        title: "Evidence inventory at day fourteen",
+        entries: [
+          {
+            label: "Both keys",
+            status: "need",
+            note: "He says one is at his mother's house, unverified.",
+          },
+          {
+            label: "Forced entry",
+            status: "have",
+            note: "Sheriff's recovery report notes no window damage and no punched ignition.",
+          },
+          {
+            label: "Accelerant",
+            status: "need",
+            note: "Origin-and-cause inspection scheduled for day nineteen.",
+          },
+          {
+            label: "Timeline of last use",
+            status: "have",
+            conflicted: true,
+            note: "He told the FNOL rep he left the store at 8:15 and told you 9:30.",
+          },
+          {
+            label: "Financial detail",
+            status: "have",
+            note: "Obtained through the proper channel with permissible purpose documented.",
+          },
         ],
+      },
+      // The one inventory row that is "have but conflicting" — the script's own
+      // A ≠ B evidence conflict, drilled into.
+      comparison: {
+        kicker: "Evidence exhibit",
+        conflict: "Timeline of last use — have, but conflicting.",
+        a: {
+          label: "Told the FNOL rep",
+          value: "Left the store at 8:15",
+        },
+        b: {
+          label: "Told you",
+          value: "Left the store at 9:30",
+        },
+        note: "Same fact, two accounts. Neither is evidence until one of them is corroborated.",
       },
       next: "resolution-2",
     },
@@ -681,23 +744,15 @@ export const claimsInvestigationApplication1: Lesson = {
       id: "resolution-2",
       type: "narrative",
       role: "resolution",
-      label: "The test",
+      label: "Keep investigating",
       layout: "avatar",
-      presenter: INSTRUCTOR,
+      presenter: PRESENTER,
+      // [On screen: Today's honest answer — KEEP INVESTIGATING]
       kicker: "On screen",
-      headline: "Could a stranger reconstruct this file and independently reach your conclusion?",
-      body: "That's the test. If yes, you've done the job.",
+      headline: "Today's honest answer — KEEP INVESTIGATING",
+      body: NARRATION["resolution-2"].text,
       continueLabel: "Continue",
-      media: {
-        provider: "placeholder",
-        posterUrl: "/media/presenter-resolution.jpg",
-        placeholderScene: "resolution",
-        durationSec: 8,
-        captions: [
-          { start: 0, end: 4, text: "That's the test." },
-          { start: 4, end: 8, text: "If yes, you've done the job." },
-        ],
-      },
+      media: segment("resolution-2"),
       next: "resolution-3",
     },
 
@@ -705,174 +760,54 @@ export const claimsInvestigationApplication1: Lesson = {
       id: "resolution-3",
       type: "narrative",
       role: "resolution",
-      label: "Same method",
+      label: "Same method. Different answer.",
       layout: "avatar",
-      presenter: INSTRUCTOR,
+      presenter: PRESENTER,
+      // [On screen: Same method. Different answer.]
       kicker: "On screen",
       headline: "Same method. Different answer.",
-      body: "Flip one fact — the plumber finds a clean, catastrophic split consistent with sudden failure — and this identical investigation defensibly pays the claim, promptly and with confidence. That's the whole point. The answer changes. The method doesn't.",
-      continueLabel: "Begin the graded quiz",
-      media: {
-        provider: "placeholder",
-        posterUrl: "/media/presenter-resolution.jpg",
-        placeholderScene: "resolution",
-        durationSec: 20,
-        captions: [
-          { start: 0, end: 9, text: "Flip one fact — the plumber finds a clean, catastrophic split consistent with sudden failure — and this identical investigation defensibly pays the claim, promptly and with confidence." },
-          { start: 9, end: 13, text: "That's the whole point." },
-          { start: 13, end: 20, text: "The answer changes. The method doesn't." },
-        ],
-      },
-      next: "quiz",
-    },
-
-    // ---------------------------------------------------------------- quiz
-    quiz: {
-      id: "quiz",
-      type: "quiz",
-      label: "Completion quiz",
-      layout: "avatar",
-      presenter: INSTRUCTOR,
-      kicker: "Graded completion quiz",
-      headline: "Completion quiz",
-      passPct: 80,
-      intro:
-        "Five questions on the method you just worked. You need 80% to pass.",
-      result: {
-        passHeadline: "Passed — you've completed the lesson.",
-        failHeadline: "Not yet — review and try again.",
-        passNote: "Same method, every file: cause and coverage before conclusions.",
-        failNote: "Rewatch the branch you missed, then retake — 80% is the bar.",
-      },
-      media: {
-        provider: "placeholder",
-        posterUrl: "/media/presenter-resolution.jpg",
-        placeholderScene: "resolution",
-        durationSec: 6,
-        captions: [
-          { start: 0, end: 6, text: "Five questions. Eighty percent to pass." },
-        ],
-      },
-      questions: [
-        {
-          id: "q1",
-          prompt: "What most clearly signals that a claim needs investigation?",
-          options: [
-            { id: "A", label: "It was reported after the date of loss", isCorrect: false },
-            { id: "B", label: "A genuine conflict between the reported facts and the observable evidence", isCorrect: true },
-            { id: "C", label: "The claim value is high enough to affect the reserve", isCorrect: false },
-            { id: "D", label: "It falls into a category with a high fraud rate", isCorrect: false },
-          ],
-          explanation:
-            "A dispute in the facts, coverage, damages, or timing is what starts an investigation — not the calendar, the dollar amount, or a category statistic.",
-        },
-        {
-          id: "q2",
-          prompt: "In this claim, what is the coverage question you are actually investigating?",
-          options: [
-            { id: "A", label: "Whether the insured is telling the truth", isCorrect: false },
-            { id: "B", label: "Whether the loss exceeds the deductible", isCorrect: false },
-            { id: "C", label: "Whether the discharge was sudden and accidental, or occurred over a period of time", isCorrect: true },
-            { id: "D", label: "Whether the washing machine was properly maintained", isCorrect: false },
-          ],
-          explanation:
-            "The whole claim turns on whether this policy responds to this loss: sudden and accidental (covered) versus over a period of time (excluded).",
-        },
-        {
-          id: "q3",
-          prompt: "The insured had recent financial trouble. What does that give you?",
-          options: [
-            { id: "A", label: "Evidence that the loss was gradual", isCorrect: false },
-            { id: "B", label: "Motive — a reason to investigate thoroughly, but not proof of anything", isCorrect: true },
-            { id: "C", label: "Enough to deny under the exclusion", isCorrect: false },
-            { id: "D", label: "Grounds to refer the claim to law enforcement", isCorrect: false },
-          ],
-          explanation:
-            "Motive is a reason to look harder. It is never, by itself, the answer, and it belongs in the analysis section labeled as what it is.",
-        },
-        {
-          id: "q4",
-          prompt:
-            "To deny under the “over a period of time” exclusion, who must prove the exclusion applies, and with what?",
-          options: [
-            { id: "A", label: "The insured, by proving the loss was sudden", isCorrect: false },
-            { id: "B", label: "The carrier, with corroborated evidence", isCorrect: true },
-            { id: "C", label: "No one — a plausible inference is enough", isCorrect: false },
-            { id: "D", label: "The plaintiff's attorney, at trial", isCorrect: false },
-          ],
-          explanation:
-            "The carrier carries the burden on the exclusion, and it must be met with corroborated evidence — not an inference about someone's finances.",
-        },
-        {
-          id: "q5",
-          prompt: "What is the test for a defensible investigation file?",
-          options: [
-            { id: "A", label: "It reaches a denial", isCorrect: false },
-            { id: "B", label: "It is completed quickly", isCorrect: false },
-            { id: "C", label: "A stranger could reconstruct it and independently reach the same conclusion", isCorrect: true },
-            { id: "D", label: "It confirms the adjuster's first instinct", isCorrect: false },
-          ],
-          explanation:
-            "If a stranger could reconstruct the file and independently reach your conclusion, you've done the job. The method holds even when the answer changes.",
-        },
-      ],
+      body: NARRATION["resolution-3"].text,
+      // [→ Continue to the next lessons] — the script's hand-off. The graded
+      // quiz is the COURSE quiz on Thinkific, not an in-video one.
+      continueLabel: "Continue to the next lessons",
+      media: segment("resolution-3"),
+      next: null,
     },
   },
 };
 
 /**
- * GENERATED MEDIA ASSETS
+ * MEDIA-COVERAGE INTEGRITY CHECK
  * ============================================================================
- * The single place real avatar/voice assets are attached to scenes, so the
- * whole lesson's media wiring is visible at a glance (and easy to hand off).
- * Each entry merges into a scene's `media`, preserving its captions, poster,
- * and placeholder backdrop.
- *
- *   - videoUrl  → lip-synced talking avatar (KIE InfiniTalk, shimmer voice baked in)
- *   - audioUrl  → shimmer voiceover over the scene's still/exhibit (no talking head)
- *
- * Every Diane scene is now a lip-synced talking avatar (intro is wired inline
- * above; everything else is here). The only audio-only scene is the assignment
- * (a full-screen evidence exhibit — voiceover, no talking head), wired inline.
- * To swap in higher-quality assets later (e.g. HeyGen), just change the URL.
+ * Runs when the module loads — which is during `next build` — so a segment that
+ * exists on disk but was never wired to a scene, or a scene wired to a segment
+ * that was never delivered, fails the build instead of showing a learner a dead
+ * player. The 22 delivered segments and the 3 player-native correct beats are
+ * accounted for exactly once each.
  */
-const MEDIA_ASSETS: Record<
-  string,
-  { videoUrl?: string; audioUrl?: string; durationSec: number }
-> = {
-  "decision-1": { videoUrl: "/media/decision-1.mp4", durationSec: 3.26 },
-  "decision-2": { videoUrl: "/media/decision-2.mp4", durationSec: 3.78 },
-  "decision-3": { videoUrl: "/media/decision-3.mp4", durationSec: 4.8 },
-  "rejoin-1": { videoUrl: "/media/rejoin-1.mp4", durationSec: 22.72 },
-  "rejoin-2": { videoUrl: "/media/rejoin-2.mp4", durationSec: 21.95 },
-  "rejoin-3": { videoUrl: "/media/rejoin-3.mp4", durationSec: 7.74 },
-  "resolution-1": { videoUrl: "/media/resolution-1.mp4", durationSec: 26.69 },
-  "resolution-2": { videoUrl: "/media/resolution-2.mp4", durationSec: 2.69 },
-  "resolution-3": { videoUrl: "/media/resolution-3.mp4", durationSec: 15.3 },
-  "fb-1a": { videoUrl: "/media/fb-1a.mp4", durationSec: 22.53 },
-  "fb-1b": { videoUrl: "/media/fb-1b.mp4", durationSec: 2.62 },
-  "fb-1c": { videoUrl: "/media/fb-1c.mp4", durationSec: 17.09 },
-  "fb-1d": { videoUrl: "/media/fb-1d.mp4", durationSec: 24.19 },
-  "fb-2a": { videoUrl: "/media/fb-2a.mp4", durationSec: 17.02 },
-  "fb-2b": { videoUrl: "/media/fb-2b.mp4", durationSec: 11.65 },
-  "fb-2c": { videoUrl: "/media/fb-2c.mp4", durationSec: 2.62 },
-  "fb-2d": { videoUrl: "/media/fb-2d.mp4", durationSec: 11.71 },
-  "fb-3a": { videoUrl: "/media/fb-3a.mp4", durationSec: 13.12 },
-  "fb-3b": { videoUrl: "/media/fb-3b.mp4", durationSec: 2.62 },
-  "fb-3c": { videoUrl: "/media/fb-3c.mp4", durationSec: 15.94 },
-  "fb-3d": { videoUrl: "/media/fb-3d.mp4", durationSec: 12.16 },
-  quiz: { videoUrl: "/media/quiz.mp4", durationSec: 2.88 },
-};
+{
+  const delivered = Object.keys(NARRATION);
+  const scenes = claimsInvestigationApplication1.scenes;
 
-for (const [sceneId, asset] of Object.entries(MEDIA_ASSETS)) {
-  const scene = claimsInvestigationApplication1.scenes[sceneId];
-  if (!scene) continue;
-  scene.media = {
-    ...scene.media,
-    provider: "file",
-    hasAudio: true,
-    durationSec: asset.durationSec,
-    ...(asset.videoUrl ? { videoUrl: asset.videoUrl, loop: false } : {}),
-    ...(asset.audioUrl ? { audioUrl: asset.audioUrl } : {}),
-  };
+  const unwired = delivered.filter((id) => !scenes[id]);
+  if (unwired.length > 0) {
+    throw new Error(
+      `claims-01 AV1: delivered segment(s) with no scene: ${unwired.join(", ")}`,
+    );
+  }
+
+  const wired = Object.values(scenes)
+    .filter((sc) => !!sc.media.videoUrl)
+    .map((sc) => sc.id);
+  const undelivered = wired.filter((id) => !delivered.includes(id));
+  if (undelivered.length > 0) {
+    throw new Error(
+      `claims-01 AV1: scene(s) wired to an undelivered segment: ${undelivered.join(", ")}`,
+    );
+  }
+  if (wired.length !== delivered.length) {
+    throw new Error(
+      `claims-01 AV1: ${wired.length} scenes carry video but ${delivered.length} segments were delivered.`,
+    );
+  }
 }

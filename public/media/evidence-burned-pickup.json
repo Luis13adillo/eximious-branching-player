@@ -1,0 +1,77 @@
+{
+  "asset": "evidence-burned-pickup.jpg",
+  "purpose": "CLAIMS-01 AV1 evidence exhibit. Satisfies the script cue on page 2 of the pilot scripts.",
+  "script_cue_verbatim": "[On screen: Photo \u2014 burned pickup on gravel road, tires melted, glass gone, no other vehicles in frame]",
+  "generation": {
+    "provider": "OpenAI direct",
+    "endpoint": "POST https://api.openai.com/v1/images/generations",
+    "model": "gpt-image-2",
+    "size": "1920x1088",
+    "quality": "high",
+    "output_format": "png",
+    "background": "opaque",
+    "n": 1,
+    "prompt": "A documentary evidence photograph from an insurance claim file. A burned-out late-2010s heavy-duty full-size crew-cab pickup truck sits on a narrow gravel access road in open, flat rural country. COMPOSITION: the truck is centred and sits well inside the frame, occupying only the middle portion of the picture \u2014 roughly the central half of the width \u2014 with generous empty margin on the left, the right, above and below it. Clear sky and open ground headroom above the roofline; a clear band of gravel road surface below the wheels. The entire vehicle, including the ground beneath its wheels and the full roofline, sits comfortably within the central square of the image so nothing important is near an edge. Eye-level front three-quarter angle on a standard lens. CONDITION: the vehicle is burned to the frame \u2014 bodywork scorched to bare grey and rust-brown metal, paint entirely consumed, interior gutted, all glass gone from every window opening leaving empty dark apertures, tires completely burned away leaving bare steel wheel rims resting directly on the gravel. SCENE: no other vehicles anywhere in the frame. A cold scene photographed days after the fire \u2014 no flames, no smoke, no embers, no heat haze, no emergency vehicles, no people. Soft overcast daylight with gentle directional falloff, neutral colour, no strong shadows. Dry roadside scrub and open country beyond. TREATMENT: calm, matter-of-fact, technically clean forensic documentation \u2014 the look of a field adjuster's routine scene photograph, not a news, cinematic or true-crime image. Naturalistic, controlled, polished light without dramatic contrast or sensational drama. MUST NOT APPEAR: no fuel containers, gas cans or jerricans; no linear accelerant pour pattern or burn trail running away from the vehicle across the ground; no fire-investigation placards, evidence markers, numbered tents, cones or scale cards; nothing in frame that indicates how the fire started. No licence plate present or legible, no VIN plate, no manufacturer badges, emblems or model lettering anywhere on the vehicle. No text, no watermarks, no date stamp, no case number, no logos, no graphic overlays, no vignette, no stylised colour grading."
+  },
+  "usage": {
+    "input_tokens": 459,
+    "input_tokens_details": {
+      "image_tokens": 0,
+      "text_tokens": 459
+    },
+    "output_tokens": 5300,
+    "output_tokens_details": {
+      "image_tokens": 5300,
+      "text_tokens": 0
+    },
+    "total_tokens": 5759
+  },
+  "cost": {
+    "output_image_tokens": 5300,
+    "derived_usd": 0.0728,
+    "derivation": "13,824 output image tokens observed at ~$0.19 on this same account (rubric generations data/generation-pricing.json, 2026-08-13) => ~$13.74 per 1M output image tokens. 5,300 x 13.74/1e6 = $0.073.",
+    "confidence": "DERIVED, NOT INVOICED. This API key lacks the api.usage.read scope, so the billed amount could not be read back from OpenAI. The token count is measured; the dollar figure rests on a single prior observation.",
+    "note": "gpt-image-2 is not on the CLAUDE.md verified price table. A row should be added at the next spec update rather than edited into the locked table here."
+  },
+  "size_rule_verified": "OpenAI API returned, verbatim: \"Invalid size '1921x1089'. Width and height must both be divisible by 16.\" and \"The longest edge must be less than or equal to 3840.\" 1920x1088 satisfies both. 1080 is not divisible by 16, hence the native render is 1088 and is conformed down.",
+  "post_process": {
+    "native_size": "1920x1088",
+    "filter": "crop=1920:1080:0:4",
+    "rows_removed_top": 4,
+    "rows_removed_bottom": 4,
+    "resample": "none",
+    "final_size": "1920x1080",
+    "delivered_format": "jpeg q:v=2",
+    "recover_lossless_conform": "ffmpeg -i evidence-burned-pickup-native-1920x1088.png -vf crop=1920:1080:0:4 -pix_fmt rgb24 out.png"
+  },
+  "checksums": {
+    "native_sha256": "5c2611580fade5c65897796325dd3802121f14026afbd6d98986f79133bd7d65",
+    "delivered_sha256": "8f6fd5fa4015566ceb4172887791ed0958bd678939c4f6eb081f6e38fc245104"
+  },
+  "compliance": {
+    "rule_8": "Carries no text, UI, branding, captions or overlays. The player composites all of that at runtime.",
+    "visual_standard": "Documentary/editorial, naturalistic controlled light without sensational drama, per the Interactive Video Production Guidelines p07/p13 and Corporate Brand Guidelines p16-18.",
+    "case_fidelity": "Cold scene, days after the fire (reported March 2, recovered March 5) - no flames or smoke. Vehicle silhouette matches the scripted 2019 Ford F-250, unbadged so no real manufacturer mark is asserted.",
+    "instructional_integrity": "No cause-of-fire cue in frame. CLAIMS-01 turns on the cause being genuinely undetermined ('Accelerant: need'); an image implying arson would answer Decisions 1 and 3 before the learner does.",
+    "naming": "Video Production Spec section 3 - image assets named for what they show (evidence-basement.jpg precedent).",
+    "no_fabricated_record": "No date stamp, case number, agency marking or camera metadata burn-in, so the image cannot function as a counterfeit record."
+  },
+  "authority": "Client-approved 2026-08-18 (Luis): generate the missing burned-pickup exhibit required by claims-01 at 1920x1080 minimum, following the exact storyboard description and Eximious visual standards.",
+  "date": "2026-08-18",
+  "qa_gate": {
+    "dimensions_exactly_1920x1080": "PASS (ffprobe mjpeg 1920x1080)",
+    "burned_pickup_burned_to_frame": "PASS",
+    "vehicle_silhouette_matches_2019_F250": "PASS (late-2010s heavy-duty full-size crew cab)",
+    "gravel_road": "PASS",
+    "tires_melted_rims_on_gravel": "PASS (bare rims resting on gravel, melted tire residue around them)",
+    "glass_gone_all_openings": "PASS (empty dark apertures throughout)",
+    "no_other_vehicles_in_frame": "PASS",
+    "no_people_flames_smoke": "PASS",
+    "no_text_watermark_logo": "PASS (front and rear zooms inspected)",
+    "no_licence_plate_vin_or_badge": "PASS (front and rear zooms inspected)",
+    "no_cause_of_fire_cue": "PASS (no fuel containers, no linear pour trail, no investigator placards/markers/cones/scale cards; ground scorch is confined beneath the vehicle and is cause-neutral)",
+    "tone_documentary_not_sensational": "PASS (flat overcast, matter-of-fact field-adjuster framing)",
+    "survives_player_mobile_centre_crop": "PASS (whole vehicle intact in the central 1080px = 56% of width, which is what a ~1:1 mobile stage shows under object-cover)",
+    "survives_player_scrims": "PASS (roofline below the 96px top scrim; wheel line above the 112px bottom scrim; both cued details remain legible)"
+  }
+}

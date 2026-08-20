@@ -20,6 +20,12 @@ export interface MediaClock {
   duration: number;
   playing: boolean;
   ended: boolean;
+  /**
+   * The learner has intentionally started the lesson. False only before the
+   * first play when the start gate is on (`requireStart`), which is the
+   * template default. Drives the stage's Start control.
+   */
+  started: boolean;
   /** Real media is buffering / not yet ready to play (drives a loading state). */
   waiting: boolean;
   muted: boolean;
@@ -67,21 +73,45 @@ export function useMediaClock(
     /** restart when this changes (scene id) */
     sceneKey: string;
     autoplay?: boolean;
+    /**
+     * THE START GATE — locked template default (`true`).
+     * Nothing plays on initial load. The lesson waits on its opening frame
+     * until the learner starts it, and that first play carries sound with it,
+     * so video and audio begin together on one deliberate gesture. Once
+     * started, `autoplay` governs scene-to-scene playback exactly as before, so
+     * later segments continue without a second tap.
+     * Pass `false` only for a deployment that genuinely must play unattended.
+     */
+    requireStart?: boolean;
     mediaRef?: React.RefObject<HTMLMediaElement | null>;
     hasRealMedia?: boolean;
     onEnded?: () => void;
   },
 ): MediaClock {
-  const { sceneKey, autoplay = true, mediaRef, hasRealMedia, onEnded } = opts;
+  const {
+    sceneKey,
+    autoplay = true,
+    requireStart = true,
+    mediaRef,
+    hasRealMedia,
+    onEnded,
+  } = opts;
 
   const [currentTime, setCurrentTime] = useState(0);
-  // Scenes autoplay from the start. Browsers always allow MUTED autoplay, so
-  // the avatar plays and lip-syncs immediately — nothing is ever a frozen,
-  // silent frame. Sound is off only until the learner's first interaction
-  // anywhere on the page (see the first-gesture effect below), after which it
-  // stays on for the rest of the lesson. So `playing` starts true whenever the
-  // scene allows autoplay.
-  const [playing, setPlaying] = useState(autoplay);
+  // THE START GATE.
+  // Nothing plays until the learner asks for it: the lesson opens on its poster
+  // frame behind a Start control, and the tap that starts it is the same
+  // gesture that unlocks sound, so picture and audio begin together. From then
+  // on `started` stays true for the rest of the run and scene-to-scene playback
+  // is automatic again, so the learner is never asked to press play twice.
+  const [started, setStarted] = useState(!requireStart);
+  // Written only where the gate opens (`play()`), so effects can read it
+  // without taking a dependency on it and restarting the scene.
+  const startedRef = useRef(started);
+  // Once started, every scene the lesson marks autoplay-able plays on entry.
+  // Sound is on by then (the start gesture unlocked it), so a segment never
+  // opens as a silent moving frame.
+  const [playing, setPlaying] = useState(autoplay && !requireStart);
   const [ended, setEnded] = useState(false);
   // Start muted: browsers only allow unattended autoplay of muted video, and
   // the placeholder clips are silent anyway. The mute control still works for
@@ -120,10 +150,11 @@ export function useMediaClock(
     endedFiredRef.current = false;
     // Autoplay every scene the lesson marks autoplay-able (a decision retry
     // re-entry is the one exception — the learner chooses again without the
-    // question replaying). MUTED autoplay is always allowed, so the avatar
-    // plays and lip-syncs right away; `el.muted` carries the learner's sound
-    // preference, which is on once they've interacted once (unlocked).
-    const doAutoplay = autoplay;
+    // question replaying), but ONLY after the learner has started the lesson.
+    // Before that the gate holds every scene paused. `startedRef` is read, not
+    // depended on, so opening the gate does not re-run this effect and restart
+    // the scene — `play()` is what starts it.
+    const doAutoplay = autoplay && startedRef.current;
     setPlaying(doAutoplay);
     const el = mediaRef?.current;
     if (el) {
@@ -247,11 +278,15 @@ export function useMediaClock(
 
   // Turn sound on at the learner's FIRST interaction anywhere on the page —
   // clicking "Continue", picking an answer, tapping the video, pressing a key,
-  // anything. Scenes are already autoplaying (muted), so this is the single
-  // gesture that unmutes them; there is no separate "press Play for sound" or
-  // "tap for sound" step. Once unlocked, every following scene plays with sound
-  // because the persistent <video> keeps its user-activation. Uses {once:true}
-  // so it costs nothing after the first interaction.
+  // anything. Once unlocked, every following scene plays with sound because the
+  // persistent <video> keeps its user-activation. Uses {once:true} so it costs
+  // nothing after the first interaction.
+  //
+  // It never STARTS playback while the start gate is closed: unmuting a paused
+  // element is silent, so a learner who taps something else first (an exhibit
+  // tab, Continue) does not accidentally trigger the lesson. Only Start does
+  // that. Once started, this effect has already been spent — `play()` unlocks
+  // sound itself — so the guarded branch matters only for a blocked autoplay.
   useEffect(() => {
     if (unlocked) return;
     const onFirstGesture = () => {
@@ -263,8 +298,9 @@ export function useMediaClock(
       if (el) {
         el.muted = false;
         // If autoplay was somehow blocked and the scene is sitting paused,
-        // start it now that we have a real user gesture.
-        if (el.paused && autoplayRef.current) {
+        // start it now that we have a real user gesture — but only once the
+        // learner has opened the start gate.
+        if (el.paused && autoplayRef.current && startedRef.current) {
           pauseOtherMedia(el);
           void el.play().catch(() => {});
         }
@@ -281,9 +317,17 @@ export function useMediaClock(
   const play = useCallback(() => {
     setEnded(false);
     endedFiredRef.current = false;
-    // The first play is the gesture that unlocks sound: turn audio on and
-    // remember it, so every following scene plays with sound (no "tap for
-    // sound" step). Later plays respect the current mute button state.
+    // The first play is the learner starting the lesson: it opens the start
+    // gate for the rest of the run, so later segments continue on their own.
+    if (!startedRef.current) {
+      startedRef.current = true;
+      setStarted(true);
+    }
+    // It is also the gesture that unlocks sound: turn audio on and remember it,
+    // so every following scene plays with sound (no "tap for sound" step).
+    // Setting `muted` BEFORE `el.play()` inside the gesture is what makes
+    // picture and audio start together on iOS. Later plays respect the current
+    // mute button state.
     if (!unlockedRef.current) {
       unlockedRef.current = true;
       setUnlocked(true);
@@ -336,6 +380,7 @@ export function useMediaClock(
     duration,
     playing,
     ended,
+    started,
     waiting,
     muted,
     volume,

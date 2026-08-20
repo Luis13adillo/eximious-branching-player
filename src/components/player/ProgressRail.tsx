@@ -1,13 +1,15 @@
 "use client";
 
 import type { Lesson, SceneId } from "@/lib/branching/types";
-import { lessonOutline, outlineIndexForScene } from "@/lib/branching/engine";
+import { progressIndexForScene, progressSteps } from "@/lib/branching/engine";
 import { CheckIcon } from "@/components/ui/icons";
 
 /**
- * ProgressRail — shows the learner where they are along the lesson spine
- * (intro → evidence → decision → resolution). Feedback branches map back to
- * their decision step, so the rail is stable no matter which answer was chosen.
+ * ProgressRail — shows the learner where they are in the case
+ * (intro → evidence → decision → resolution). Steps are the lesson's configured
+ * progress milestones, so a beat the script splits across several delivered
+ * segments still reads as one step. Feedback branches map back to their
+ * decision's step, so the rail is stable no matter which answer was chosen.
  */
 export function ProgressRail({
   lesson,
@@ -16,27 +18,33 @@ export function ProgressRail({
   lesson: Lesson;
   currentSceneId: SceneId;
 }) {
-  const outline = lessonOutline(lesson);
-  const activeIndex = outlineIndexForScene(lesson, currentSceneId);
+  const outline = progressSteps(lesson);
+  const activeIndex = progressIndexForScene(lesson, currentSceneId);
 
+  // Widths are FLEXIBLE, not fixed. A lesson's spine length is data — this one
+  // is 13 steps, another may be 9 or 16 — so the rail shares the space it is
+  // given and shrinks to fit rather than running off a phone's right edge. The
+  // caps keep it from stretching into a banner on a wide desktop.
   return (
-    <div className="flex items-center gap-1.5" aria-hidden="true">
+    <div
+      className="flex w-full min-w-0 items-center justify-end gap-1 sm:gap-1.5"
+      aria-hidden="true"
+    >
       {outline.map((step, i) => {
         const done = i < activeIndex;
         const active = i === activeIndex;
         return (
-          <div key={step.id} className="flex items-center gap-1.5">
-            <span
-              title={step.label}
-              className={`h-1.5 rounded-full transition-all duration-500 ${
-                active
-                  ? "w-7 bg-gold-500"
-                  : done
-                    ? "w-4 bg-gold-700"
-                    : "w-4 bg-white/15"
-              } ${step.kind === "decision" || step.kind === "quiz" ? "ring-1 ring-gold-400/40" : ""}`}
-            />
-          </div>
+          <span
+            key={step.id}
+            title={step.label}
+            className={`h-1.5 min-w-[6px] flex-1 rounded-full transition-all duration-500 ${
+              active
+                ? "max-w-7 bg-gold-500"
+                : done
+                  ? "max-w-4 bg-gold-700"
+                  : "max-w-4 bg-white/15"
+            } ${step.kind === "decision" || step.kind === "quiz" ? "ring-1 ring-gold-400/40" : ""}`}
+          />
         );
       })}
     </div>
@@ -57,8 +65,8 @@ export function LessonStepList({
   currentSceneId: SceneId;
   className?: string;
 }) {
-  const outline = lessonOutline(lesson);
-  const activeIndex = outlineIndexForScene(lesson, currentSceneId);
+  const outline = progressSteps(lesson);
+  const activeIndex = progressIndexForScene(lesson, currentSceneId);
 
   return (
     <nav aria-label="Case progress" className={className}>
@@ -119,8 +127,8 @@ export function ProgressLabel({
   lesson: Lesson;
   currentSceneId: SceneId;
 }) {
-  const outline = lessonOutline(lesson);
-  const idx = outlineIndexForScene(lesson, currentSceneId);
+  const outline = progressSteps(lesson);
+  const idx = progressIndexForScene(lesson, currentSceneId);
   const step = outline[idx];
   return (
     <span className="font-sans text-[11px] uppercase tracking-[0.18em] text-ink-400">

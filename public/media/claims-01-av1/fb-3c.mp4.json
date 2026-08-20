@@ -1,0 +1,75 @@
+{
+ "asset": "fb-3c.mp4",
+ "video": "EA_claims-01_AV1",
+ "presenter": "Diane Marchetti (Presenter 1)",
+ "lipsync": {
+  "provider": "fal.ai",
+  "model": "fal-ai/latentsync",
+  "loop_mode": "pingpong",
+  "loop_mode_note": "Carried over unchanged, but it no longer triggers: the corrected driving base is 99.62 s, longer than every call, so LatentSync never loops it. That is what removes the repeating blink pattern and the reversed blinks structurally.",
+  "seed": 20260818,
+  "guidance_scale": 1,
+  "request_id": "01a01b25-8750-76d3-9377-44485c2d0ad7",
+  "batch_call": 7,
+  "batch_segments": [
+   "fb-3a",
+   "fb-3c",
+   "fb-3d"
+  ],
+  "elapsed_s": null,
+  "blocks": 102,
+  "returned_frames": 1632,
+  "frame_assertion": "returned == blocks x 16 : PASS",
+  "driving_video": "public/media/presenter-1-diane-marchetti-driving-base-corrected.mp4",
+  "driving_video_sha256": "e61587b98a127f674d8fa97939d854f01443ec7633e54fe1c121f716b92dbc2f",
+  "cost_usd": 0.3274
+ },
+ "split": {
+  "batch_start_s": 16.532,
+  "video_start_s": 16.52,
+  "align_err_ms": -12.0,
+  "frames": 686,
+  "video_dur_s": 27.44,
+  "audio_dur_s": 27.432,
+  "method": "re-encoded at the cut (a stream copy snaps to the nearest keyframe and would desync the remuxed audio); trimmed UP to a whole 25 fps frame so video >= audio"
+ },
+ "audio": {
+  "source": "fb-3c.mp3",
+  "note": "LatentSync's returned audio (aac 16 kHz) is DISCARDED; the locked 24 kHz -24.5 LUFS master is remuxed with -c:a copy (locked rule 4). Verified: the master's decoded PCM is an exact prefix of the mp4's, the only difference being 47 samples (1.96 ms) of mp3 decoder padding at the tail.",
+  "lufs_integrated": -24.5,
+  "true_peak_dbfs": -6.3,
+  "stream": "mp3,24000,1,128000",
+  "tts": {
+   "model": "tts-1-hd",
+   "voice": "shimmer",
+   "speed": 1.0
+  }
+ },
+ "delivery": {
+  "dims": "1920x1080",
+  "fps": "25/1"
+ },
+ "sha256": "133108f52cc17de202c9f1d2dc5d11907c2dcd3319797354a1d5884350fe8b59",
+ "date": "2026-08-19",
+ "revision": {
+  "version": 2,
+  "date": "2026-08-19",
+  "supersedes": "public/media/claims-01-av1-v1-superseded/fb-3c.mp4",
+  "supersedes_sha256": "e492c0514bd69f12d72103edbfd721176b0676c2b5b12c2f2646ddd3a6c72f5d",
+  "reason": "Blink cadence. The 5.04 s motion base contains four blinks (47.6/min); pingpong-looping it delivered 48.9 blinks/min on a 10.0 s repeat, with half of them played backwards on the reverse leg. Corrected by re-ordering the APPROVED base frames into a 99.62 s driving base - 13.3 blinks/min, irregular, none reversed.",
+  "unchanged": [
+   "narration script",
+   "TTS voice and settings",
+   "audio masters",
+   "presenter identity and appearance",
+   "batching",
+   "seed",
+   "split offsets",
+   "segment durations and frame counts",
+   "player and lesson code"
+  ],
+  "regenerated": [
+   "lip-sync video only"
+  ]
+ }
+}

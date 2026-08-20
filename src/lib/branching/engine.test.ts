@@ -4,10 +4,12 @@ import {
   decisionOrder,
   initMachine,
   lessonOutline,
+  progressIndexForScene,
+  progressSteps,
   selectOption,
   validateLesson,
 } from "./engine";
-import type { DecisionScene, OptionId, QuizScene } from "./types";
+import type { DecisionScene, OptionId } from "./types";
 import { waterDamageClaim } from "@/lib/lessons/water-damage-claim";
 import { claimsInvestigationApplication1 } from "@/lib/lessons/claims-investigation-application-1";
 import { listLessons } from "@/lib/lessons";
@@ -123,22 +125,88 @@ describe("outline / numbering", () => {
 });
 
 // ===========================================================================
-// APPLICATION LESSON — full 3-decision / 12-branch traversal + quiz
+// PILOT — claims-01 AV1 (Marcus Delaney)
+// Full 3-decision / 12-branch traversal, authored verbatim to the pilot script.
 // ===========================================================================
-describe("application lesson — structure", () => {
-  const app = claimsInvestigationApplication1;
 
-  const DECISIONS = [
-    { id: "decision-1", correct: "B", rejoin: "rejoin-1", nextStep: "decision-2" },
-    { id: "decision-2", correct: "C", rejoin: "rejoin-2", nextStep: "decision-3" },
-    { id: "decision-3", correct: "B", rejoin: "rejoin-3", nextStep: "resolution-1" },
-  ] as const;
+const app = claimsInvestigationApplication1;
 
+/**
+ * The script's own graph. `rejoin` is where the correct answer lands; `then` is
+ * every further narrative beat before the next decision (Decision 1's rejoin is
+ * split across two on-screen states, exactly as the script writes it).
+ */
+const DECISIONS = [
+  {
+    id: "decision-1",
+    correct: "D",
+    rejoin: "rejoin-1a",
+    then: ["rejoin-1b"],
+    next: "decision-2",
+  },
+  {
+    id: "decision-2",
+    correct: "B",
+    rejoin: "rejoin-2",
+    then: [],
+    next: "decision-3",
+  },
+  {
+    id: "decision-3",
+    correct: "B",
+    rejoin: "rejoin-3",
+    then: [],
+    next: "resolution-1",
+  },
+] as const;
+
+/** intro → assignment-1 → assignment-2 → decision-1. */
+function atFirstDecision() {
+  let s = initMachine(app, 0);
+  s = advance(s, app); // assignment-1
+  s = advance(s, app); // assignment-2
+  s = advance(s, app); // decision-1
+  return s;
+}
+
+/** Answer every prior decision correctly to arrive at `target`. */
+function reachDecision(target: string) {
+  let s = atFirstDecision();
+  for (const d of DECISIONS) {
+    if (d.id === target) return s;
+    s = selectOption(s, app, d.id, d.correct as OptionId, 0); // → correct feedback
+    s = advance(s, app); // → rejoin
+    for (let i = 0; i < d.then.length; i++) s = advance(s, app); // further beats
+    s = advance(s, app); // → next decision
+  }
+  return s;
+}
+
+describe("pilot claims-01 AV1 — structure", () => {
   it("is a valid lesson graph", () => {
     expect(validateLesson(app)).toEqual([]);
   });
 
-  it("has exactly three decisions in order", () => {
+  it("carries the pilot's identity, not the water-damage template's", () => {
+    expect(app.meta?.caseId).toBe("4471-88203");
+    expect(app.subtitle).toContain("The File Lands on Your Desk");
+    // The demo case id and its content must not survive anywhere in the data.
+    const blob = JSON.stringify(app).toLowerCase();
+    for (const demo of [
+      "2043-rw",
+      "basement",
+      "supply line",
+      "washing machine",
+      "plumber",
+      "moisture",
+      "water damage",
+    ]) {
+      expect(blob).not.toContain(demo);
+    }
+    expect(blob).toContain("delaney");
+  });
+
+  it("has exactly three decisions in script order", () => {
     expect(decisionOrder(app)).toEqual([
       "decision-1",
       "decision-2",
@@ -146,13 +214,14 @@ describe("application lesson — structure", () => {
     ]);
   });
 
-  it("the spine is intro → assignment → 3×(decision+rejoin) → 3×resolution → quiz", () => {
-    const outline = lessonOutline(app);
-    expect(outline.map((s) => s.id)).toEqual([
+  it("the spine follows the script's own segment splits", () => {
+    expect(lessonOutline(app).map((s) => s.id)).toEqual([
       "intro",
-      "assignment",
+      "assignment-1",
+      "assignment-2",
       "decision-1",
-      "rejoin-1",
+      "rejoin-1a",
+      "rejoin-1b",
       "decision-2",
       "rejoin-2",
       "decision-3",
@@ -160,63 +229,59 @@ describe("application lesson — structure", () => {
       "resolution-1",
       "resolution-2",
       "resolution-3",
-      "quiz",
     ]);
-    expect(outline.at(-1)!.kind).toBe("quiz");
+  });
+
+  it("ends by handing off, with no in-video quiz", () => {
+    const last = app.scenes["resolution-3"];
+    expect(last.type).toBe("narrative");
+    if (last.type === "narrative") expect(last.next).toBeNull();
+    expect(last.continueLabel).toBe("Continue to the next lessons");
+    expect(
+      Object.values(app.scenes).filter((sc) => sc.type === "quiz"),
+    ).toHaveLength(0);
   });
 
   it.each(DECISIONS)(
-    "$id has 4 options, one correct ($correct), A/B/C/D",
+    "$id has 4 options A/B/C/D with one correct ($correct)",
     ({ id, correct }) => {
       const d = app.scenes[id] as DecisionScene;
       expect(d.type).toBe("decision");
       expect(d.options).toHaveLength(4);
       expect(d.options.map((o) => o.id)).toEqual(["A", "B", "C", "D"]);
-      const correctOpts = d.options.filter((o) => o.isCorrect);
-      expect(correctOpts).toHaveLength(1);
-      expect(correctOpts[0].id).toBe(correct);
+      const right = d.options.filter((o) => o.isCorrect);
+      expect(right).toHaveLength(1);
+      expect(right[0].id).toBe(correct);
     },
   );
+
+  it("has twelve feedback segments — one per option, no sharing", () => {
+    const feedback = Object.values(app.scenes).filter(
+      (sc) => sc.type === "feedback",
+    );
+    expect(feedback).toHaveLength(12);
+    const routed = DECISIONS.flatMap((d) =>
+      (app.scenes[d.id] as DecisionScene).options.map((o) => o.feedbackSceneId),
+    );
+    expect(new Set(routed).size).toBe(12);
+  });
 });
 
-describe("application lesson — all 12 branches", () => {
-  const app = claimsInvestigationApplication1;
+describe("pilot claims-01 AV1 — all 12 branches", () => {
   const opts: OptionId[] = ["A", "B", "C", "D"];
-
-  const DECISIONS = [
-    { id: "decision-1", correct: "B", rejoin: "rejoin-1", nextStep: "decision-2" },
-    { id: "decision-2", correct: "C", rejoin: "rejoin-2", nextStep: "decision-3" },
-    { id: "decision-3", correct: "B", rejoin: "rejoin-3", nextStep: "resolution-1" },
-  ] as const;
-
-  // Reach a decision by answering all prior decisions correctly.
-  function reachDecision(target: string) {
-    let s = initMachine(app, 0);
-    s = advance(s, app); // intro → assignment
-    s = advance(s, app); // assignment → decision-1
-    for (const d of DECISIONS) {
-      if (d.id === target) return s;
-      s = selectOption(s, app, d.id, d.correct as OptionId, 0); // → feedback
-      s = advance(s, app); // feedback → rejoin
-      s = advance(s, app); // rejoin → next decision (or resolution-1)
-    }
-    return s;
-  }
 
   for (const d of DECISIONS) {
     describe(d.id, () => {
       it.each(opts)(
-        "option %s → its own feedback; wrong retries the decision, correct advances",
+        "option %s routes to its own feedback; wrong retries, correct advances",
         (id) => {
           const decision = app.scenes[d.id] as DecisionScene;
           const option = decision.options.find((o) => o.id === id)!;
 
-          // routes to this option's distinct feedback scene
           let s = selectOption(reachDecision(d.id), app, d.id, id, 0);
           expect(s.currentSceneId).toBe(option.feedbackSceneId);
           expect(s.currentSceneId).toBe(`fb-${d.id.slice(-1)}${id.toLowerCase()}`);
 
-          // feedback verdict matches whether the option is correct
           const fb = app.scenes[s.currentSceneId];
           expect(fb.type).toBe("feedback");
           if (fb.type === "feedback") {
@@ -225,13 +290,15 @@ describe("application lesson — all 12 branches", () => {
             expect(fb.forOptionId).toBe(id);
           }
 
-          // leave the feedback: wrong → back to the same decision to retry;
-          // correct → rejoin, then forward to the next step (no dead end)
           s = advance(s, app);
           if (id === d.correct) {
             expect(s.currentSceneId).toBe(d.rejoin);
+            for (const beat of d.then) {
+              s = advance(s, app);
+              expect(s.currentSceneId).toBe(beat);
+            }
             s = advance(s, app);
-            expect(s.currentSceneId).toBe(d.nextStep);
+            expect(s.currentSceneId).toBe(d.next);
           } else {
             expect(s.currentSceneId).toBe(d.id);
             expect(s.status).toBe("awaiting-decision");
@@ -240,80 +307,260 @@ describe("application lesson — all 12 branches", () => {
         },
       );
 
-      it("wrong branches return to the decision; only the correct one advances", () => {
-        for (const id of opts) {
-          const s = advance(selectOption(reachDecision(d.id), app, d.id, id, 0), app);
-          expect(s.currentSceneId).toBe(id === d.correct ? d.rejoin : d.id);
-        }
-      });
-
-      it("every feedback branch carries distinct, non-empty on-screen text", () => {
+      it("every option carries its own on-screen cue text", () => {
         const decision = app.scenes[d.id] as DecisionScene;
-        const consequences = decision.options.map((o) => {
-          const fb = app.scenes[o.feedbackSceneId];
-          return fb.type === "feedback" ? fb.consequence : undefined;
-        });
-        expect(consequences.every((c) => !!c && c.length > 0)).toBe(true);
-        // the three incorrect labels are all different from one another
         const wrong = decision.options
           .filter((o) => !o.isCorrect)
           .map((o) => {
             const fb = app.scenes[o.feedbackSceneId];
-            return fb.type === "feedback" ? fb.consequence : "";
+            return fb.type === "feedback" ? (fb.consequence ?? "") : "";
           });
+        expect(wrong.every((c) => c.length > 0)).toBe(true);
         expect(new Set(wrong).size).toBe(3);
+
+        const right = decision.options.find((o) => o.isCorrect)!;
+        const rfb = app.scenes[right.feedbackSceneId];
+        // The script writes the correct beat as [On screen: Correct] only.
+        if (rfb.type === "feedback") expect(rfb.consequence).toBe("Correct");
       });
     });
   }
 
-  it("supports multiple wrong attempts before the correct answer advances", () => {
-    let s = reachDecision("decision-1"); // at decision-1 (correct = B)
-    for (const wrong of ["A", "C", "D"] as OptionId[]) {
+  it("retries until correct — three wrong answers all return to the decision", () => {
+    let s = reachDecision("decision-1"); // correct = D
+    for (const wrong of ["A", "B", "C"] as OptionId[]) {
       s = advance(selectOption(s, app, "decision-1", wrong, 0), app);
-      expect(s.currentSceneId).toBe("decision-1"); // kept here to retry
+      expect(s.currentSceneId).toBe("decision-1");
       expect(s.status).toBe("awaiting-decision");
     }
-    expect(s.attempts["decision-1"]).toEqual(["A", "C", "D"]);
-    // now the correct answer advances
-    s = advance(selectOption(s, app, "decision-1", "B", 0), app);
-    expect(s.currentSceneId).toBe("rejoin-1");
+    expect(s.attempts["decision-1"]).toEqual(["A", "B", "C"]);
+    s = advance(selectOption(s, app, "decision-1", "D", 0), app);
+    expect(s.currentSceneId).toBe("rejoin-1a");
   });
 
-  it("the correct path runs start → resolution → quiz with no dead ends", () => {
-    let s = initMachine(app, 0);
-    s = advance(s, app); // assignment
-    s = advance(s, app); // decision-1
+  it("the all-correct path runs start → resolution → hand-off with no dead ends", () => {
+    let s = atFirstDecision();
     for (const d of DECISIONS) {
       expect(s.status).toBe("awaiting-decision");
       s = selectOption(s, app, d.id, d.correct as OptionId, 0);
-      s = advance(s, app); // feedback → rejoin
-      s = advance(s, app); // rejoin → next
+      s = advance(s, app);
+      for (let i = 0; i < d.then.length; i++) s = advance(s, app);
+      s = advance(s, app);
     }
-    // now at resolution-1
     expect(s.currentSceneId).toBe("resolution-1");
     s = advance(s, app); // resolution-2
     s = advance(s, app); // resolution-3
-    s = advance(s, app); // quiz
-    expect(s.currentSceneId).toBe("quiz");
-    expect(s.status).toBe("quiz");
-    // quiz is terminal — advancing does nothing (no dead-end crash)
-    expect(advance(s, app).currentSceneId).toBe("quiz");
+    expect(s.currentSceneId).toBe("resolution-3");
+    expect(s.status).toBe("complete");
+    // terminal — advancing again cannot crash or leave the scene
+    expect(advance(s, app).currentSceneId).toBe("resolution-3");
   });
 });
 
-describe("application lesson — graded quiz", () => {
-  const quiz = claimsInvestigationApplication1.scenes["quiz"] as QuizScene;
-
-  it("is a 5-question quiz at 80% to pass", () => {
-    expect(quiz.type).toBe("quiz");
-    expect(quiz.passPct).toBe(80);
-    expect(quiz.questions).toHaveLength(5);
+describe("pilot claims-01 AV1 — locked template components", () => {
+  it("both four-icon rejoin cards carry exactly four items and a takeaway", () => {
+    for (const id of ["rejoin-1a", "rejoin-2"]) {
+      const card = app.scenes[id].summaryCard;
+      expect(card, `${id} summaryCard`).toBeDefined();
+      expect(card!.items).toHaveLength(4);
+      expect(card!.takeaway && card!.takeaway.length > 0).toBe(true);
+      for (const item of card!.items) expect(item.label.length).toBeGreaterThan(0);
+    }
   });
 
-  it("every question has exactly one correct option", () => {
-    for (const q of quiz.questions) {
-      expect(q.options.length).toBeGreaterThanOrEqual(2);
-      expect(q.options.filter((o) => o.isCorrect)).toHaveLength(1);
+  it("the A ≠ B comparison renders the script's timeline conflict", () => {
+    const cmp = app.scenes["resolution-1"].comparison;
+    expect(cmp).toBeDefined();
+    expect(cmp!.conflict).toContain("Timeline of last use");
+    expect(cmp!.a.value).toContain("8:15");
+    expect(cmp!.b.value).toContain("9:30");
+    expect(cmp!.operator ?? "≠").toBe("≠");
+  });
+
+  it("the burned-pickup exhibit is attached where the script cues it", () => {
+    const ev = app.scenes["assignment-2"].evidence;
+    expect(ev).toHaveLength(1);
+    expect(ev![0].imageUrl).toBe("/media/evidence-burned-pickup.jpg");
+    expect(ev![0].title).toContain("burned pickup on gravel road");
+  });
+
+  it("every presenter scene reads the locked presenter identity", () => {
+    for (const sc of Object.values(app.scenes)) {
+      if (!sc.presenter) continue;
+      expect(sc.presenter.name).toBe("Diane Marchetti");
+      expect(sc.presenter.role).toBe("Course Presenter");
     }
+  });
+});
+
+describe("progress milestones — template behaviour", () => {
+  it("a lesson with no milestone map gets one step per spine scene", () => {
+    expect(waterDamageClaim.progress).toBeUndefined();
+    const steps = progressSteps(waterDamageClaim);
+    expect(steps.map((s) => s.id)).toEqual(
+      lessonOutline(waterDamageClaim).map((o) => o.id),
+    );
+    expect(steps.every((s) => s.sceneIds.length === 1)).toBe(true);
+  });
+
+  it("rejects a milestone map that does not cover the spine exactly once", () => {
+    const spine = lessonOutline(app).map((id) => id.id);
+    const dropOne = {
+      ...app,
+      progress: app.progress!.map((m) => ({
+        ...m,
+        scenes: m.scenes.filter((sc) => sc !== "assignment-2"),
+      })).filter((m) => m.scenes.length > 0),
+    };
+    expect(validateLesson(dropOne).join(" ")).toContain("assignment-2");
+
+    const claimTwice = {
+      ...app,
+      progress: [
+        ...app.progress!,
+        { id: "dup", label: "Duplicate", scenes: ["intro"] },
+      ],
+    };
+    expect(validateLesson(claimTwice).join(" ")).toContain("claimed by both");
+
+    const ghost = {
+      ...app,
+      progress: [
+        ...app.progress!,
+        { id: "ghost", label: "Ghost", scenes: ["not-a-scene"] },
+      ],
+    };
+    expect(validateLesson(ghost).join(" ")).toContain("not on the lesson spine");
+    expect(spine.length).toBe(13); // the graph stays at 13; only the rail groups
+  });
+});
+
+describe("pilot claims-01 AV1 — the approved 12-step rail", () => {
+  it("shows exactly 12 learner-facing steps over a 13-scene spine", () => {
+    expect(lessonOutline(app)).toHaveLength(13);
+    expect(progressSteps(app)).toHaveLength(12);
+  });
+
+  it("the milestones are the approved twelve, in script order", () => {
+    expect(progressSteps(app).map((s) => s.label)).toEqual([
+      "You have the file",
+      "The assignment",
+      "Decision 1 · Investigation trigger",
+      "The documented trigger",
+      "Know your box",
+      "Decision 2 · Burden of proof",
+      "Issue · Burden · Standard · Evidence",
+      "Decision 3 · Motive",
+      "Motive vs. evidence",
+      "Where the file stands",
+      "Keep investigating",
+      "Same method. Different answer.",
+    ]);
+  });
+
+  it("groups only the assignment — no scene is removed or merged away", () => {
+    const steps = progressSteps(app);
+    const grouped = steps.filter((s) => s.sceneIds.length > 1);
+    expect(grouped).toHaveLength(1);
+    expect(grouped[0].sceneIds).toEqual(["assignment-1", "assignment-2"]);
+    // every spine scene still appears exactly once across the rail
+    expect(steps.flatMap((s) => s.sceneIds).sort()).toEqual(
+      lessonOutline(app).map((o) => o.id).sort(),
+    );
+    // and all 25 scenes still exist and still play
+    expect(Object.keys(app.scenes)).toHaveLength(25);
+  });
+
+  it("the three decisions read as decision steps", () => {
+    expect(
+      progressSteps(app).filter((s) => s.kind === "decision").map((s) => s.id),
+    ).toEqual(["decision-1", "decision-2", "decision-3"]);
+  });
+
+  it("both assignment scenes sit on the same step, so the rail cannot jump", () => {
+    expect(progressIndexForScene(app, "assignment-1")).toBe(1);
+    expect(progressIndexForScene(app, "assignment-2")).toBe(1);
+  });
+
+  it("feedback branches map back to their decision's step", () => {
+    for (const [fb, decisionStep] of [
+      ["fb-1a", 2],
+      ["fb-1d", 2],
+      ["fb-2c", 5],
+      ["fb-3b", 7],
+    ] as const) {
+      expect(progressIndexForScene(app, fb)).toBe(decisionStep);
+    }
+  });
+
+  it("the rail advances monotonically along the correct path", () => {
+    let s = atFirstDecision();
+    const seen = [progressIndexForScene(app, "intro")];
+    for (const d of DECISIONS) {
+      seen.push(progressIndexForScene(app, s.currentSceneId));
+      s = selectOption(s, app, d.id, d.correct as OptionId, 0);
+      s = advance(s, app);
+      for (let i = 0; i < d.then.length; i++) {
+        seen.push(progressIndexForScene(app, s.currentSceneId));
+        s = advance(s, app);
+      }
+      seen.push(progressIndexForScene(app, s.currentSceneId));
+      s = advance(s, app);
+    }
+    for (let i = 1; i < seen.length; i++) {
+      expect(seen[i]).toBeGreaterThanOrEqual(seen[i - 1]);
+    }
+    expect(seen.at(-1)).toBeLessThan(12);
+  });
+});
+
+describe("pilot claims-01 AV1 — storyboard visuals", () => {
+  it("resolution-1 carries the three-column HAVE / NEED / UNAVAILABLE inventory", () => {
+    const inv = app.scenes["resolution-1"].inventory;
+    expect(inv).toBeDefined();
+    expect(inv!.entries).toHaveLength(5);
+
+    const byLabel = Object.fromEntries(inv!.entries.map((e) => [e.label, e]));
+    expect(byLabel["Both keys"].status).toBe("need");
+    expect(byLabel["Forced entry"].status).toBe("have");
+    expect(byLabel["Accelerant"].status).toBe("need");
+    expect(byLabel["Timeline of last use"].status).toBe("have");
+    expect(byLabel["Timeline of last use"].conflicted).toBe(true);
+    expect(byLabel["Financial detail"].status).toBe("have");
+
+    // The script grades nothing UNAVAILABLE at day fourteen — the column is
+    // empty on purpose, not missing.
+    expect(inv!.entries.filter((e) => e.status === "unavailable")).toHaveLength(0);
+    expect(inv!.entries.every((e) => (e.note ?? "").length > 0)).toBe(true);
+  });
+
+  it("rejoin-1b carries the Adjusting → Investigation → SIU chain", () => {
+    const chain = app.scenes["rejoin-1b"].chain;
+    expect(chain).toBeDefined();
+    expect(chain!.stages.map((st) => st.label)).toEqual([
+      "Adjusting",
+      "Investigation",
+      "SIU",
+    ]);
+    // the learner is the investigator — exactly one stage is current
+    const current = chain!.stages.filter((st) => st.current);
+    expect(current).toHaveLength(1);
+    expect(current[0].label).toBe("Investigation");
+    expect(chain!.connector ?? "→").toBe("→");
+    expect(chain!.takeaway).toBe("Know which box you're in.");
+  });
+
+  it("every storyboard visual is scene data, not a hard-coded lesson branch", () => {
+    // The template components are only reachable through these optional scene
+    // fields — no component may special-case a lesson id.
+    const withExtras = Object.values(app.scenes).filter(
+      (sc) => sc.inventory || sc.chain || sc.comparison || sc.summaryCard,
+    );
+    expect(withExtras.map((sc) => sc.id).sort()).toEqual([
+      "rejoin-1a",
+      "rejoin-1b",
+      "rejoin-2",
+      "resolution-1",
+    ]);
   });
 });

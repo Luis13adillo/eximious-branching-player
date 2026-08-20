@@ -118,6 +118,140 @@ export type EvidenceIllustration =
   | "coverage-clause"
   | "damage-photo";
 
+/**
+ * One side of an `A ≠ B` evidence comparison.
+ * `imageUrl`/`illustration` are optional: with neither, the side renders as a
+ * typographic exhibit card, which is what most conflicts need (a statement vs a
+ * statement). Nothing here is lesson-specific.
+ */
+export interface ComparisonSide {
+  /** Short source label, e.g. "Told the FNOL rep". */
+  label: string;
+  /** The fact in conflict, e.g. "Left the store at 8:15". */
+  value: string;
+  /** Optional supporting line under the value. */
+  detail?: string;
+  imageUrl?: string;
+  illustration?: EvidenceIllustration;
+}
+
+/**
+ * The locked `A ≠ B` evidence-comparison pattern (Interactive Video Production
+ * Guidelines §03 "States & Components"): two labelled exhibits side by side
+ * under a line stating the conflict. Everything — both labels, the conflict
+ * line, and the relation glyph — is configuration, so the one component serves
+ * all 267 videos without a per-video fork.
+ */
+export interface EvidenceComparison {
+  /** Small kicker above the pair. Defaults to "Evidence exhibit". */
+  kicker?: string;
+  /** The line that states the conflict. Required — it is the whole point. */
+  conflict: string;
+  /** Relation glyph shown between the two sides. Defaults to "≠". */
+  operator?: string;
+  a: ComparisonSide;
+  b: ComparisonSide;
+  /** Optional closing line under the pair. */
+  note?: string;
+}
+
+/**
+ * Status of one line item in an evidence inventory.
+ * Rendered with a distinct glyph as well as a distinct colour, so the state is
+ * never carried by colour alone (Guidelines §03 accessibility).
+ */
+export type InventoryStatus = "have" | "need" | "unavailable";
+
+export interface InventoryEntry {
+  /** What the item is, e.g. "Forced entry". */
+  label: string;
+  status: InventoryStatus;
+  /** The one-line grading note from the script. */
+  note?: string;
+  /**
+   * In hand, but the sources disagree — reads "have, conflicting". Pair it with
+   * an `EvidenceComparison` to show the conflict itself.
+   */
+  conflicted?: boolean;
+}
+
+/**
+ * A configurable evidence inventory — the "grade the file honestly" exhibit.
+ * Columns are configuration (defaulting to the script's HAVE / NEED /
+ * UNAVAILABLE), so a video that grades on different axes reuses the component
+ * rather than forking it. Empty columns still render: an empty UNAVAILABLE
+ * column is itself a finding.
+ */
+export interface EvidenceInventory {
+  kicker?: string;
+  title?: string;
+  /** Column order and headings. Defaults to HAVE / NEED / UNAVAILABLE. */
+  columns?: { status: InventoryStatus; label: string }[];
+  entries: InventoryEntry[];
+  /** Shown in a column with no entries. Defaults to "None recorded". */
+  emptyLabel?: string;
+}
+
+export interface ProcessStage {
+  label: string;
+  /** Short line saying what happens in this stage. */
+  detail?: string;
+  /** The stage the learner is operating in. At most one should be current. */
+  current?: boolean;
+}
+
+/**
+ * An ordered process chain, e.g. "Adjusting → Investigation → SIU". Stages, the
+ * connector glyph and the takeaway are all configuration, so the same component
+ * carries any escalation path, workflow or sequence across the catalog.
+ */
+export interface ProcessChain {
+  kicker?: string;
+  stages: ProcessStage[];
+  /** Glyph between stages. Defaults to "→". */
+  connector?: string;
+  takeaway?: string;
+}
+
+/**
+ * Icon vocabulary for the four-icon rejoin summary card. Deliberately GENERIC
+ * (investigation concepts, not one case's nouns) so the same registry carries
+ * across the catalog. An unregistered name renders a neutral marker rather
+ * than throwing, so adding a lesson can never break the player.
+ */
+export type SummaryIconName =
+  | "facts"
+  | "coverage"
+  | "damages"
+  | "timing"
+  | "issue"
+  | "burden"
+  | "standard"
+  | "evidence";
+
+export interface SummaryCardItem {
+  icon: SummaryIconName;
+  label: string;
+  detail?: string;
+}
+
+/**
+ * The locked four-icon rejoin summary card (Guidelines §03: "configurable
+ * four-icon rejoin summary restores context"). Four categories plus a single
+ * takeaway line. Exactly four items is the template contract — the tuple type
+ * makes a three- or five-item card a compile error rather than a QA finding.
+ */
+export interface SummaryCard {
+  /** Small kicker above the card. Defaults to "On screen". */
+  kicker?: string;
+  title?: string;
+  items: [SummaryCardItem, SummaryCardItem, SummaryCardItem, SummaryCardItem];
+  /** The one-line takeaway printed under the four icons. */
+  takeaway?: string;
+  /** Number the items 1–4 (use for an ordered chain, e.g. Issue → Evidence). */
+  numbered?: boolean;
+}
+
 /** Layout mode for a scene's media stage. */
 export type SceneLayout = "avatar" | "fullscreen";
 
@@ -135,6 +269,26 @@ interface SceneCommon {
   /** Longer narration/summary body shown beside or below the stage. */
   body?: string;
   evidence?: EvidenceItem[];
+  /**
+   * Four-icon rejoin summary card rendered in the content panel. Template-level
+   * component; the lesson supplies only the four categories and the takeaway.
+   */
+  summaryCard?: SummaryCard;
+  /**
+   * `A ≠ B` evidence comparison rendered in the content panel. Template-level
+   * component; the lesson supplies only the two sides and the conflict line.
+   */
+  comparison?: EvidenceComparison;
+  /**
+   * Evidence inventory (HAVE / NEED / UNAVAILABLE) rendered in the content
+   * panel. Template-level component; the lesson supplies only the line items.
+   */
+  inventory?: EvidenceInventory;
+  /**
+   * Ordered process chain (e.g. Adjusting → Investigation → SIU) rendered in
+   * the content panel. Template-level component; the lesson supplies the stages.
+   */
+  chain?: ProcessChain;
   /**
    * Optional per-scene label for the primary "continue" control. Keeps
    * lesson-specific wording in DATA (e.g. "Begin the graded quiz") instead of
@@ -232,28 +386,59 @@ export type Scene =
   | QuizScene;
 
 /**
- * Configurable "are you still there?" presence check. This is a TEMPLATE-level
- * behavior: the timing lives here in config (a default in the player, optionally
- * overridden per deployment), never hard-coded scene-by-scene into a lesson.
- * Deliberately simple — a single acknowledgement, no biometrics/login/identity
- * services.
+ * Configurable "are you still there?" presence check.
+ * ============================================================================
+ * TEMPLATE-level behaviour: the timing lives here in config (a default in the
+ * player, optionally overridden per deployment), never hard-coded scene-by-scene
+ * into a lesson. Deliberately simple — a single acknowledgement, no biometrics,
+ * no login, no identity service.
+ *
+ * It is driven purely by INACTIVITY. An earlier build fired it on a scene
+ * counter, which meant it could interrupt a learner who was working steadily
+ * and could miss one who had walked away mid-segment. A presence check has to
+ * measure absence.
  */
 export interface IdentityCheckConfig {
   /** Master switch. Default: on. */
   enabled?: boolean;
   /**
-   * Interval mode: prompt after this many scene entries (counted across the
-   * whole lesson, decisions included in the count but never interrupted).
+   * INACTIVITY THRESHOLD, in seconds. The prompt appears only after this long
+   * with NO learner interaction — it is a presence check, so it must be driven
+   * by silence, not by how many scenes have gone by. Default: 120.
    */
-  everyScenes?: number;
+  inactivitySeconds?: number;
   /**
-   * Checkpoint mode: prompt when the learner enters any of these scene ids.
-   * When provided, this takes precedence over `everyScenes`.
+   * Hard cap on how many times the check may fire in one run of one video.
+   * The locked template value is 1 — "exactly one identity acknowledgment per
+   * application video" (Production Spec §2 row 4, client-approved). A restart
+   * begins a new run.
    */
-  checkpoints?: SceneId[];
+  maxPerVideo?: number;
   title?: string;
   body?: string;
   acknowledgeLabel?: string;
+}
+
+/**
+ * One learner-facing progress milestone.
+ * ============================================================================
+ * The scene graph and the progress rail are deliberately DIFFERENT resolutions.
+ * A lesson may split a single teaching beat across several scenes because the
+ * script cues a new on-screen state mid-beat (and the media pipeline splits at
+ * those cues) — but the learner's map should show the beat, not the plumbing.
+ *
+ * A milestone therefore claims one or more spine scenes. `validateLesson`
+ * enforces that the milestones cover every spine scene exactly once, so a
+ * milestone map can never silently hide a scene from the rail. A lesson with no
+ * `progress` map falls back to one milestone per spine scene.
+ */
+export interface ProgressMilestone {
+  /** Unique within the lesson. */
+  id: string;
+  /** Short label shown in the rail tooltip and the case-progress tracker. */
+  label: string;
+  /** Spine scenes this milestone covers, in order. At least one. */
+  scenes: SceneId[];
 }
 
 export interface Lesson {
@@ -266,6 +451,12 @@ export interface Lesson {
   estimatedMinutes?: number;
   startSceneId: SceneId;
   scenes: Record<SceneId, Scene>;
+  /**
+   * Learner-facing progress milestones. Optional — omit it and the rail shows
+   * one step per spine scene. Supply it to hold the rail at the approved step
+   * count while the scene graph stays at whatever the script requires.
+   */
+  progress?: ProgressMilestone[];
   /**
    * Per-lesson completion copy shown on the summary screen. Optional — the
    * player falls back to generic wording. This keeps lesson-specific text in
