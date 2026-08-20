@@ -1,0 +1,56 @@
+{
+  "asset": "presenter-3-selena-navarro-production-still-1920x1080.png",
+  "presenter": "Selena Navarro (Presenter 3)",
+  "purpose": "Production-fit still. Sole input to Selena's reusable Kling motion base. Not an approval record.",
+  "derived_from": {
+    "file": "public/media/presenter-3-selena-navarro-master.png",
+    "sha256": "fbbd1f2265b89b4ebf49bd7743b2f6708717bb581311503362810b2bd20bb245",
+    "dimensions": "1672x941",
+    "aspect": 1.77683,
+    "status": "LOCKED approved-appearance reference. Byte-identical, never modified."
+  },
+  "operation": {
+    "tool": "ffmpeg",
+    "filter": "scale=1920:1081:flags=lanczos,crop=1920:1080:0:1",
+    "scale_factor": "1.148325x (1672 -> 1920), uniform",
+    "rows_removed_top": 1,
+    "rows_removed_bottom": 0,
+    "resample": "lanczos (unavoidable - source is below the 1920x1080 floor)",
+    "generative_step": "NONE",
+    "colour_conversion": "none (rgb24 in, rgb24 out)",
+    "output_codec": "png (lossless)"
+  },
+  "fit_decision": {
+    "problem": "1672x941 = 1.77683 against 16:9 = 1.77778. A uniform upscale to 1920 wide lands at 1920x1080.574, not a whole number of rows.",
+    "chosen": "Uniform upscale to 1920x1081, then remove 1 row from the top.",
+    "rejected_alternatives": {
+      "pad_to_1920x1080": "Would require scaling to 1919x1080 and adding a 1px border column - a visible artifact introduced into a delivered still.",
+      "anisotropic_scale_to_1920x1080": "Would distort the approved geometry by 0.053% rather than removing anything. Rejected in favour of keeping the scale uniform, since 'reproduce the approved appearance exactly' bears most directly on geometry."
+    },
+    "departs_from": "docs/PRODUCTION_READINESS_COST_LOCK.md 1.4 records a recommendation to 'pad, do not crop'. This still crops 1 row instead. FLAGGED, not silently reconciled - see 'flag' below.",
+    "flag": "The removed row is the topmost row of empty wall/sky: mean RGB [133.20, 117.82, 103.35] against row 1 at [133.90, 117.63, 103.29]. It contains no subject, no set element and no lettering. Reversible for $0.00 if Luis or Roger prefers the pad route."
+  },
+  "cost": {
+    "usd": 0.0,
+    "note": "The route budgeted in PRODUCTION_READINESS_COST_LOCK.md 1.4 was KIE topaz/image-upscale at $0.05. Not used. At a 1.148x scale a precision lanczos resample reproduces the approved appearance without any model reinterpreting a face that Roger has already approved, and it is deterministic and reproducible. $0.05 saved; the paid route remains available if a sharper master is wanted."
+  },
+  "verification": {
+    "output_dimensions": "1920x1080",
+    "output_pix_fmt": "rgb24",
+    "output_sha256": "bbf914e2ab370b6e09455042759e0982237610317a85abe7f51038d898a6e28e",
+    "source_sha256_after_operation": "fbbd1f2265b89b4ebf49bd7743b2f6708717bb581311503362810b2bd20bb245",
+    "source_unchanged": true,
+    "roundtrip_psnr_db": 47.334,
+    "roundtrip_mean_abs_diff": "0.4446/255 (max 29.0)",
+    "colour_fidelity": "mean RGB [98.224, 85.186, 72.170] round-trip vs [98.244, 85.162, 72.196] original - within 0.03/255 on every channel. No colour shift.",
+    "visual_check": "Identity, wardrobe, hair, framing, lighting, city window, plant, bookshelf, artwork, lamp, notebook and pen all unchanged. EXIMIOUS ACADEMY wall logo and mug lettering intact and legible."
+  },
+  "compliance": {
+    "locked_rule_5": "Delivery is exactly 1920x1080.",
+    "locked_rule_6": "Approved masters stay byte-identical; derived artifacts go to new files. Verified by checksum before and after.",
+    "spec_C_12a_F_1": "Closes the 'no 1920x1080+ master for Selena' blocker for the SEATED / SPEAKING asset only. Selena's STANDING course-page / title-card asset remains absent from disk (cost-lock 1.4 item 3) and is untouched by this."
+  },
+  "authority": "Produced 2026-08-20 under Luis's instruction to create a new 1920x1080 production still from the approved master without modifying the original, and to verify it before spending.",
+  "date": "2026-08-20",
+  "status": "VERIFIED - cleared as the sole input to Selena's reusable motion base."
+}
