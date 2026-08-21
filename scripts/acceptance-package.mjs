@@ -129,7 +129,25 @@ async function driveUntilDecisionOrEnd(page, { maxSteps = 120 } = {}) {
   for (let step = 0; step < maxSteps; step++) {
     if (await decisionVisible(page)) return { stop: "decision", played };
 
-    const s = await sample(page);
+    let s = await sample(page);
+
+    /**
+     * A stage video whose metadata has not arrived yet reports dur === null, and the
+     * branch below therefore does not record it as played — the loop falls through to
+     * clickAdvance and skips the segment before it ever counts. On localhost metadata is
+     * effectively instant so this never bites; against a DEPLOYED origin the feedback
+     * clips are megabytes over the network and it bites on every one, which reads as
+     * "0/9 incorrect options played their own feedback" while the run simultaneously
+     * reports all 22 segments reachable. Wait for the metadata rather than race it.
+     * This makes the check stricter — a segment can no longer be missed by being slow.
+     */
+    if (s.main && !s.main.dur && !s.main.ended) {
+      for (let w = 0; w < 40 && !s.main?.dur; w++) {
+        await page.waitForTimeout(250);
+        if (await decisionVisible(page)) return { stop: "decision", played };
+        s = await sample(page);
+      }
+    }
 
     // Play at speed and let the video reach its natural end, because the player advances
     // on the 'ended' event. Seeking to the last frame and pausing kills that event.
@@ -203,8 +221,15 @@ page.on("requestfailed", (r) => {
 const badResponses = [];
 page.on("response", (r) => { if (r.status() >= 400) badResponses.push(`${r.url()} ${r.status()}`); });
 
-console.log(`\nGate D functional acceptance — ${BASE}\n`);
-await page.goto(`${BASE}/index.html`, { waitUntil: "load" });
+/**
+ * The offline Thinkific package puts the lesson at `index.html` in the archive root, so
+ * that suffix is right for a served package directory. The DEPLOYED app puts it at
+ * `/lesson/<slug>`, where `/index.html` is not a route — so only append the suffix when
+ * BASE is a bare origin. This lets the same harness verify a package and live production.
+ */
+const target = new URL(BASE).pathname === "/" ? `${BASE}/index.html` : BASE;
+console.log(`\nGate D functional acceptance — ${target}\n`);
+await page.goto(target, { waitUntil: "load" });
 await page.waitForTimeout(1200);
 
 // ---- 1. no autoplay at load -------------------------------------------------
