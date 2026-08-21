@@ -1,0 +1,122 @@
+{
+  "asset": "presenter-3-selena-navarro-motion-base-take3.mp4",
+  "presenter": "Selena Navarro (Presenter 3)",
+  "purpose": "Reusable motion base. Generated ONCE, reused across all 42 of Selena's courses and every application video she presents. A new base is required only if Roger changes her approved appearance.",
+  "status": "ACCEPTED by Luis 2026-08-20. PROMOTED to presenter-3-selena-navarro-motion-base.mp4. Retained as the take-3 provenance record.",
+  "supersedes": [
+    "presenter-3-selena-navarro-motion-base-take1.mp4 (FAIL - presenter performed: sustained downward glance, face motion 3.001)",
+    "presenter-3-selena-navarro-motion-base-take2-REJECTED.mp4 (FAIL - continuous push-in to 1.39x)"
+  ],
+  "provider": "KIE",
+  "endpoint": "POST https://api.kie.ai/api/v1/jobs/createTask",
+  "taskId": "b44b91b04e87630f9eadc6b21ae921a7",
+  "request": {
+    "model": "kling/v2-1-pro",
+    "input": {
+      "duration": "5",
+      "cfg_scale": 0.8,
+      "prompt": "A professional woman seated at her desk in a bright modern office, listening. The camera is locked and stationary: ZERO zoom, push-in, pull-out, pan, tilt, crop, reframing, perspective shift or drift. The framing, camera position, subject scale, desk visibility and background composition at the LAST FRAME must be visually identical to the FIRST FRAME - the desk, mug and notebook stay fully in frame the whole clip. She is NOT speaking: lips closed throughout, no lip, mouth or jaw movement. Her eyes look directly into the camera lens the entire clip - no downward glance, side glance, gaze shift, eye wandering or half-lidded look. Only 1-2 brief blinks; eyes otherwise open and steady. A neutral attentive expression that never changes. Head, hair and facial motion at the minimum natural level - only faint breathing. No head turns, tilts, nodding, leaning or gestures. Hands stay as in the source image, loosely clasped and still on the desk. Preserve her face, hair, wardrobe, lighting, colour, the office and desk objects as shown; do not brighten, lift the shadows or re-grade. Wall logo and mug lettering unchanged.",
+      "negative_prompt": "gaze shift, looking down, looking away, eye wandering, head tilt, expression change, excessive facial motion, camera movement, zoom, push-in, pull-out, pan, tilt, reframing, crop, camera drift, perspective shift, speaking, talking, mouth opening, lip movement, gesturing, hand movement, leaning, cut, transition, face change, lighting change, brightening, re-grading, added text, watermark, distortion, warping, morphing",
+      "prompt_chars": 1126,
+      "negative_prompt_chars": 420
+    }
+  },
+  "changes_vs_take2": {
+    "unchanged": "model, duration '5', cfg_scale 0.8, no seed, image_url, source still, provider, negative_prompt (byte-identical to take 2)",
+    "prompt": "Restored take 1 / Diane's full first/last-frame clause verbatim - camera position, subject scale, desk visibility and background composition - and moved the whole camera constraint to the FRONT of the prompt, ahead of the eye instructions. Named the desk, mug and notebook explicitly as having to stay in frame. Kept every take-2 eye and expression instruction.",
+    "result": "The push-in did not recur. This confirms the take-2 regression diagnosis: the first/last-frame clause is what holds Kling's camera, not the negative prompt."
+  },
+  "source_still": {
+    "file": "public/media/presenter-3-selena-navarro-production-still-1920x1080.png",
+    "sha256": "bbf914e2ab370b6e09455042759e0982237610317a85abe7f51038d898a6e28e",
+    "note": "Same still as takes 1 and 2. Never regenerated."
+  },
+  "no_seed_parameter": "kling/v2-1-pro exposes no seed. This clip is NOT reproducible; it is the artifact of record. Preserve it.",
+  "credits": {
+    "before": 1513.0,
+    "after": 1463.0,
+    "spent": 50.0,
+    "usd": 0.25,
+    "clean_delta": true,
+    "note": "Re-checked after completion: still 1463, no delayed second deduction observed for this take."
+  },
+  "raw_output": {
+    "file": "public/media/presenter-3-selena-navarro-motion-base-take3-raw.mp4",
+    "sha256": "0f690852b2ab1e2d3e8f585272d61c273e7d4a820f1858d7860355e64dc91979",
+    "width": 1920,
+    "height": 1080,
+    "fps": 24,
+    "frames": 121,
+    "duration_sec": 5.041667,
+    "audio_streams": 0
+  },
+  "correction": {
+    "what": "Removed the temporal brightness/colour drift only. Nothing else was touched.",
+    "why": "Kling lifted exposure 2.59% peak / 2.27% mean across the 5 s. Known Kling behaviour; the negative prompt does not prevent it.",
+    "method": "Per-frame per-channel linear gain returning each frame's RGB channel means to frame 0's. Frame 0 is the reference and carries NO gain. Measured gain range 0.97273 - 1.00000, all <= 1.0, so the correction only scales down - no highlight clipping is possible.",
+    "swing_is_one_sided": "0 of 121 frames are darker than frame 0, so Diane's clamp-to-1.0 method applies cleanly here (unlike take 2, whose swing was two-sided).",
+    "cost": "$0.00 - ffmpeg only",
+    "filter_script": "public/media/presenter-3-selena-navarro-motion-base-take3.filter",
+    "filter_script_sha256": "d7c6ef8d9db11750c9f08aace56f393370e6dde6c62ca120a58b276c429e05cc",
+    "command": "ffmpeg -i presenter-3-selena-navarro-motion-base-take3-raw.mp4 -filter_complex_script presenter-3-selena-navarro-motion-base-take3.filter -an -c:v libx264 -preset slow -crf 12 -pix_fmt yuv420p -movflags +faststart presenter-3-selena-navarro-motion-base-take3.mp4",
+    "result": "exposure drift 2.59% -> 0.12% peak, 2.27% -> 0.04% mean"
+  },
+  "output": {
+    "file": "public/media/presenter-3-selena-navarro-motion-base-take3.mp4",
+    "sha256": "6fd0f8576ef6857b4606942ef272161dcf968a37dde64b6923ea96d641d9dc7a",
+    "width": 1920,
+    "height": 1080,
+    "fps": 24,
+    "frames": 121,
+    "duration_sec": 5.041667,
+    "audio_streams": 0
+  },
+  "fps_note": "Base is 24 fps. LatentSync normalises output to 25 fps regardless of input, so the 16-frame padding must be computed at 25 fps (locked rule 3).",
+  "qa_gate": {
+    "verdict": "PASS on every structural and behavioural row. One deviation from Luis's brief noted below for his decision.",
+    "comparison_table_note": "take1 / take2 / take3 shown for each row",
+    "pass": {
+      "Dimensions": "1920x1080, 24 fps, 121 frames, 5.04 s",
+      "Audio": "no audio stream",
+      "Identity (frame 0 vs source still)": "2.750/255  (take1 2.73 \u00b7 take2 2.80 \u00b7 Diane take2 2.33)",
+      "Push-in / subject scale": "1.00x at 1.25 s, 2.50 s, 3.75 s and 5.00 s. NO push-in.  (take2 was 1.00 / 1.12 / 1.29 / 1.39)",
+      "Drift profile": "plateaus at ~5.2 from 2.5 s onward rather than ramping.  (take2 ramped to 63.0)",
+      "Registration": "2D search +/-24 px on a background-only region returns dx=0, dy=0. No camera translation.  (take2 saturated at 12,12)",
+      "Camera lock": "4.009 mean / 4.436 max - the clip's own generative noise floor, matching take 1 (4.02 / 4.48). take2 was 49.49 / 93.20.",
+      "Desk visibility": "3.80 max drift - the BEST of all three takes (take1 6.44 \u00b7 take2 64.49). Desk, mug, notebook and pen in frame throughout.",
+      "Lettering preservation": "wall logo region 4.230 max drift, within the noise floor  (take1 4.21 \u00b7 take2 45.57)",
+      "Loop seam / pingpong fit": "first-vs-last gap 5.064  (take1 6.24 \u00b7 take2 59.38 \u00b7 Diane's ACCEPTED base 4.51)",
+      "Lips sealed - no speech baked in": "aperture never below 69.1/255 across 31 samples; an exposed oral cavity reads well under 30. Visually a continuous sealed lip seam throughout.",
+      "Blink behaviour": "TWO brief blinks - frame ~25 (1.0 s) and frames ~52-58 (2.2-2.4 s, ~250 ms, normal human duration). Eyes open, steady and ON THE LENS everywhere else. Verified on a 41-thumbnail contact sheet at every 3rd frame. Exactly the '1-2 brief natural blinks' asked for.",
+      "Gaze": "FIXED. Eye signal above 8/255 on only 10% of frame pairs (take1 43%), peak-to-mean ratio 4.78x (take1 2.39x), eye-brightness range 17.7 (take1 23.3). No downward glance, side glance or sustained half-lidded look at any point.",
+      "Exposure after correction": "0.12% peak / 0.04% mean"
+    },
+    "deviation_for_luis_to_rule_on": {
+      "row": "Expression does not match between first and last frame",
+      "measured": "Mouth-region mean abs diff frame 1 vs frame 121: 17.75/255. Lip-aperture proxy runs 90.1 at frame 1, settles to ~69-70 from frame 57 onward and holds there. Visually: a soft closed-lip smile at frame 1 relaxes to a neutral, slightly firmer mouth by frame 121.",
+      "against_the_brief": "Luis asked for 'first-frame and last-frame facial expression, gaze, head position and framing must match'. Framing, gaze and head position DO match. Expression does not.",
+      "face_motion": "1.989 meanD / 6.178 maxD, against an expected band of 0.5-1.5 (take1 3.001 \u00b7 Diane's ACCEPTED base 1.67). Improved substantially but still modestly above Diane.",
+      "arguments_for_accepting": [
+        "Diane's ACCEPTED production base carries the identical characteristic. Her sidecar records the residual as 'a slight smile relaxing to neutral and back, plus up to 11 px of permitted head settling' and it was accepted.",
+        "LatentSync re-renders the mouth region during production. Diane's sidecar notes 'base mouth expression is largely overwritten. What matters is that no speech is baked in - it is not.' The same applies here.",
+        "Under pingpong the clip reverses at the last frame, so the drift becomes a slow smile-to-neutral-and-back cycle over 10 s rather than a visible jump. The first-vs-last gap of 5.064 is in line with Diane's accepted 4.51.",
+        "The eyes - which LatentSync preserves frame for frame, and which caused the take-1 rejection - are now correct."
+      ],
+      "arguments_for_rejecting": [
+        "It is a literal miss against a requirement Luis stated explicitly.",
+        "Face motion 1.989 is still above both the 0.5-1.5 target band and Diane's accepted 1.67."
+      ],
+      "recommendation": "ACCEPT and promote. The deviation sits in the region LatentSync overwrites, matches an already-accepted precedent, and every failure mode that rejected takes 1 and 2 is resolved. A fourth take would be $0.25 chasing a characteristic that Diane's production base already carries, with no seed control and therefore no guarantee of improvement.",
+      "status": "RULED ON: ACCEPTED as a non-blocking deviation, consistent with the Diane production-base precedent. See presenter-3-selena-navarro-motion-base.json -> accepted_deviation."
+    }
+  },
+  "promotion": {
+    "promoted": true,
+    "promoted_to": "public/media/presenter-3-selena-navarro-motion-base.mp4",
+    "promoted_on": "2026-08-20",
+    "method": "byte-for-byte copy; production base sha256 6fd0f8576ef6857b4606942ef272161dcf968a37dde64b6923ea96d641d9dc7a is identical to this file",
+    "authority": "Luis, 2026-08-20"
+  },
+  "authority": "Generated 2026-08-20 under Luis's approval for ONE Selena take 3, using the exact 1126-character prompt drafted in the take-2 sidecar, unchanged negative prompt, same still, same pipeline; run the same QA and stop.",
+  "date": "2026-08-20"
+}

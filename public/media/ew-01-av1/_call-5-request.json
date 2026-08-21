@@ -1,0 +1,35 @@
+{
+  "lesson": "ew-01-av1",
+  "call": 5,
+  "request_id": "01a022bd-e70c-7ad0-9001-38a6b7667d6c",
+  "status_url": "https://queue.fal.run/fal-ai/latentsync/requests/01a022bd-e70c-7ad0-9001-38a6b7667d6c/status",
+  "response_url": "https://queue.fal.run/fal-ai/latentsync/requests/01a022bd-e70c-7ad0-9001-38a6b7667d6c",
+  "payload": {
+    "video_url": "[temporary fal input, 24 h]",
+    "audio_url": "[temporary fal input, 24 h]",
+    "loop_mode": "pingpong",
+    "seed": 20260820,
+    "guidance_scale": 1
+  },
+  "input_expiry": {
+    "audio": "2026-08-22T05:14:05.317Z",
+    "video": "2026-08-22T05:14:25.478Z"
+  },
+  "submitted_utc": "2026-08-21T05:14:25.873Z",
+  "projected_cost_usd": 0.4682,
+  "completed_utc": "2026-08-21T05:24:41.628Z",
+  "returned": {
+    "frames": 2336,
+    "duration_s": 93.44,
+    "dims": "1920x1080",
+    "fps": "25/1",
+    "audio": {
+      "codec": "aac",
+      "sample_rate": 16000,
+      "channels": 1,
+      "bit_rate": 57893
+    },
+    "sha256": "4125e126bace951af83aa65985c4fd32147cff7c462de8de7fde20115b5aa1b2"
+  },
+  "actual_cost_usd": 0.4672
+}

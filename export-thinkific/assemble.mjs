@@ -19,14 +19,40 @@ import {
   statSync,
 } from "node:fs";
 import path from "node:path";
+import { execFileSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
 
 const dir = path.dirname(fileURLToPath(import.meta.url));
 const repo = path.resolve(dir, "..");
 const distHtml = path.join(dir, "dist", "index.html");
 const publicDir = path.join(repo, "public");
-const outName = "eximious-claims-investigation-thinkific-html5";
+/**
+ * Deliverable name. `EA_<video>_AV1` is the naming the agreement asks for
+ * (Spec §251, A §2.3.1); the older descriptive name is kept as the default so an
+ * argument-less run still reproduces the claims-investigation package byte for byte.
+ */
+const outName = process.env.EXPORT_PACKAGE_NAME
+  || "eximious-claims-investigation-thinkific-html5";
 const outDir = path.join(repo, outName);
+
+/**
+ * THINKIFIC'S HTML5 LIMIT IS 200 MB, AND 1080p NARRATION IS THE WHOLE BUDGET.
+ *
+ * siu-01's 22 delivered clips are 199.4 MB on their own, so a straight copy makes a
+ * package that cannot be uploaded. When EXPORT_MAX_VIDEO_MBPS is set, the copies that
+ * go INTO THE PACKAGE are re-encoded to that video bitrate.
+ *
+ * Two things this must never do, and does not:
+ *   - touch public/media. The masters stay byte-identical (rule 6); this only ever
+ *     writes into the package directory.
+ *   - re-encode the audio. `-c:a copy` carries the locked 24 kHz / -24.5 LUFS master
+ *     through unchanged (rule 4), so the sound in the deliverable is the approved
+ *     sound no matter what the video bitrate is.
+ * Dimensions are asserted afterwards, because rule 5 is exactly 1920x1080.
+ */
+const MAX_MBPS = process.env.EXPORT_MAX_VIDEO_MBPS
+  ? Number(process.env.EXPORT_MAX_VIDEO_MBPS)
+  : null;
 
 let html = readFileSync(distHtml, "utf8");
 
@@ -64,6 +90,7 @@ mkdirSync(path.join(outDir, "media"), { recursive: true });
 writeFileSync(path.join(outDir, "index.html"), html, "utf8");
 
 let copied = 0;
+let transcoded = 0;
 const missing = [];
 const notAFile = [];
 const nested = new Set();
@@ -80,7 +107,18 @@ for (const f of referenced) {
   }
   const dest = path.join(outDir, "media", f);
   mkdirSync(path.dirname(dest), { recursive: true }); // preserve subdirectories
-  copyFileSync(src, dest);
+  if (MAX_MBPS && f.endsWith(".mp4")) {
+    execFileSync("ffmpeg", [
+      "-hide_banner", "-loglevel", "error", "-y", "-i", src,
+      "-c:v", "libx264", "-preset", "slow", "-b:v", `${MAX_MBPS}M`,
+      "-maxrate", `${MAX_MBPS * 1.25}M`, "-bufsize", `${MAX_MBPS * 2}M`,
+      "-pix_fmt", "yuv420p", "-vf", "scale=1920:1080:flags=lanczos,setsar=1",
+      "-c:a", "copy", "-movflags", "+faststart", dest,
+    ]);
+    transcoded++;
+  } else {
+    copyFileSync(src, dest);
+  }
   if (f.includes("/")) nested.add(path.dirname(f));
   copied++;
 }
@@ -91,13 +129,33 @@ for (const l of new Set(logos)) {
   else missing.push(l);
 }
 
-// --- 3) verify: every referenced asset exists in the package, byte-identical ---
+// --- 3) verify -------------------------------------------------------------
+// Straight copies must be byte-for-byte identical in size. Re-encoded copies
+// cannot be, so they are held to the delivery invariants instead: still exactly
+// 1920x1080, and still carrying the locked mp3 master rather than a re-encode.
 const mismatched = [];
+const badDims = [];
+const badAudio = [];
 for (const f of referenced) {
   const src = path.join(publicDir, "media", f);
   const dest = path.join(outDir, "media", f);
   if (!existsSync(dest)) continue; // already reported as missing / not-a-file
-  if (statSync(src).size !== statSync(dest).size) mismatched.push(f);
+  const wasTranscoded = MAX_MBPS && f.endsWith(".mp4");
+  if (!wasTranscoded) {
+    if (statSync(src).size !== statSync(dest).size) mismatched.push(f);
+    continue;
+  }
+  const probe = JSON.parse(execFileSync("ffprobe", [
+    "-v", "error", "-show_entries",
+    "stream=codec_type,codec_name,width,height,sample_rate,channels,bit_rate",
+    "-of", "json", dest,
+  ], { encoding: "utf8" }));
+  const v = probe.streams.find((x) => x.codec_type === "video") || {};
+  const a = probe.streams.find((x) => x.codec_type === "audio");
+  if (+v.width !== 1920 || +v.height !== 1080) badDims.push(`${f} (${v.width}x${v.height})`);
+  if (!a || a.codec_name !== "mp3" || +a.sample_rate !== 24000 || +a.channels !== 1) {
+    badAudio.push(`${f} (${a ? `${a.codec_name}/${a.sample_rate}/${a.channels}ch` : "no audio"})`);
+  }
 }
 
 // --- report ---
@@ -119,7 +177,7 @@ console.log(
 );
 console.log("logos referenced:", [...new Set(logos)].join(", ") || "(none)");
 console.log("media subdirectories preserved:", [...nested].join(", ") || "(none)");
-console.log("media files copied:", copied, "of", referenced.size, "referenced");
+console.log("media files copied:", copied, "of", referenced.size, "referenced" + (transcoded ? `  (${transcoded} re-encoded to ${MAX_MBPS} Mbps video, audio copied)` : ""));
 console.log("deliverable dir:", outDir);
 console.log("index.html at root:", existsSync(path.join(outDir, "index.html")));
 console.log("package size:", mb(walkSize(outDir)));
@@ -135,6 +193,14 @@ if (notAFile.length) {
 }
 if (mismatched.length) {
   console.error("!! SIZE MISMATCH after copy:", mismatched.join(", "));
+  failed = true;
+}
+if (badDims.length) {
+  console.error("!! NOT 1920x1080 after re-encode (rule 5):", badDims.join(", "));
+  failed = true;
+}
+if (badAudio.length) {
+  console.error("!! AUDIO IS NOT THE LOCKED MASTER after re-encode (rule 4):", badAudio.join(", "));
   failed = true;
 }
 if (afterMediaAbs > 0) {

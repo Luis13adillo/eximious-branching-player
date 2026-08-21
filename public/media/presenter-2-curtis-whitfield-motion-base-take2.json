@@ -1,0 +1,280 @@
+{
+  "asset": "presenter-2-curtis-whitfield-motion-base-take2.mp4",
+  "presenter": "Curtis Whitfield (Presenter 2)",
+  "status": "SOURCE FOR THE PRODUCTION BASE - not itself the production base. 11 of 12 QA rows pass; the one failure (mouth parted, frames 5-40) is confined to the head of the clip. Frames 41-121 were used to build public/media/presenter-2-curtis-whitfield-driving-base.mp4, which passed the full production QA gate on 2026-08-20. No take 3 was generated.",
+  "purpose": "Attempt at the reusable motion base. Generated ONCE per presenter and reused across all 32 of Curtis's courses and every application video he presents.",
+  "provider": "KIE",
+  "endpoint": "POST https://api.kie.ai/api/v1/jobs/createTask",
+  "taskId": "8382811b540ead40db7b0f08518a180a",
+  "request": {
+    "model": "kling/v2-1-pro",
+    "input": {
+      "prompt": "Professional man seated at his desk in the approved modern corporate-office composition, holding still between takes. He is NOT speaking. His mouth stays completely closed and completely motionless for the entire clip: lips pressed together at every frame, no lip separation, no gap between the lips, no teeth ever visible, no mouth opening, no jaw movement. He holds the exact same closed-lip expression as the source image from the first frame to the last, with no change of expression and no change of smile. Natural irregular blinking approximately every 3-4 seconds. Only very subtle breathing and tiny natural head/posture settling. No deliberate head turns, nodding, leaning, gestures, or expressive movement. His hands remain exactly as shown in the source image, fingers interlocked and completely still on the desk. The camera is locked off on a tripod at a fixed focal length and a fixed distance. There is no push-in, no zoom, no dolly, no change of camera distance and no change of subject scale at ANY point in the clip, including the final second. The crop, scale, camera distance and framing of the LAST frame are identical to the FIRST frame: the mug at camera-left, the shelf, the wall screen and the window all stay in frame at exactly the same size and position throughout. No pan, tilt, drift, parallax, reframing, or crop change. Preserve Curtis's face, beard, hair, wardrobe, skin tone, proportions, lighting, contrast, color, shadows, office environment, desk objects, and approved composition exactly as shown. Preserve all existing visible lettering and branding on the wall screen, mug, books, and set elements without alteration. One continuous 5-second shot with no cuts, transitions, scene changes, added graphics, captions, logos, or new elements. The result should look like the approved Curtis still naturally coming alive while remaining almost completely motionless.",
+      "image_url": "https://v3b.fal.media/files/b/0aa724b6/YzYSIpqMWEghpaRdkmQFL_presenter-base-still.png",
+      "duration": "5",
+      "negative_prompt": "camera movement, zoom, push-in, pull-out, pan, tilt, reframing, camera drift, speaking, talking, mouth opening, lip movement, gesturing, hand movement, standing, leaning, scene change, cut, transition, wardrobe change, hairstyle change, face change, lighting change, brightening, re-grading, added text, added logos, added graphics, overlays, watermark, distortion, warping, open mouth, jaw movement, finger movement, nodding, lip separation, visible teeth, smile change, camera scale change",
+      "cfg_scale": 1
+    }
+  },
+  "supersedes": "presenter-2-curtis-whitfield-motion-base-take1-REJECTED.mp4 (continuous push-in to 1.18x + mouth opening)",
+  "changes_vs_take1": {
+    "cfg_scale": "0.8 -> 1.0",
+    "prompt": "1253 -> 1901 chars. Strengthened ONLY the two failed constraints: (a) mouth stated as closed AND motionless at every frame, with lips pressed together, no lip separation, no gap, no teeth, no jaw movement, and the source image's exact closed-lip expression held first frame to last; (b) camera stated as locked tripod at fixed focal length and fixed distance, no push-in/zoom/dolly/scale change at ANY point including the final second, with last-frame crop, scale, distance and framing identical to the first and named set objects holding the same size and position.",
+    "negative_prompt": "487 -> 491 chars. Added the four requested terms not already present - lip separation, visible teeth, smile change, camera scale change (mouth opening, push-in and zoom were already in the list). To stay inside the documented 500-char limit, five terms were dropped, each either redundant with a term that stays or guarding a failure mode take 1 showed no sign of: perspective shift (reframing + camera scale change remain), morphing (distortion + warping remain), crop (reframing remains), extra people, room change.",
+    "unchanged": "model, duration \"5\", source still, provider, hosting. No seed exists on this model."
+  },
+  "source_still": {
+    "file": "public/media/presenter-2-curtis-whitfield-production-still-1920x1080.png",
+    "sha256": "74e03fb473dbaf72d44e4406aef4a4383f67205615140c2972ba4552bea70027",
+    "reused": "Yes - the identical fal CDN object from take 1, re-verified HTTP 200 and byte-identical before this call. The still was NOT rebuilt."
+  },
+  "output": {
+    "sha256": "1a7740bbab8eb58566fb73dbaa78a024938f23e954fd3f3ed34e3f43988d1065",
+    "dimensions": "1920x1080",
+    "fps": 24,
+    "frames": 121,
+    "duration_s": 5.041667,
+    "audio": "none",
+    "bytes": 4859652
+  },
+  "cost": {
+    "credits_reported_by_task": 50,
+    "usd": 0.25,
+    "cost_time_seconds": 89
+  },
+  "qa_gate": {
+    "verdict": "11 of 12 rows PASS. One row FAILS: mouth closed.",
+    "method_note": "Same gate as take 1 and as Diane. Eye and mouth boxes read at the per-frame tracked face offset, never a fixed box (known-mistakes #10, #13). Every mouth claim confirmed by eye at 2x zoom, never from a pixel metric alone (#18) - which is exactly why this take does not pass: its mouth METRICS look mild (aperture range 12.8% of mean, tracked frame-to-frame max 6.2/255) while the eye sees teeth.",
+    "row_camera_lock": {
+      "verdict": "PASS - the take 1 fault is fixed",
+      "zoom_factor_vs_frame_0": {
+        "1": {
+          "zoom_factor": 1,
+          "center_offset": [
+            0,
+            0
+          ],
+          "residual_at_best": 0,
+          "residual_at_1.000x": 0
+        },
+        "11": {
+          "zoom_factor": 1,
+          "center_offset": [
+            0,
+            0
+          ],
+          "residual_at_best": 3.67,
+          "residual_at_1.000x": 3.67
+        },
+        "21": {
+          "zoom_factor": 1,
+          "center_offset": [
+            0,
+            0
+          ],
+          "residual_at_best": 3.89,
+          "residual_at_1.000x": 3.89
+        },
+        "31": {
+          "zoom_factor": 1,
+          "center_offset": [
+            0,
+            0
+          ],
+          "residual_at_best": 4.25,
+          "residual_at_1.000x": 4.25
+        },
+        "41": {
+          "zoom_factor": 1,
+          "center_offset": [
+            0,
+            0
+          ],
+          "residual_at_best": 4.78,
+          "residual_at_1.000x": 4.78
+        },
+        "51": {
+          "zoom_factor": 1,
+          "center_offset": [
+            0,
+            0
+          ],
+          "residual_at_best": 4.9,
+          "residual_at_1.000x": 4.9
+        },
+        "61": {
+          "zoom_factor": 1,
+          "center_offset": [
+            0,
+            0
+          ],
+          "residual_at_best": 4.85,
+          "residual_at_1.000x": 4.85
+        },
+        "71": {
+          "zoom_factor": 1,
+          "center_offset": [
+            0,
+            0
+          ],
+          "residual_at_best": 4.64,
+          "residual_at_1.000x": 4.64
+        },
+        "81": {
+          "zoom_factor": 1,
+          "center_offset": [
+            0,
+            0
+          ],
+          "residual_at_best": 4.76,
+          "residual_at_1.000x": 4.76
+        },
+        "91": {
+          "zoom_factor": 1,
+          "center_offset": [
+            0,
+            0
+          ],
+          "residual_at_best": 5.02,
+          "residual_at_1.000x": 5.02
+        },
+        "101": {
+          "zoom_factor": 1,
+          "center_offset": [
+            0,
+            0
+          ],
+          "residual_at_best": 4.94,
+          "residual_at_1.000x": 4.94
+        },
+        "111": {
+          "zoom_factor": 1,
+          "center_offset": [
+            0,
+            0
+          ],
+          "residual_at_best": 4.93,
+          "residual_at_1.000x": 4.93
+        },
+        "121": {
+          "zoom_factor": 1,
+          "center_offset": [
+            0,
+            0
+          ],
+          "residual_at_best": 5.08,
+          "residual_at_1.000x": 5.08
+        }
+      },
+      "finding": "1.000x at every sampled frame from 1 to 121. Scaling frame 0 gives ZERO residual improvement at any frame - there is no zoom to find. Take 1 went to 1.18x and a 1.18x scale cut its last-frame residual by 78%.",
+      "background_registration": {
+        "screen": {
+          "best_dx": 0,
+          "best_dy": 0,
+          "best_meanAbs": 2.9730000495910645,
+          "zero_shift_meanAbs": 2.973,
+          "improvement_from_shifting": 0
+        },
+        "window": {
+          "best_dx": -1,
+          "best_dy": 0,
+          "best_meanAbs": 4.054999828338623,
+          "zero_shift_meanAbs": 4.198,
+          "improvement_from_shifting": 0.14300000667572021
+        },
+        "desk_left": {
+          "best_dx": 0,
+          "best_dy": 0,
+          "best_meanAbs": 4.343999862670898,
+          "zero_shift_meanAbs": 4.344,
+          "improvement_from_shifting": 0
+        },
+        "desk_right": {
+          "best_dx": 0,
+          "best_dy": 0,
+          "best_meanAbs": 3.3489999771118164,
+          "zero_shift_meanAbs": 3.349,
+          "improvement_from_shifting": 0
+        }
+      },
+      "background_drift_max_over_clip": {
+        "screen": 3.304,
+        "window": 4.384,
+        "desk_left": 4.489,
+        "desk_right": 3.469
+      },
+      "subject_scale_best_fit": {
+        "scale": 1.01,
+        "meanAbs": 12.433,
+        "at_1.00x": 12.702
+      }
+    },
+    "row_mouth_closed": {
+      "verdict": "FAIL",
+      "finding": "Lips part with clearly visible teeth from about frame 5 to frame 40 (0.17-1.63 s). Frame-by-frame inspection across 29-52: teeth visible through 37, a trace at 38-40, closed from 41 onward. Frames 41-121 are lips-together with no separation - confirmed by eye at 2x on every 6th frame to the end of the clip.",
+      "improvement_vs_take1": "Take 1 opened TWICE (frames 7-25 and 46-55) and its second opening was past the two-second mark. Take 2 opens once, earlier, and is closed for the last 3.4 s.",
+      "supporting_metrics": {
+        "mouth_aperture_proxy": {
+          "min": 0.598,
+          "max": 0.6818,
+          "mean": 0.6538,
+          "range_pct_of_mean": 12.8
+        },
+        "mouth_tracked_frame_to_frame_delta": {
+          "mean": 2.696,
+          "max": 6.227
+        }
+      }
+    },
+    "other_rows_pass": {
+      "dimensions": "1920x1080, 24 fps, 121 frames, 5.041667 s",
+      "audio": "no audio stream - correct",
+      "identity_frame0_vs_source_still": "3.193/255 whole frame, 4.134/255 face (Diane 2.33, Selena 1.66)",
+      "desk_visibility": "desk band max drift 4.352/255 - desk, mug and hands in frame throughout",
+      "natural_motion": "face mean frame-to-frame 1.775/255, present on 100% of frame pairs (Diane 1.67)",
+      "head_settling": "tracked shift range dx [-3,2], dy [-7,4] px - small organic settling only",
+      "hands": "interlocked and still - max drift 9.05/255",
+      "blink": "3 onsets at frames 5, 53, 102 = 35.7/min (take 1 was 47.6, Diane's base 47.6)",
+      "loop_seam": "reversal 0.151 vs typical 0.793 = 0.19x - no cut",
+      "pingpong_fit": "first-vs-last whole-frame gap 5.477/255 (Diane 4.51)",
+      "set_and_lettering": "no cuts, transitions, scene changes, added text, logos, graphics, overlays or extra people"
+    },
+    "watch_items": {
+      "photometric_drift": "max channel shift 7.12% across the full clip - the known Kling exposure lift (known-mistakes #9). Inside frames 41-121 it is only 1.5%. Correctable for $0.00 with a per-frame multiplicative gain in 16-bit; NOT applied here.",
+      "blink_rate": "35.7/min is still above a relaxed human rate. Same class of issue as Diane's base, which was fixed for $0.00 by a frame-order rebuild rather than a re-generation."
+    }
+  },
+  "clean_window": {
+    "what": "The portion of this take that passes every gate row including mouth closed.",
+    "frames": [
+      41,
+      121
+    ],
+    "frame_count": 81,
+    "seconds": 3.375,
+    "measurements_within_the_window": {
+      "background_drift_max": {
+        "screen": 1.146,
+        "window": 1.502,
+        "desk_left": 1.387,
+        "desk_right": 1.407
+      },
+      "whole_frame_max_drift_vs_first_frame_of_window": 3.647,
+      "pingpong_fit_first_vs_last": 2.872,
+      "hands_max_drift": 3.993,
+      "face_mean_frame_to_frame": 1.444,
+      "face_motion_present_pct": 100,
+      "photometric_max_pct_shift": 1.5,
+      "blinks_inside_window": "frames 53 and 102 - 2 blinks in 3.375 s"
+    },
+    "comparison": "Every one of these is at or better than Diane's ACCEPTED production base: her camera-lock residual was 3.11/255 and her pingpong gap 4.51/255; this window is <=1.5/255 and 2.87/255.",
+    "precedent": "public/media/presenter-1-diane-marchetti-driving-base-corrected.build.py - a longer, corrected driving base built from a SUBSET of an approved base by frame reordering only. ffmpeg only, no generation, no paid call, every output frame a bit-exact copy of a source frame.",
+    "status": "BUILT. public/media/presenter-2-curtis-whitfield-driving-base.mp4 (v2) - 3410 frames, 142.083 s, 30 blinks at 12.67/min, $0.00, ffmpeg only. v1 (101.917 s) is kept as -v1-superseded. See presenter-2-curtis-whitfield-driving-base.json."
+  },
+  "cost_flag": {
+    "what": "The KIE credit balance on this account moves independently of these tasks and cannot be used to attribute spend.",
+    "observed": "723 -> 663 (Topaz, task reported 10) -> 613 (Kling take 1, task reported 50) -> 563 while completely idle -> 1513 after Kling take 2, which reported 50. The balance GAINED 1000 credits mid-run, so the account has another actor or an automatic top-up.",
+    "conclusion": "Use per-task creditsConsumed, not the balance. This session: Topaz 10 + Kling 50 + Kling 50 = 110 credits = $0.55 total."
+  },
+  "date": "2026-08-20"
+}

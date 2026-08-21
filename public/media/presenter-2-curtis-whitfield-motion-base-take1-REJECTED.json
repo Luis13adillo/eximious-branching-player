@@ -1,0 +1,216 @@
+{
+  "asset": "presenter-2-curtis-whitfield-motion-base-take1-REJECTED.mp4",
+  "presenter": "Curtis Whitfield (Presenter 2)",
+  "status": "REJECTED. Two independent, disqualifying faults: (1) continuous camera push-in to 1.18x, (2) the mouth opens with visible teeth. NOT a production base. Kept as the artifact of record for the next take.",
+  "purpose": "Attempt at the reusable motion base. Generated ONCE per presenter and reused across all 32 of Curtis's courses and every application video he presents.",
+  "provider": "KIE",
+  "endpoint": "POST https://api.kie.ai/api/v1/jobs/createTask",
+  "taskId": "9544f790334b587774c051f3dc1ebc56",
+  "request": {
+    "model": "kling/v2-1-pro",
+    "input": {
+      "prompt": "Professional man seated at his desk in the approved modern corporate-office composition, quietly listening between takes. He is NOT speaking. His lips remain fully closed for the entire clip with no lip movement, mouth opening, or jaw movement. Natural irregular blinking approximately every 3-4 seconds. Only very subtle breathing and tiny natural head/posture settling. No deliberate head turns, nodding, leaning, gestures, or expressive movement. His hands remain exactly as shown in the source image, fingers interlocked and completely still on the desk. Camera completely locked off. No zoom, push-in, pan, tilt, drift, parallax, reframing, or crop change. Final framing must match the first frame. Preserve Curtis's face, beard, hair, wardrobe, skin tone, proportions, lighting, contrast, color, shadows, office environment, desk objects, and approved composition exactly as shown. Preserve all existing visible lettering and branding on the wall screen, mug, books, and set elements without alteration. One continuous 5-second shot with no cuts, transitions, scene changes, added graphics, captions, logos, or new elements. The result should look like the approved Curtis still naturally coming alive while remaining almost completely motionless.",
+      "image_url": "https://v3b.fal.media/files/b/0aa724b6/YzYSIpqMWEghpaRdkmQFL_presenter-base-still.png",
+      "duration": "5",
+      "negative_prompt": "camera movement, zoom, push-in, pull-out, pan, tilt, reframing, crop, camera drift, perspective shift, speaking, talking, mouth opening, lip movement, gesturing, hand movement, standing, leaning, scene change, cut, transition, wardrobe change, hairstyle change, face change, lighting change, room change, brightening, re-grading, added text, added logos, added graphics, overlays, watermark, extra people, distortion, warping, morphing, open mouth, jaw movement, finger movement, nodding",
+      "cfg_scale": 0.8
+    }
+  },
+  "parameter_provenance": {
+    "duration": "\"5\" - the ONLY duration verified good on this project. Diane's 10 s take (take 1) was rejected for a continuous push-in; her passing base (take 2) is 5.04 s.",
+    "cfg_scale": "0.8 - the value that fixed Diane's push-in (known-mistakes #8). Held here. It did NOT prevent the push-in for Curtis.",
+    "negative_prompt": "The requested negative list was 730 characters against a documented 500-character API limit. Used instead: Diane's QA-PASSED take-2 negative list byte-exact (435 chars) plus the four highest-value Curtis-specific additions that fit - \"open mouth\", \"jaw movement\", \"finger movement\", \"nodding\" - for 487 chars. Dropped for length, most already covered by a near-synonym in the list: speech-like mouth movement, chewing, smiling with open mouth, large head movement, body movement, pull-back (pull-out present), rotation, handheld movement, parallax, crop change (crop present), identity change (face change present), facial distortion (distortion present), exposure change (brightening/re-grading present), lifted shadows, altered text, regenerated text, added captions.",
+    "prompt": "As supplied, with ONE edit: \"One continuous 10-second shot\" -> \"One continuous 5-second shot\", so the prompt does not contradict duration \"5\".",
+    "seed": "kling/v2-1-pro exposes NO seed parameter. A retry is a plain re-run and is not reproducible."
+  },
+  "source_still": {
+    "file": "public/media/presenter-2-curtis-whitfield-production-still-1920x1080.png",
+    "sha256": "74e03fb473dbaf72d44e4406aef4a4383f67205615140c2972ba4552bea70027",
+    "hosting": "fal CDN temporary input, neutral filename, 24 h expiry VERIFIED at upload via scripts/fal-upload.mjs. Served copy checked byte-identical (sha256 match) and HTTP 200 before the payload was staged."
+  },
+  "output": {
+    "sha256": "ed424307c315a1e0a8c6cd4e506da15fd1be0ec3ce70c1ca18e246407a836e36",
+    "dimensions": "1920x1080",
+    "fps": 24,
+    "frames": 121,
+    "duration_s": 5.041667,
+    "audio": "none",
+    "bytes": 8382442
+  },
+  "cost": {
+    "credits_reported_by_task": 50,
+    "usd": 0.25,
+    "cost_time_seconds": 92
+  },
+  "date": "2026-08-20",
+  "qa_gate": {
+    "verdict": "FAIL - REJECTED on two independent faults.",
+    "method_note": "Head-tracked measurement: eye and mouth boxes are read at the per-frame best-fit face offset, never from a fixed box (known-mistakes #10, #13). Every mouth claim is confirmed by eye at 2-3x zoom, never from a pixel-change metric alone (#18).",
+    "fault_1_camera_push_in": {
+      "verdict": "FAIL",
+      "finding": "The camera is perfectly locked for the first 61 frames (0-2.54 s), then a continuous push-in begins at ~frame 71 (2.96 s) and runs to the end of the clip.",
+      "measured_zoom_vs_frame_0": {
+        "1": {
+          "zoom_factor": 1,
+          "center_offset": [
+            0,
+            0
+          ],
+          "residual_at_best": 0,
+          "residual_at_1.000x": 0
+        },
+        "11": {
+          "zoom_factor": 1,
+          "center_offset": [
+            0,
+            0
+          ],
+          "residual_at_best": 3.02,
+          "residual_at_1.000x": 3.02
+        },
+        "21": {
+          "zoom_factor": 1,
+          "center_offset": [
+            0,
+            0
+          ],
+          "residual_at_best": 4.63,
+          "residual_at_1.000x": 4.63
+        },
+        "31": {
+          "zoom_factor": 1,
+          "center_offset": [
+            0,
+            0
+          ],
+          "residual_at_best": 5.51,
+          "residual_at_1.000x": 5.51
+        },
+        "41": {
+          "zoom_factor": 1,
+          "center_offset": [
+            0,
+            0
+          ],
+          "residual_at_best": 5.8,
+          "residual_at_1.000x": 5.8
+        },
+        "51": {
+          "zoom_factor": 1,
+          "center_offset": [
+            0,
+            0
+          ],
+          "residual_at_best": 5.82,
+          "residual_at_1.000x": 5.82
+        },
+        "61": {
+          "zoom_factor": 1,
+          "center_offset": [
+            0,
+            0
+          ],
+          "residual_at_best": 5.89,
+          "residual_at_1.000x": 5.89
+        },
+        "71": {
+          "zoom_factor": 1.015,
+          "center_offset": [
+            0,
+            0
+          ],
+          "residual_at_best": 9.77,
+          "residual_at_1.000x": 15.5
+        },
+        "81": {
+          "zoom_factor": 1.04,
+          "center_offset": [
+            0,
+            0
+          ],
+          "residual_at_best": 13.84,
+          "residual_at_1.000x": 24.09
+        },
+        "91": {
+          "zoom_factor": 1.07,
+          "center_offset": [
+            0,
+            -12
+          ],
+          "residual_at_best": 10.25,
+          "residual_at_1.000x": 31.01
+        },
+        "101": {
+          "zoom_factor": 1.105,
+          "center_offset": [
+            0,
+            -12
+          ],
+          "residual_at_best": 10.28,
+          "residual_at_1.000x": 36.21
+        },
+        "111": {
+          "zoom_factor": 1.14,
+          "center_offset": [
+            0,
+            -24
+          ],
+          "residual_at_best": 13.82,
+          "residual_at_1.000x": 38.83
+        },
+        "121": {
+          "zoom_factor": 1.18,
+          "center_offset": [
+            0,
+            -24
+          ],
+          "residual_at_best": 8.35,
+          "residual_at_1.000x": 38.1
+        }
+      },
+      "proof_it_is_geometric_not_photometric": "At the last frame, scaling frame 0 by 1.18x drops the residual from 38.10/255 to 8.35/255 - a 78% reduction from scale alone. Diane take 2 was cleared precisely because a wide 2D search gave ZERO improvement from any transform; here the transform explains most of the difference.",
+      "visible_consequence": "At the last frame the branded mug has left the frame at camera-left and the subject scale has grown 18%. Under pingpong looping this would breathe in and out on every cycle, across all of Curtis's videos.",
+      "comparison": "Diane take 1 (REJECTED) failed the same way at duration 10 / cfg_scale 0.5. This take used duration 5 / cfg_scale 0.8 - the settings that fixed her - and still pushed in."
+    },
+    "fault_2_mouth_opens": {
+      "verdict": "FAIL",
+      "finding": "Curtis's lips part with clearly visible teeth twice inside the camera-locked segment: approximately frames 7-25 (0.25-1.00 s) and frames 46-55 (1.88-2.25 s). Confirmed by eye at 2x zoom on every third frame from 1 to 61; frames 1, 4, 28-43 and 58-61 are clean lips-together.",
+      "why_it_disqualifies": "The motion base is the NON-SPEAKING driving base for LatentSync. A mouth that opens on its own is baked into every one of Curtis's ~68 videos and fights the lip-sync.",
+      "supporting_metrics": {
+        "mouth_tracked_frame_to_frame_delta_mean": 6.681,
+        "mouth_tracked_frame_to_frame_delta_max": 42.049,
+        "mouth_aperture_proxy_range_pct_of_mean": 33,
+        "note": "Unlike Diane take 2 - where the same class of metric was an ARTIFACT of a fixed box over a moving head, and visual inspection cleared it - here the tracked metric and the eye agree."
+      }
+    },
+    "passed": {
+      "dimensions": "1920x1080, 24 fps, 121 frames, 5.041667 s",
+      "audio": "no audio stream - correct",
+      "identity_frame0_vs_source_still": "3.243/255 whole frame, 4.150/255 over the face (Diane 2.33, Selena 1.66)",
+      "camera_lock_first_61_frames": "zoom 1.000x; background drift vs frame 0: wall screen max 4.46/255, window max 4.04/255, desk max 4.55/255; whole frame max 6.22/255",
+      "hands": "stay interlocked and still through the locked segment - max drift 11.35/255",
+      "set_and_lettering": "no cuts, no transitions, no added text, logos, graphics, overlays or extra people; wall screen and mug lettering present and unchanged",
+      "natural_motion": "present on 100% of frame pairs, face mean frame-to-frame 3.754/255"
+    },
+    "watch_items": {
+      "blink_rate": "4 blink onsets in 5.04 s = 47.6/min (onsets at frames 74, 98, 106, 116). This is the SAME over-blinking already diagnosed on Diane's base and fixed there for $0.00 by a frame-order rebuild, not by a re-generation. Not a reason to re-run.",
+      "photometric_drift": "max channel shift 8.5% within the camera-locked segment - consistent with the known ~9.5% Kling exposure lift (known-mistakes #9), correctable for $0.00 with a per-frame multiplicative gain in 16-bit. Not a reason to re-run."
+    }
+  },
+  "cost_flag": {
+    "what": "The KIE credit balance moved further than the two tasks report.",
+    "readings": "723.0 before the Topaz call -> 663.0 after it -> 613.0 after the Kling call. Total 110 credits ($0.55).",
+    "task_reported": "Topaz creditsConsumed 10.0 + Kling creditsConsumed 50.0 = 60 credits ($0.30).",
+    "unexplained": "50 credits ($0.25) between the first balance reading and the post-Topaz reading. Cause not determined - could be a stale first reading, a separate charge on the account, or a billing tier this record cannot see. Flagged, not reconciled. Worth checking against the KIE usage log before the catalog run.",
+    "documented_expectation": "docs/COST_OPTIMIZATION_267.md and docs/PRODUCTION_READINESS_COST_LOCK.md price topaz/image-upscale at 10 credits ($0.05) per <=2K image. This job produced a 3344x1882 output, above 2K on the long side."
+  },
+  "next_take_guidance": {
+    "status": "NOT ATTEMPTED - held for Luis's approval, as instructed.",
+    "what_the_evidence_supports": [
+      "The first 2.5 s of this take are clean on camera, hands, set and identity. The faults are (a) a push-in that starts at ~2.9 s and (b) mouth opening in the first 2.3 s.",
+      "cfg_scale 0.8 is no longer sufficient evidence on its own - it did not hold the camera for Curtis. cfg_scale 1.0 is inside the documented 0-1 range and is the obvious next lever.",
+      "The mouth fault suggests the positive prompt's closed-mouth language needs to be as blunt as its camera language, and that \"quietly listening\" may be reading as a social micro-expression (the source still already carries a slight smile)."
+    ],
+    "cost_of_one_more_take": "50 credits = $0.25."
+  }
+}

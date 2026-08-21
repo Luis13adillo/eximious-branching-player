@@ -12,7 +12,13 @@ itself, not the development app.
 
 ## Final disposition — Stage 2 SHIPPED 2026-08-19
 
-**This log is closed except for R1-5 (iOS audio).** The blink fix was not merely
+> **SUPERSEDED — read §v4 RELEASE at the end of this file for what actually ships.**
+> This section describes the **v2** package and the round 1 that was run against it on
+> 2026-08-19. The delivered media has been fully replaced since (v3 demo-driven, rejected
+> → v4 purpose-made non-speaking base) and the package has been rebuilt and renamed
+> `EA_claims-01_AV1`. Round 1 below does **not** transfer to v4.
+
+**This log was closed except for R1-5 (iOS audio) at v2.** The blink fix was not merely
 proposed: it was built, executed and QA-passed on 2026-08-19.
 
 | | |
@@ -375,3 +381,212 @@ rendered component, not by reading the source:
 | Effect of clicking an item | **none** — player state unchanged |
 
 Nothing in it presents a selection affordance. No change made.
+
+---
+
+# v4 RELEASE — 2026-08-21
+
+**This log is no longer closed at Stage 2.** Everything above describes the **v2** package
+that round 1 was run against on 2026-08-19. The delivered media has since been replaced
+(v3 demo-driven, rejected → v4 purpose-made non-speaking base), and the package has been
+rebuilt and renamed to the contractual name. This section is the record for what actually
+ships.
+
+## Final disposition — v4
+
+| | |
+|---|---|
+| Status | **RELEASED FOR DELIVERY 2026-08-21 by Luis.** Both deliverables built and named per spec; functional acceptance 18/18 against the assembled package. Real-device round 1 on v4 is **deferred, not waived** — see §Deferred at release (v4). |
+| Package | **BUILT 2026-08-21** — `EA_claims-01_AV1`, 110.4 MB, zip **115.2 MB**, 26 files, `index.html` at the archive root. Well under Thinkific's 200 MB ceiling |
+| Package SHA-256 | `7cacea398fabd6f3ba90e706dc3cd8524275268ac1f9e47d64dbc5905551d206` |
+| Source deliverable | **BUILT 2026-08-21** — `EA_claims-01_AV1_source.zip`, **204.8 MB**, 154 files. Agreement §2.3.1. Asserted to carry no confidential material, and independently re-checked |
+| Source SHA-256 | `61006c5cfe291f3a0de22fa01d9209cd119507272f6da643287788b23255569c` |
+| **Gate D functional acceptance (A §2.2)** | **PASS — 18/18**, driven through a real browser against the assembled package. First Gate D run on this pilot |
+| Delivery-record integrity | **RESTORED — 22/22.** See §Sidecar records restored |
+| `decision-3` frame shortfall | **FIXED — $0.00.** See §decision-3 |
+| Segments delivered | **22/22** — `public/media/claims-01-av1/`, 463.32 s (7.72 min) |
+| Masters byte-identical after packaging (rule 6) | **PASS — 316/316 files checksummed, 0 changed** |
+| Packaged audio identical to locked master (rule 4) | **PASS — 22/22** |
+| Packaged video 1920×1080 / 25 fps (rule 5) | **PASS — 22/22** |
+| Unit tests | **474 passed / 1 skipped / 0 failed** (was 452 passed / 22 failed) |
+| Real devices on v4 | **DEFERRED at release — not run.** See §Deferred at release (v4) |
+| Thinkific upload | **NOT YET DONE** — true of all three pilots |
+| Spend this release | **$0.00** |
+
+---
+
+## Sidecar records restored — 22/22
+
+The v4 delivery legitimately replaced each segment's provenance sidecar, but the writer
+that produced them dropped `video_dur_s`, `frames`, `video_start_s` and `align_err_ms` from
+the `split` block. This was **not corruption and not a media defect** — the delivered files
+were fine; the record of them was incomplete. The visible symptom was **22 failing tests**
+in `claims-01-av1.test.ts:59`, all on `split.video_dur_s` being `undefined`.
+
+All 22 were re-measured with `ffprobe` **against the actual v4 mp4s on disk** and rewritten.
+The committed v3 values were deliberately *not* restored: those describe different files at
+different batch offsets (v3 `decision-3` sat at batch offset 39.284 s, v4 at 56.192 s).
+
+Semantics of the restored fields, recovered from the last-committed record and re-derived:
+
+- `video_start_s` — the batch offset snapped **down** to the 25 fps frame grid.
+- `align_err_ms` — that snap, `video_start_s − batch_start_s`. Always ≤ 0, so a cut never
+  starts late. Range across the 22: 0 to −32 ms.
+- `frames`, `video_dur_s` — **measured**, not derived.
+
+Measuring rather than deriving mattered. A frame-grid formula reproduced 20 of the 22 files
+exactly and disagreed on two. One of those (`fb-3d`, 506 frames vs a derived 507) is **not**
+a defect — the file covers its audio and the narration already declared 20.24 s; the formula
+simply rounds from nominal narration length rather than the delivered stream. The other was
+a real defect:
+
+## decision-3 — one frame short, fixed at $0.00
+
+| | |
+|---|---|
+| Symptom | 156 frames = **6.240 s** of picture against **6.241 s** of embedded audio. Video did not cover audio, breaching the locked rule that trims *up* a frame. Narration and captions both already declared **6.28 s** (157 frames) |
+| Fix | Extended to **157 frames / 6.280 s** by cloning the delivered final frame once (`tpad=stop_mode=clone:stop=1`), re-encoded with the delivery pipeline's own settings, then remuxed against the **original** audio with `-c:a copy` |
+| Synthesised? | **Yes, explicitly.** Frame 156 is a hold on frame 155, not footage LatentSync produced. It sits in the trailing silence after the last narrated word with the mouth already closed. 62.4 dB PSNR against the frame it repeats |
+| Audio | **Byte-identical** — audio-stream sha256 `a66fa961…` before and after |
+| Retained picture | Frames 0–155 are a second h264 generation at **53.4 dB** average PSNR — visually lossless, and far smaller than the 1.9 Mbps re-encode the package applies anyway |
+| Cost | **$0.00.** The alternative — regenerating so the frame is genuine — was costed at **≈$2.37** and not taken |
+| Approval | Luis, 2026-08-21, having been told plainly that it synthesises a frame |
+| Superseded original | Archived byte-identical at `public/media/claims-01-av1-v4-decision3-156f-superseded/` |
+
+**A bit-exact route was tried first and rejected.** Concatenating at the container level
+kept all 156 original frames bit-identical (PSNR `inf`), but left a 120 ms frame-duration
+stall at the join and a 6.32 s container duration against 6.28 s of picture. A raw h264
+elementary-stream concat was also tried and **lost two frames**. The re-encode is the only
+route that produced regular 40 ms frame timing across all 157 frames.
+
+---
+
+## Gate D functional acceptance — 18/18 PASS, 2026-08-21
+
+Driven through a real Chromium browser against the **assembled package** served over the
+range-capable server — not the dev app, and not the lesson data in isolation. Playback is
+fast-forwarded so the routing is what is under test, not the wall clock.
+
+```bash
+node scripts/serve-package.mjs ./EA_claims-01_AV1 8914 &
+npx tsx --tsconfig tsconfig.json scripts/dump-lesson-graph.ts /tmp/graph.json claims-investigation-application-1
+node scripts/acceptance-package.mjs http://127.0.0.1:8914 /tmp/graph.json
+```
+
+Note the graph slug: claims-01's registry slug is **`claims-investigation-application-1`**,
+not `claims-01-av1`. Its media, narration and test suite are keyed `claims-01-av1` but its
+lesson module and slug are not. Passing the wrong one fails outright.
+
+The walk clicks **all 12 options** — every wrong answer at every decision, then the right
+one — and checks each against the routing the lesson data declares.
+
+| Check | Result |
+|---|---|
+| Does not autoplay at load | PASS — `paused=true t=0.00` |
+| Start control present behind the opening frame | PASS |
+| Start begins picture and sound together | PASS — `playing=true src=intro.mp4` |
+| All three decisions reached | PASS |
+| 9 incorrect options each play their own feedback segment | PASS — 9/9 |
+| Each incorrect option's feedback is distinct | PASS — 9 distinct across 9 |
+| Each routes to the feedback its data names | PASS — 9/9 matched |
+| Correct verdicts are player-native, no video | PASS — 3/3 by design (`fb-1d`/`fb-2b`/`fb-3b` carry no media) |
+| Retry returns to the SAME decision | PASS — 9/9 |
+| All paths rejoin, lesson plays start → finish | PASS |
+| Every rejoin segment reached | PASS — 4 rejoin segments played |
+| Every delivered segment reachable through the UI | PASS — 22/22 |
+| Never more than one audible media element | PASS — max 1 |
+| No failed network requests | PASS |
+| No 4xx/5xx responses | PASS |
+| No console or page errors | PASS |
+
+**Defect found and fixed in the QA harness itself.** `acceptance-package.mjs` hardcoded
+`fb-1b/2b/3b` — ew-01's player-native beats — into the evidence string it prints for every
+video. claims-01's are `fb-1d/2b/3b`, so the QA record it produced named the wrong scenes
+while the assertion underneath was computed correctly. The ids are now read from the
+lesson's own graph. The check never passed incorrectly; only the printed record was wrong.
+
+---
+
+## Round 1 (v4) — real devices
+
+_Not yet run on v4. Record one row per device._
+
+| | |
+|---|---|
+| Date | |
+| Tester | |
+| Devices | |
+| Serving | LAN static server (`scripts/serve-package.mjs`), HTTP byte-range enabled |
+| Scope | Full lesson walkthrough, portrait |
+
+### Acceptance checks (Agreement §2.2)
+
+Rows marked **desktop PASS** were verified automatically against the package — they still
+need confirming on a real handset, because a headless desktop browser is not a phone.
+
+| Check | Result |
+|---|---|
+| Plays start → finish | **desktop PASS** |
+| All 12 options route to their own individual feedback | **desktop PASS** — 9 incorrect play their own distinct segment; the 3 correct verdicts are player-native by design |
+| Retry returns to the same decision | **desktop PASS** — 9/9 |
+| All paths rejoin | **desktop PASS** — 4/4 rejoin segments reached |
+| Every delivered segment reachable | **desktop PASS** — 22/22 |
+| Audio clean — no extraneous audio, dead segments, or manual muting | **desktop PASS** — never more than one audible media element |
+| Start gate: does not autoplay; Start begins picture and sound together | **desktop PASS** |
+| Captions legible at phone width | _needs a phone_ |
+| First frame behind Start shows closed mouth | **Known FAIL — see §Opening-frame mouth state (v4)** |
+| R1-5 iOS opening audio | _still open, still one data point_ |
+
+### Defects raised
+
+| # | Defect | Severity | Disposition |
+|---|---|---|---|
+| | | | |
+
+---
+
+## Opening-frame mouth state (v4) — KNOWN OPEN DEFECT, not fixed
+
+Diane's v4 segments are cut **at the audio onset**, not at the midpoint of the surrounding
+silence. LatentSync opens the mouth roughly 6 frames *before* the first audible sample, so
+an onset cut lands inside that anticipation and the segment opens on parted lips with teeth
+visible, during digital silence. The same applies to closing frames.
+
+This includes the **`intro` first frame — the one held behind the Start control**, which is
+the single most-looked-at frame in the video.
+
+**Not fixed, and deliberately so.** Correcting it in the media means re-cutting at the
+silence midpoint and re-rendering: **≈$2.37, which is not approved.** It is recorded here as
+an open defect rather than silently accepted.
+
+siu-01 records 22/22 first and last frames closed under the midpoint rule, and ew-01 records
+the same failure as claims-01 and accepted it at release. Any remedy belongs in the
+**player** — a poster frame or a held opening frame is a player change at $0.00 with no
+re-render, which is exactly what pipeline rule 8 exists to protect.
+
+---
+
+## Deferred at release (v4)
+
+Released 2026-08-21 on Luis's decision, with real-device round 1 on the v4 package **not yet
+run**. This is a deliberate, recorded deferral — **not waived**, and not a claim that it
+passed. Round 1 on 2026-08-19 was run against the **v2** package and does not transfer:
+the media has been fully replaced since.
+
+| Item | State at release |
+|---|---|
+| iOS Safari, real handset | Not run on v4 |
+| Android Chrome, real handset | Not run on v4 |
+| Captions legible at phone width | Not checked on a phone |
+| Functional acceptance **inside a Thinkific lesson** | Not run — the package has never been uploaded, by any pilot |
+| R1-5 iOS opening audio | Still open, still one data point |
+
+**What this exposure actually is.** The package is static and self-contained, the routing is
+verified 18/18 in a real browser engine, and the audio is the byte-identical locked master.
+The realistic phone-only risks are iOS autoplay refusing the opening audio — which the
+locked Start gate is expected to have already fixed — and caption legibility at phone width.
+Neither can corrupt the deliverable; both would be player-side fixes at $0.00 with no
+re-render.
+
+**Close it at the earliest of:** the pilot review, or the first time this package is opened
+on a phone. Two clean handsets close R1-5 for all three pilots at once.

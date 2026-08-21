@@ -30,5 +30,27 @@
     ".next/dev/types/**/*.ts",
     "**/*.mts"
   ],
-  "exclude": ["node_modules"]
+  "exclude": [
+    "node_modules",
+    // Built deliverables, not source. `include` is "**/*.ts", so without these the
+    // per-video SOURCE packages — which each carry a full copy of src/ and of
+    // export-thinkific/ — get type-checked as part of the repo. They resolve their
+    // dev dependencies from their own node_modules, which a deliverable deliberately
+    // does not ship, so `next build` fails on vite.config.ts imports that are fine in
+    // context. Building one deliverable would otherwise break the build for the repo.
+    "EA_*",
+    "eximious-*-thinkific-html5*",
+    /**
+     * The export tool is a SEPARATE workspace with its own package.json and its own
+     * install step. Vercel installs only the root manifest, so on a deploy its Vite
+     * dev-dependencies do not exist and `next build` dies on three TS2307s in
+     * vite.config.ts — which is exactly what failed every production deploy from
+     * 2026-08-11 onward. It passes locally only because export-thinkific/node_modules
+     * happens to be present. `scripts/package-source.mjs` already excludes this same
+     * directory in every delivered source package, for the same reason; the repo's own
+     * tsconfig was simply missing the rule. Type-check the export tool from inside
+     * export-thinkific/, where its dependencies are actually installed.
+     */
+    "export-thinkific"
+  ]
 }

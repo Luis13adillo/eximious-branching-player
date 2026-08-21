@@ -2,74 +2,98 @@
  "asset": "fb-3a.mp4",
  "video": "EA_claims-01_AV1",
  "presenter": "Diane Marchetti (Presenter 1)",
+ "motion_base": {
+  "provider": "KIE",
+  "model": "kling/v2-1-pro",
+  "taskId": "9a16ce872a23ff367b12b26c7db6dc8a",
+  "duration_s": 10,
+  "cfg_scale": 0.5,
+  "cost_usd": 0.5,
+  "file": "scratchpad bases/base2.mp4",
+  "sha256": "95e63b09e7181484f0711a22d6ef3c6cb6f74eb75326c511f20a47b2210c19c1",
+  "note": "Diane NOT speaking - lips closed and still for the whole clip. Generated with the locked CONFIG 1 prompt and negative prompt, byte-exact from docs/VIDEO_1_GENERATION_CONFIGS.md. Native 1920x1080. 1 of 4 draws passed QA; the other three failed on camera drift (0.24/0.60/0.63 vs gate 0.1) or a moving mouth.",
+  "qa": {
+   "lips_closed": true,
+   "blinks_per_min": 17.9,
+   "face_motion": 1.13,
+   "camera_drift": 0.0876
+  }
+ },
+ "driving_base": {
+  "file": "scratchpad diane_drive_base2.mp4",
+  "sha256": "11156d1bb372bbbb53c93c37497275042a6da43a1181cc70706379f6dfc66adc",
+  "dur_s": 480.0,
+  "fps": 24,
+  "frames": 11520,
+  "method": "base2's 241 frames reordered into a continuous walk. Every output frame is a bit-exact copy; only the ORDER changes. ffmpeg only, $0.00.",
+  "distinct_source_frames": "192 of 241",
+  "blink_rate_per_min": 12.9,
+  "joins": 103,
+  "join_size": "0.738 vs base2's own max consecutive-frame step of 0.657",
+  "guarantees": [
+   "no cut outside the 103 declared joins",
+   "no blink ever played in reverse",
+   "direction changes ~1.4 s apart - drifts rather than nods"
+  ]
+ },
  "lipsync": {
   "provider": "fal.ai",
   "model": "fal-ai/latentsync",
   "loop_mode": "pingpong",
-  "loop_mode_note": "Carried over unchanged, but it no longer triggers: the corrected driving base is 99.62 s, longer than every call, so LatentSync never loops it. That is what removes the repeating blink pattern and the reversed blinks structurally.",
-  "seed": 20260818,
+  "loop_mode_note": "Never triggers: each driving window exceeds its audio.",
+  "seed": 20260820,
   "guidance_scale": 1,
-  "request_id": "01a01b25-8750-76d3-9377-44485c2d0ad7",
-  "batch_call": 7,
+  "request_id": "01a020f2-2215-7431-b9d5-f4e2c2970e3a",
+  "batch_index": 1,
   "batch_segments": [
-   "fb-3a",
-   "fb-3c",
-   "fb-3d"
+   "fb-1c",
+   "fb-2a",
+   "fb-2c",
+   "fb-2d",
+   "fb-3a"
   ],
-  "elapsed_s": null,
-  "blocks": 102,
-  "returned_frames": 1632,
-  "frame_assertion": "returned == blocks x 16 : PASS",
-  "driving_video": "public/media/presenter-1-diane-marchetti-driving-base-corrected.mp4",
-  "driving_video_sha256": "e61587b98a127f674d8fa97939d854f01443ec7633e54fe1c121f716b92dbc2f",
-  "cost_usd": 0.3274
+  "batch_padded_s": 123.08
  },
  "split": {
-  "batch_start_s": 0.0,
-  "video_start_s": 0.0,
-  "align_err_ms": 0.0,
+  "batch_start_s": 106.328,
+  "video_start_s": 106.32,
+  "align_err_ms": -8.0,
   "frames": 401,
   "video_dur_s": 16.04,
   "audio_dur_s": 16.032,
-  "method": "re-encoded at the cut (a stream copy snaps to the nearest keyframe and would desync the remuxed audio); trimmed UP to a whole 25 fps frame so video >= audio"
+  "method": "Re-encoded at the cut; a stream copy snaps to the nearest keyframe and would desync the remuxed audio. Frame count rounded UP so video always covers the audio.",
+  "measured": "frames and video_dur_s are ffprobe measurements of the delivered v4 asset on 2026-08-21, not values carried over from an earlier revision. video_start_s is the batch offset snapped DOWN to the 25 fps frame grid; align_err_ms is that snap (video_start_s - batch_start_s), always <= 0, so the cut never starts late."
  },
  "audio": {
   "source": "fb-3a.mp3",
-  "note": "LatentSync's returned audio (aac 16 kHz) is DISCARDED; the locked 24 kHz -24.5 LUFS master is remuxed with -c:a copy (locked rule 4). Verified: the master's decoded PCM is an exact prefix of the mp4's, the only difference being 47 samples (1.96 ms) of mp3 decoder padding at the tail.",
+  "note": "LatentSync's returned audio (aac 16 kHz) is DISCARDED; the locked 24 kHz -24.5 LUFS master is remuxed with -c:a copy.",
   "lufs_integrated": -24.5,
-  "true_peak_dbfs": -6.4,
-  "stream": "mp3,24000,1,128000",
-  "tts": {
-   "model": "tts-1-hd",
-   "voice": "shimmer",
-   "speed": 1.0
-  }
+  "stream": "mp3,24000,1,128000"
  },
  "delivery": {
   "dims": "1920x1080",
-  "fps": "25/1"
+  "fps": "25/1",
+  "native": "NO upscaling anywhere - base2 is native 1920x1080"
  },
- "sha256": "0438275d66930d56d71e9cbd0ef4022793aafecdbb2274afd05128d14312ec91",
- "date": "2026-08-19",
+ "measured": {
+  "mouth_cheek_sharpness": 0.74,
+  "mouth_cheek_reference": "approved demo 0.85, prior v2 0.84 - lower is softer, which is the correct direction; the rejected demo-driven set inverted to 1.10 and read as pasted on",
+  "blinks_per_min": "11-15 measured on delivered segments",
+  "head_rms_px": 0.42,
+  "head_rms_note": "Below the prior v2 (2.08) and well below the approved demo (6.16). KNOWN LIMITATION: base2 was generated from the locked prompt, which asks her to hold still. Fixing this needs a new base generated with a movement-positive prompt (lips still closed), ~$0.50 per draw plus a segment regeneration."
+ },
+ "cost_usd": 0.1231,
+ "sha256": "87b2e730b09920f5d32b62cf5eaf1e2f590037ceec8c307c289ff64877d03da7",
+ "date": "2026-08-20",
  "revision": {
-  "version": 2,
-  "date": "2026-08-19",
-  "supersedes": "public/media/claims-01-av1-v1-superseded/fb-3a.mp4",
-  "supersedes_sha256": "e49b3a6f4004987f711867428cd9e0bc2fb18f7c62706e4a4a81934d8e9a9220",
-  "reason": "Blink cadence. The 5.04 s motion base contains four blinks (47.6/min); pingpong-looping it delivered 48.9 blinks/min on a 10.0 s repeat, with half of them played backwards on the reverse leg. Corrected by re-ordering the APPROVED base frames into a 99.62 s driving base - 13.3 blinks/min, irregular, none reversed.",
-  "unchanged": [
-   "narration script",
-   "TTS voice and settings",
-   "audio masters",
-   "presenter identity and appearance",
-   "batching",
-   "seed",
-   "split offsets",
-   "segment durations and frame counts",
-   "player and lesson code"
-  ],
-  "regenerated": [
-   "lip-sync video only"
+  "version": 4,
+  "supersedes": "public/media/claims-01-av1-v3-demo-driven-superseded/fb-3a.mp4",
+  "supersedes_sha256": "6ab3063fcc5c0f5711c51e8e3f0b1642a24ce54e90fc350fb406e60bcf568d9c",
+  "reason": "v3 drove LatentSync from the approved demo's own footage, in which Diane is already speaking. Repainting a mouth over a moving mouth inverted the mouth/face sharpness to 1.10 and left her jaw following the demo's words - rejected on review. v4 drives from a purpose-made clip in which her lips are closed, which restores a clean mouth and returns delivery to native 1920x1080.",
+  "chain": [
+   "v1 -> v2: blink cadence",
+   "v2 -> v3: demo-driven performance (REJECTED)",
+   "v3 -> v4: purpose-made non-speaking base"
   ]
  }
 }

@@ -1,0 +1,452 @@
+{
+  "asset": "presenter-2-curtis-whitfield-driving-base.mp4",
+  "status": "PRODUCTION DRIVING BASE - Curtis Whitfield. v2, extended to clear the documented ~120 s batch ceiling. QA gate PASS, all rows. Not yet used downstream.",
+  "presenter": "Curtis Whitfield (Presenter 2)",
+  "purpose": "Reusable driving video for LatentSync. Derived from the QA-clean window of the take-2 motion base by RE-ORDERING its frames only. Built once; reused across Curtis's 32 courses and every application video he presents.",
+  "derived_from": {
+    "asset": "public/media/presenter-2-curtis-whitfield-motion-base-take2.mp4",
+    "sha256": "1a7740bbab8eb58566fb73dbaa78a024938f23e954fd3f3ed34e3f43988d1065",
+    "unchanged": "The take-2 motion base is untouched and verified byte-identical after this build.",
+    "chain": "approved reference presenter-2-curtis-whitfield-master.png (1672x941, sha256 c3226a91..., byte-identical throughout) -> KIE topaz/image-upscale 2x + ffmpeg conform -> presenter-2-curtis-whitfield-production-still-1920x1080.png (sha256 74e03fb4...) -> KIE kling/v2-1-pro take 2 -> this base."
+  },
+  "why": {
+    "defect": "Take 2 passed 11 of 12 QA rows. The one failure was confined to the head of the clip: Curtis's lips are parted with visible teeth from about frame 5 to frame 40 (0.17-1.63 s). From frame 41 to 121 the mouth is closed, the camera is locked at 1.000x, and every gate row passes.",
+    "fix": "Build the base out of the clean window only. No third generation was bought.",
+    "evidence": "public/media/presenter-2-curtis-whitfield-motion-base-take2.json"
+  },
+  "method": {
+    "cost": "$0.00 - ffmpeg only. No new generation, no Kling call, no TTS, no interpolation, no synthetic frames. Total paid spend on this asset across v1 and v2: $0.00.",
+    "pixels": "Every output frame is a copy of a decoded frame of take 2. Only the ORDER changes. No filtering, no colour work, no scaling, no upscale.",
+    "source_region": "Frames 41-121 ONLY - the QA-clean window. Frames 1-40 carry the open mouth and are discarded; the build asserts no frame below 41 can enter the sequence. 57 distinct frames are actually used, 53-109.",
+    "walk": "A CONTINUOUS walk along the source frame index, every step +-1, so no move contains a cut; a change of direction reads as the head settling. Wander legs are >=12 frames inside the blink-free range 60-101.",
+    "blinks": "Take 2 contains exactly TWO blinks inside the window - 54-59 and 102-107 - located by eye on a tracked eye crop of all 81 frames. Both are emitted by walking FORWARD only, and the two ALTERNATE, so the base never repeats one identical blink. Verified structurally: every traversal is a complete in-order run and none is entered backwards or across a join.",
+    "joins": "22 joins, one per blink - route B2: ...101 -> [102..107] -> tail in D -> JOIN -> C; route B1: ...60 -> JOIN -> 53 -> [54..59] -> 60 -> C. Both are 7-frame skips across a blink and both are the cheapest such pairs in the window.",
+    "no_photometric_correction": "Diane needed a per-frame multiplicative gain because Kling lifted her exposure ~9.5%. Across frames 41-121 here the total per-channel spread is 0.799/255 (~1.5%), BELOW the 1.103 RMS the source moves between two consecutive frames. Correcting it would rewrite every pixel to chase a difference smaller than the clip's own frame-to-frame noise. Left alone; every frame stays a bit-exact copy.",
+    "frame_plan": "public/media/presenter-2-curtis-whitfield-driving-base.seq",
+    "plan_json": "public/media/presenter-2-curtis-whitfield-driving-base.plan.json",
+    "build_script": "public/media/presenter-2-curtis-whitfield-driving-base.build.py",
+    "reproducible": "Fixed-seed LCG (20260820). Same script + same source = same .seq.",
+    "encode": "libx264 -preset slow -crf 12 -pix_fmt yuv420p -an -movflags +faststart (same settings as Diane's base)"
+  },
+  "delivery": {
+    "dims": "1920x1080",
+    "fps": "24/1",
+    "frames": 3410,
+    "dur_s": 142.083,
+    "audio": "none (silent driving video)"
+  },
+  "blink_schedule": {
+    "count": 30,
+    "rate_per_min": 12.67,
+    "onsets_s": [
+      2.542,
+      7.208,
+      9.208,
+      15.25,
+      18.667,
+      25.542,
+      27.542,
+      32.583,
+      40.667,
+      44.292,
+      46.292,
+      51.583,
+      56,
+      63.333,
+      66.167,
+      72.333,
+      76.083,
+      78.167,
+      83.583,
+      87.875,
+      94.458,
+      97.583,
+      102.5,
+      104.875,
+      112.458,
+      115.833,
+      122.167,
+      126.958,
+      128.958,
+      137.75
+    ],
+    "gaps_s": [
+      4.667,
+      2,
+      6.042,
+      3.417,
+      6.875,
+      2,
+      5.042,
+      8.083,
+      3.625,
+      2,
+      5.292,
+      4.417,
+      7.333,
+      2.833,
+      6.167,
+      3.75,
+      2.083,
+      5.417,
+      4.292,
+      6.583,
+      3.125,
+      4.917,
+      2.375,
+      7.583,
+      3.375,
+      6.333,
+      4.792,
+      2,
+      8.792
+    ],
+    "route_split": "15 traversals of blink one (54-59) and 15 of blink two (102-107), alternating, so no blink clip ever repeats back-to-back.",
+    "note": "Irregular by design. Gaps run 2.0-8.79 s. The 2.0 s floor is where a requested shorter gap could not be met because the blink cycle itself costs more frames.",
+    "source_rate_for_comparison": "Take 2 itself blinks at 35.7/min; take 1 and Diane's raw base both at 47.6/min. Diane's shipped driving base is 13.25/min."
+  },
+  "joins": {
+    "count": 30,
+    "detail": [
+      {
+        "out_frame": 68,
+        "src_from": 108,
+        "src_to": 101
+      },
+      {
+        "out_frame": 172,
+        "src_from": 60,
+        "src_to": 53
+      },
+      {
+        "out_frame": 229,
+        "src_from": 109,
+        "src_to": 101
+      },
+      {
+        "out_frame": 365,
+        "src_from": 60,
+        "src_to": 53
+      },
+      {
+        "out_frame": 455,
+        "src_from": 108,
+        "src_to": 84
+      },
+      {
+        "out_frame": 612,
+        "src_from": 60,
+        "src_to": 53
+      },
+      {
+        "out_frame": 669,
+        "src_from": 109,
+        "src_to": 101
+      },
+      {
+        "out_frame": 781,
+        "src_from": 60,
+        "src_to": 53
+      },
+      {
+        "out_frame": 983,
+        "src_from": 108,
+        "src_to": 84
+      },
+      {
+        "out_frame": 1062,
+        "src_from": 60,
+        "src_to": 53
+      },
+      {
+        "out_frame": 1119,
+        "src_from": 109,
+        "src_to": 101
+      },
+      {
+        "out_frame": 1237,
+        "src_from": 60,
+        "src_to": 53
+      },
+      {
+        "out_frame": 1351,
+        "src_from": 108,
+        "src_to": 101
+      },
+      {
+        "out_frame": 1519,
+        "src_from": 60,
+        "src_to": 53
+      },
+      {
+        "out_frame": 1596,
+        "src_from": 109,
+        "src_to": 84
+      },
+      {
+        "out_frame": 1735,
+        "src_from": 60,
+        "src_to": 53
+      },
+      {
+        "out_frame": 1833,
+        "src_from": 108,
+        "src_to": 101
+      },
+      {
+        "out_frame": 1875,
+        "src_from": 60,
+        "src_to": 53
+      },
+      {
+        "out_frame": 2014,
+        "src_from": 109,
+        "src_to": 101
+      },
+      {
+        "out_frame": 2108,
+        "src_from": 60,
+        "src_to": 53
+      },
+      {
+        "out_frame": 2274,
+        "src_from": 108,
+        "src_to": 84
+      },
+      {
+        "out_frame": 2341,
+        "src_from": 60,
+        "src_to": 53
+      },
+      {
+        "out_frame": 2468,
+        "src_from": 109,
+        "src_to": 101
+      },
+      {
+        "out_frame": 2516,
+        "src_from": 60,
+        "src_to": 53
+      },
+      {
+        "out_frame": 2706,
+        "src_from": 108,
+        "src_to": 84
+      },
+      {
+        "out_frame": 2779,
+        "src_from": 60,
+        "src_to": 53
+      },
+      {
+        "out_frame": 2940,
+        "src_from": 109,
+        "src_to": 101
+      },
+      {
+        "out_frame": 3046,
+        "src_from": 60,
+        "src_to": 53
+      },
+      {
+        "out_frame": 3102,
+        "src_from": 108,
+        "src_to": 84
+      },
+      {
+        "out_frame": 3305,
+        "src_from": 60,
+        "src_to": 53
+      }
+    ]
+  },
+  "sha256": "56428c51fea9719e20a9b865f7a10867dbb44e61d45d2f3283211a54a7fbc304",
+  "date": "2026-08-20",
+  "qa_gate": {
+    "verdict": "PASS - every row.",
+    "run_on": "The v2 base itself, decoded frame by frame (all 3410 frames), not on the plan. Same gate as v1.",
+    "rows": {
+      "container": "PASS - 1920x1080, 24/1 fps, 3410 frames, 142.083 s, h264 yuv420p.",
+      "audio": "PASS - no audio stream.",
+      "source_containment": "PASS - the build asserts min/max source frame inside 41-121; actual range used 53-109, 57 distinct frames - the identical set v1 used. No frame from the open-mouth head of take 2 can enter the sequence.",
+      "frame_fidelity": "PASS - PSNR against the exact re-ordered source pixels: average 53.79 dB (Y 52.72, U 57.27, V 56.36), per-frame minimum 51.34 dB across all 3410 frames. v1 measured 53.67 dB, Diane's base 55.64 dB. This also proves every output frame is the planned source frame.",
+      "mouth_closed": "PASS - the source set is unchanged from v1 and all 57 distinct frames were inspected by eye at 2x: lips together, no separation, no teeth, every one. Metric control (share of the mouth box above luma 150): take 2's OPEN frames 7-40 run 0.0141-0.0243; its CLOSED frames 41-121 run 0.0062-0.0162; v2's maximum over all 3410 frames is 0.012 - inside the closed distribution and below the open minimum. Mouth-box mean luma across the whole 142 s spans 58.38 to 59.8 /255.",
+      "camera_lock": "PASS - best-fit zoom against the base's own frame 1 is 1.000x at frames 853, 1705, 2557 and 3410, with ZERO residual improvement from any scale or offset. Background drift over the whole 142.1 s: wall screen 0.929, window 1.242, desk-left 1.252, desk-right 1.349 /255. Desk band 1.491.",
+      "continuity_and_joins": "PASS - ordinary frame-to-frame step RMS: median 1.189, p99 1.633, max 2.368. The 30 joins run 3.513-4.099 (median 3.71) - the same six join pairs v1 used, so the values are unchanged. Each join is about three ordinary steps delivered at once, inside the range the SOURCE covers in 3 to 4 frames (its own 3-frame motion reaches 4.101 RMS, its 4-frame motion 4.933). Confirmed by eye at output frames 3305-3306 in the NEW region: pose, expression and framing indistinguishable across the join.",
+      "blink_behaviour": "PASS - 30 blinks, 12.67/min, gaps 2.0-8.79 s, irregular. Audited straight off the delivered .seq: 15 complete in-order runs of 54-59 and 15 of 102-107, zero malformed runs, zero frames entering a blink travelling backwards, none across a join. Confirmed by eye on output frames 3300-3315: walk down, join at 3306, eyes close at src 54, shut through src 58, reopen at src 59.",
+      "identity_and_set": "PASS - no cuts, transitions, scene changes, added text, logos, graphics, overlays or extra people, because no new pixels exist. Whole-frame drift vs the base's own first frame: median 2.103, max 3.384 /255.",
+      "photometric_stability": "PASS - maximum channel shift across the whole base 0.552/255 (1.05%), channel-mean spread 0.631/255. No correction applied or needed.",
+      "loop_fit": "PASS - first-vs-last whole-frame gap 1.459/255 (v1 1.465, Diane 4.51). Relevant only if a call ever exceeds 142.083 s and pingpong triggers.",
+      "source_integrity": "PASS - after the build: take 2 sha256 1a7740bb... unchanged, take 1 REJECTED ed424307... unchanged, production still 74e03fb4... unchanged, approved master c3226a91... unchanged, and v1 ef9adbf1... unchanged under its superseded name."
+    },
+    "join_measurements": [
+      {
+        "out_frame": 68,
+        "step_rms": 3.52,
+        "src": "108->101"
+      },
+      {
+        "out_frame": 172,
+        "step_rms": 3.703,
+        "src": "60->53"
+      },
+      {
+        "out_frame": 229,
+        "step_rms": 3.789,
+        "src": "109->101"
+      },
+      {
+        "out_frame": 365,
+        "step_rms": 3.711,
+        "src": "60->53"
+      },
+      {
+        "out_frame": 455,
+        "step_rms": 4.053,
+        "src": "108->84"
+      },
+      {
+        "out_frame": 612,
+        "step_rms": 3.751,
+        "src": "60->53"
+      },
+      {
+        "out_frame": 669,
+        "step_rms": 3.831,
+        "src": "109->101"
+      },
+      {
+        "out_frame": 781,
+        "step_rms": 3.705,
+        "src": "60->53"
+      },
+      {
+        "out_frame": 983,
+        "step_rms": 4.07,
+        "src": "108->84"
+      },
+      {
+        "out_frame": 1062,
+        "step_rms": 3.703,
+        "src": "60->53"
+      },
+      {
+        "out_frame": 1119,
+        "step_rms": 3.786,
+        "src": "109->101"
+      },
+      {
+        "out_frame": 1237,
+        "step_rms": 3.708,
+        "src": "60->53"
+      },
+      {
+        "out_frame": 1351,
+        "step_rms": 3.567,
+        "src": "108->101"
+      },
+      {
+        "out_frame": 1519,
+        "step_rms": 3.707,
+        "src": "60->53"
+      },
+      {
+        "out_frame": 1596,
+        "step_rms": 4.099,
+        "src": "109->84"
+      },
+      {
+        "out_frame": 1735,
+        "step_rms": 3.708,
+        "src": "60->53"
+      },
+      {
+        "out_frame": 1833,
+        "step_rms": 3.513,
+        "src": "108->101"
+      },
+      {
+        "out_frame": 1875,
+        "step_rms": 3.699,
+        "src": "60->53"
+      },
+      {
+        "out_frame": 2014,
+        "step_rms": 3.769,
+        "src": "109->101"
+      },
+      {
+        "out_frame": 2108,
+        "step_rms": 3.706,
+        "src": "60->53"
+      },
+      {
+        "out_frame": 2274,
+        "step_rms": 4.051,
+        "src": "108->84"
+      },
+      {
+        "out_frame": 2341,
+        "step_rms": 3.703,
+        "src": "60->53"
+      },
+      {
+        "out_frame": 2468,
+        "step_rms": 3.765,
+        "src": "109->101"
+      },
+      {
+        "out_frame": 2516,
+        "step_rms": 3.745,
+        "src": "60->53"
+      },
+      {
+        "out_frame": 2706,
+        "step_rms": 4.051,
+        "src": "108->84"
+      },
+      {
+        "out_frame": 2779,
+        "step_rms": 3.706,
+        "src": "60->53"
+      },
+      {
+        "out_frame": 2940,
+        "step_rms": 3.766,
+        "src": "109->101"
+      },
+      {
+        "out_frame": 3046,
+        "step_rms": 3.699,
+        "src": "60->53"
+      },
+      {
+        "out_frame": 3102,
+        "step_rms": 4.054,
+        "src": "108->84"
+      },
+      {
+        "out_frame": 3305,
+        "step_rms": 3.708,
+        "src": "60->53"
+      }
+    ]
+  },
+  "supersedes": {
+    "asset": "public/media/presenter-2-curtis-whitfield-driving-base-v1-superseded.mp4",
+    "sha256": "ef9adbf106b37735504d8b99a9f6d6d03c49659e4db11197a640bea419f789db",
+    "why": "v1 was 101.917 s. The documented batching rule is \"batch per video, chunk at ~120 s\" (docs/COST_OPTIMIZATION_267.md 6.2), so a call at the ceiling would have exceeded the base and triggered loop_mode - the exact repeat-and-reverse behaviour this base exists to prevent. v1 was never used downstream.",
+    "relationship": "v2 is a strict EXTENSION, not a rebuild: same seed (20260820), same source frames, same two routes, same join pairs. The first 2378 frames (99.083 s) of v2 are byte-identical to v1, verified frame-for-frame against v1's .seq. Only the number of blink cycles changed - 22 to 30."
+  },
+  "length_rationale": {
+    "base_s": 142.083,
+    "documented_ceiling_s": 120,
+    "headroom": "18.4% above the ~120 s chunk ceiling. For comparison, Diane's base carries 17.0% headroom over her longest realized call (99.625 s vs 85.12 s).",
+    "why_it_matters": "The base must be longer than the longest single LatentSync call so loop_mode never triggers. That removes the repeating pattern and the reversed blinks structurally rather than statistically.",
+    "still_to_confirm": "Curtis's siu-01 batches do not exist yet - no lesson data, no audio, no batch table. When they are cut, confirm the longest single call stays under 142.083 s. If any call ever exceeds it, extend again by adding gaps to GAPS in the build script: $0.00, and the existing frames stay identical."
+  },
+  "before_first_production_use": {
+    "length_check": "SATISFIED against the documented ~120 s chunk ceiling with 18.4% headroom. Re-confirm once Curtis's actual siu-01 batches are cut.",
+    "unchanged_rules": "Locked pipeline rules are unaffected: LatentSync stays the engine, calls stay >=40 s, padding is computed at 25 fps, LatentSync's returned audio is discarded and the 24 kHz master remuxed, delivery conformed to exactly 1920x1080."
+  }
+}

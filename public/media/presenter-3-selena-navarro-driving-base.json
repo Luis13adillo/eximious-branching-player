@@ -1,0 +1,501 @@
+{
+ "asset": "public/media/presenter-3-selena-navarro-driving-base.mp4",
+ "status": "PRODUCTION DRIVING BASE - Selena Navarro. v1. QA gate PASS, all rows. Not yet used downstream.",
+ "presenter": "Selena Navarro (Presenter 3)",
+ "purpose": "Reusable driving video for LatentSync. Derived from the usable arc of her approved motion base by RE-ORDERING its frames only. Built once; reused across Selena's 42 courses and every application video she presents.",
+ "derived_from": {
+  "asset": "public/media/presenter-3-selena-navarro-motion-base.mp4",
+  "sha256": "6fd0f8576ef6857b4606942ef272161dcf968a37dde64b6923ea96d641d9dc7a",
+  "unchanged": "The approved motion base is untouched and verified byte-identical after this build.",
+  "chain": "approved reference presenter-3-selena-navarro-master.png (1672x941, sha256 fbbd1f22..., byte-identical throughout) -> production still presenter-3-selena-navarro-production-still-1920x1080.png (sha256 bbf914e2...) -> KIE kling/v2-1-pro take 3 + ffmpeg exposure correction -> this base."
+ },
+ "method": {
+  "cost": "$0.00 - ffmpeg only. No new generation, no Kling call, no TTS, no interpolation, no synthetic frames. No paid API was called at any point in this build or its QA.",
+  "pixels": "Every output frame is a copy of a decoded frame of the approved motion base. Only the ORDER changes. No filtering, no colour work, no scaling, no upscale.",
+  "source_region": "Frames 1-51 ONLY - the arc around the clip's re-enterable blink. All 51 frames of the window are used.",
+  "walk": "A CONTINUOUS walk along the source frame index, every step +-1, so no move contains a cut; a change of direction reads as the head settling. Wander legs are >=10 frames inside each pool.",
+  "structure": "The blink at 23-27 splits the window into two pools, L=[1,22] and U=[28,51], and the walk crosses between them ASYMMETRICALLY: L->U IS THE BLINK ITSELF, walked forward 22 -> 23,24,25,26,27 -> 28, needing no join at all; U->L is the one join, skipping backwards over the blink. Exactly one join per blink.",
+  "blinks": "The motion base contains exactly TWO blinks, located by eye on motion-TRACKED eye crops of all 121 frames - a fixed box measures the head drift (up to 21 px vertically) rather than the eyelid. Blink 1 is frames 23-27, blink 2 frames 52-56. Only blink 1 is used; see why_window_1_51.",
+  "joins": "31 joins, one per blink, cycling the four cheapest backward pairs over blink 1: 28->22 (3.317), 29->22 (3.686), 28->21 (4.128), 29->21 (4.154). Varied so the frames around a blink are never the same twice.",
+  "no_photometric_correction": "Take 3 was already exposure-corrected before acceptance (2.59% -> 0.12% peak). Across frames 1-51 the per-channel mean spread measures 0.23/255 (~0.24%), far below the 1.182 RMS the source moves between two consecutive frames inside the window. Correcting it would rewrite every pixel to chase a difference smaller than the clip's own frame-to-frame noise. Left alone; every output frame stays a bit-exact copy.",
+  "frame_plan": "public/media/presenter-3-selena-navarro-driving-base.seq",
+  "plan_json": "public/media/presenter-3-selena-navarro-driving-base.plan.json",
+  "build_script": "public/media/presenter-3-selena-navarro-driving-base.build.py",
+  "reproducible": "Fixed-seed LCG (20260820). Same script + same source = same .seq.",
+  "encode": "libx264 -preset slow -crf 12 -pix_fmt yuv420p -an -movflags +faststart (same settings as Diane's and Curtis's bases)"
+ },
+ "why_window_1_51": {
+  "finding": "The motion base is two disconnected halves. Frames 51-80 carry a large head move (the head rises ~21 px and returns) and 81-121 settle out of it - the most movement in the clip - and blink 2 sits at its start. A blink may only ever be walked FORWARD, so reaching that half means joining back down across blink 2.",
+  "measured": "The cheapest upper->lower join anywhere in the clip is 62->51 at 10.975 whole-frame RMS. The source's own blink-free motion is 5 frames median 5.340 / max 10.721 and 6 frames median 5.886 / max 11.586 - so that join is a SIX-frame jump, at the extreme tail of what the source ever does. It would read as a cut.",
+  "contrast": "Around blink 1 the head is calm and the same joins price at 3.317-4.154 - below the source's own 2-frame MAXIMUM inside the window (4.873). Each join is a smaller visual step than one the source already takes between two frames two apart.",
+  "second_benefit": "Frames 1-51 are also the expression-consistent half. The tracked lip-aperture proxy runs 75-85 there and 56-60 across frames 57-121 (the closed-lip smile relaxing to neutral, accepted as non-blocking in the motion base's own sidecar). Building inside one half means the delivered base never oscillates between the two expressions.",
+  "cost_of_the_choice": "51 of the clip's 121 frames are used. The larger head excursion in frames 51-121 is not reachable without a visible cut and is therefore not used. Recorded as a deliberate, measured decision - not an oversight.",
+  "if_more_movement_is_ever_wanted": "It needs a new motion base generated with a movement-positive prompt that still keeps the lips closed AND places a blink inside the moving passage (~$0.25-0.50 a draw, a new approval under locked pipeline rule 7). Nothing in this build forecloses that; this base would simply be rebuilt for $0.00 from the new take."
+ },
+ "delivery": {
+  "dims": "1920x1080",
+  "fps": "24/1",
+  "frames": 3442,
+  "dur_s": 143.417,
+  "audio": "none (silent driving video)",
+  "bytes": 155982091,
+  "sha256": "2b879a228e440643aa4f2e810c0a4df6df415286ad12667c287b1c232ebfb9c3"
+ },
+ "blink_schedule": {
+  "count": 31,
+  "rate_per_min": 12.97,
+  "onsets_s": [
+   2.5,
+   7.583,
+   9.167,
+   15.875,
+   19.167,
+   24.0,
+   32.25,
+   34.958,
+   36.5,
+   42.083,
+   46.0,
+   53.125,
+   55.333,
+   61.667,
+   66.167,
+   68.125,
+   73.917,
+   77.333,
+   85.917,
+   88.542,
+   92.667,
+   99.583,
+   101.333,
+   106.625,
+   110.333,
+   117.75,
+   120.667,
+   126.792,
+   131.25,
+   133.25,
+   139.167
+  ],
+  "gaps_s": [
+   5.083,
+   1.583,
+   6.708,
+   3.292,
+   4.833,
+   8.25,
+   2.708,
+   1.542,
+   5.583,
+   3.917,
+   7.125,
+   2.208,
+   6.333,
+   4.5,
+   1.958,
+   5.792,
+   3.417,
+   8.583,
+   2.625,
+   4.125,
+   6.917,
+   1.75,
+   5.292,
+   3.708,
+   7.417,
+   2.917,
+   6.125,
+   4.458,
+   2.0,
+   5.917
+  ],
+  "gap_range_s": [
+   1.542,
+   8.583
+  ],
+  "note": "Irregular by design, with clustered doubles. All 31 traversals are the same blink (frames 23-27) - the clip's only re-enterable one. Diane's shipped base does the same with her single blink; Curtis's alternates two because take 2 had two usable ones.",
+  "source_rate_for_comparison": "The motion base itself blinks at 23.8/min (2 blinks in 5.04 s). Diane's shipped driving base is 13.25/min, her delivered v4 segments 11-15/min, and Curtis's production driving base 12.67/min - the last of which is also below the 13/min floor and was accepted.",
+  "rate_assessment": "12.97/min against the established 13-20/min target - ACCEPTED as a documented non-blocking tolerance, not a numeric pass. See qa_gate.accepted_tolerances.blink_rate."
+ },
+ "joins": {
+  "count": 31,
+  "min": 3.317,
+  "median": 3.686,
+  "max": 4.154,
+  "detail": [
+   {
+    "out_frame": 43,
+    "src_from": 28,
+    "src_to": 22
+   },
+   {
+    "out_frame": 137,
+    "src_from": 29,
+    "src_to": 22
+   },
+   {
+    "out_frame": 212,
+    "src_from": 28,
+    "src_to": 21
+   },
+   {
+    "out_frame": 315,
+    "src_from": 29,
+    "src_to": 21
+   },
+   {
+    "out_frame": 437,
+    "src_from": 28,
+    "src_to": 22
+   },
+   {
+    "out_frame": 545,
+    "src_from": 29,
+    "src_to": 22
+   },
+   {
+    "out_frame": 696,
+    "src_from": 28,
+    "src_to": 21
+   },
+   {
+    "out_frame": 819,
+    "src_from": 29,
+    "src_to": 21
+   },
+   {
+    "out_frame": 865,
+    "src_from": 28,
+    "src_to": 22
+   },
+   {
+    "out_frame": 961,
+    "src_from": 29,
+    "src_to": 22
+   },
+   {
+    "out_frame": 1082,
+    "src_from": 28,
+    "src_to": 21
+   },
+   {
+    "out_frame": 1205,
+    "src_from": 29,
+    "src_to": 21
+   },
+   {
+    "out_frame": 1313,
+    "src_from": 28,
+    "src_to": 22
+   },
+   {
+    "out_frame": 1439,
+    "src_from": 29,
+    "src_to": 22
+   },
+   {
+    "out_frame": 1548,
+    "src_from": 28,
+    "src_to": 21
+   },
+   {
+    "out_frame": 1621,
+    "src_from": 29,
+    "src_to": 21
+   },
+   {
+    "out_frame": 1733,
+    "src_from": 28,
+    "src_to": 22
+   },
+   {
+    "out_frame": 1827,
+    "src_from": 29,
+    "src_to": 22
+   },
+   {
+    "out_frame": 2012,
+    "src_from": 28,
+    "src_to": 21
+   },
+   {
+    "out_frame": 2101,
+    "src_from": 29,
+    "src_to": 21
+   },
+   {
+    "out_frame": 2193,
+    "src_from": 28,
+    "src_to": 22
+   },
+   {
+    "out_frame": 2345,
+    "src_from": 29,
+    "src_to": 22
+   },
+   {
+    "out_frame": 2416,
+    "src_from": 28,
+    "src_to": 21
+   },
+   {
+    "out_frame": 2517,
+    "src_from": 29,
+    "src_to": 21
+   },
+   {
+    "out_frame": 2623,
+    "src_from": 28,
+    "src_to": 22
+   },
+   {
+    "out_frame": 2761,
+    "src_from": 29,
+    "src_to": 22
+   },
+   {
+    "out_frame": 2880,
+    "src_from": 28,
+    "src_to": 21
+   },
+   {
+    "out_frame": 2983,
+    "src_from": 29,
+    "src_to": 21
+   },
+   {
+    "out_frame": 3117,
+    "src_from": 28,
+    "src_to": 22
+   },
+   {
+    "out_frame": 3187,
+    "src_from": 29,
+    "src_to": 22
+   },
+   {
+    "out_frame": 3286,
+    "src_from": 28,
+    "src_to": 21
+   }
+  ],
+  "measurements": [
+   {
+    "out_frame": 43,
+    "src": "28->22",
+    "step_rms": 3.317
+   },
+   {
+    "out_frame": 137,
+    "src": "29->22",
+    "step_rms": 3.686
+   },
+   {
+    "out_frame": 212,
+    "src": "28->21",
+    "step_rms": 4.128
+   },
+   {
+    "out_frame": 315,
+    "src": "29->21",
+    "step_rms": 4.154
+   },
+   {
+    "out_frame": 437,
+    "src": "28->22",
+    "step_rms": 3.317
+   },
+   {
+    "out_frame": 545,
+    "src": "29->22",
+    "step_rms": 3.686
+   },
+   {
+    "out_frame": 696,
+    "src": "28->21",
+    "step_rms": 4.128
+   },
+   {
+    "out_frame": 819,
+    "src": "29->21",
+    "step_rms": 4.154
+   },
+   {
+    "out_frame": 865,
+    "src": "28->22",
+    "step_rms": 3.317
+   },
+   {
+    "out_frame": 961,
+    "src": "29->22",
+    "step_rms": 3.686
+   },
+   {
+    "out_frame": 1082,
+    "src": "28->21",
+    "step_rms": 4.128
+   },
+   {
+    "out_frame": 1205,
+    "src": "29->21",
+    "step_rms": 4.154
+   },
+   {
+    "out_frame": 1313,
+    "src": "28->22",
+    "step_rms": 3.317
+   },
+   {
+    "out_frame": 1439,
+    "src": "29->22",
+    "step_rms": 3.686
+   },
+   {
+    "out_frame": 1548,
+    "src": "28->21",
+    "step_rms": 4.128
+   },
+   {
+    "out_frame": 1621,
+    "src": "29->21",
+    "step_rms": 4.154
+   },
+   {
+    "out_frame": 1733,
+    "src": "28->22",
+    "step_rms": 3.317
+   },
+   {
+    "out_frame": 1827,
+    "src": "29->22",
+    "step_rms": 3.686
+   },
+   {
+    "out_frame": 2012,
+    "src": "28->21",
+    "step_rms": 4.128
+   },
+   {
+    "out_frame": 2101,
+    "src": "29->21",
+    "step_rms": 4.154
+   },
+   {
+    "out_frame": 2193,
+    "src": "28->22",
+    "step_rms": 3.317
+   },
+   {
+    "out_frame": 2345,
+    "src": "29->22",
+    "step_rms": 3.686
+   },
+   {
+    "out_frame": 2416,
+    "src": "28->21",
+    "step_rms": 4.128
+   },
+   {
+    "out_frame": 2517,
+    "src": "29->21",
+    "step_rms": 4.154
+   },
+   {
+    "out_frame": 2623,
+    "src": "28->22",
+    "step_rms": 3.317
+   },
+   {
+    "out_frame": 2761,
+    "src": "29->22",
+    "step_rms": 3.686
+   },
+   {
+    "out_frame": 2880,
+    "src": "28->21",
+    "step_rms": 4.128
+   },
+   {
+    "out_frame": 2983,
+    "src": "29->21",
+    "step_rms": 4.154
+   },
+   {
+    "out_frame": 3117,
+    "src": "28->22",
+    "step_rms": 3.317
+   },
+   {
+    "out_frame": 3187,
+    "src": "29->22",
+    "step_rms": 3.686
+   },
+   {
+    "out_frame": 3286,
+    "src": "28->21",
+    "step_rms": 4.128
+   }
+  ]
+ },
+ "qa_gate": {
+  "verdict": "PASS. Blink INTEGRITY and every other row pass outright. The blink RATE is recorded as a documented non-blocking tolerance, not as a literal numeric pass - see rows.blink_validity and accepted_tolerances.blink_rate.",
+  "run_on": "The delivered file. Frame fidelity and order were proven on ALL 3442 delivered frames by per-frame PSNR against the exact planned frames; per-frame metrics are then computed on the source frames indexed by the delivered .seq, and cross-checked directly on 238 + 244 decoded delivered frames (joins, blinks, camera lock, photometrics, an unbiased 122-pair step sample).",
+  "rows": {
+   "container": "PASS - 1920x1080, 24/1 fps, 3442 frames, 143.417 s, h264 yuv420p.",
+   "audio": "PASS - no audio stream at all.",
+   "source_containment": "PASS - the build asserts min/max source frame inside 1-51; actual range used 1..51, all 51 distinct frames. No frame from the disconnected upper half can enter the sequence.",
+   "frame_fidelity": "PASS - PSNR against the exact re-ordered source pixels across ALL 3442 frames: mean 52.97 dB (Y 52.16), per-frame minimum 49.65 dB. Curtis measured 53.79 dB, Diane 55.64 dB. This also proves every output frame is the planned source frame.",
+   "camera_lock": "PASS - best-fit zoom against delivered frame 1 is 1.000x at output frames 821, 1681, 2519 and 3442, measured on a PRESENTER-FREE region (0,40,840,860). A 2D registration search +/-24 px on the wall/logo region returns dx=0, dy=0 at all four, with no offset improving the fit. Background drift over the whole 143.4 s across five presenter-free regions: wall/logo 2.610, desk 2.248, shelf 2.802, art 3.030, window/city 3.186 /255 max. The motion base's own camera-lock row measured 4.009 mean / 4.436 max, so the base sits below its source's generative noise floor.",
+   "lips_sealed": "PASS - tracked lip-aperture floor across every delivered frame is 75.1/255 (median 80.25, max 85.63). The gate threshold is ~48 and an exposed oral cavity reads under 30, so the floor clears it by 27 points. Confirmed by eye on a tracked mouth contact sheet: lips together, no separation, no teeth, in all 51 distinct frames. Unlike Curtis there was no open-mouth defect to design around - all 121 source frames are sealed.",
+   "natural_head_face_motion": "PASS - tracked head position across the delivered base spans dx -2..+1 and dy 0..+8 px, RMS 1.60 px about the mean. Delivered face-region consecutive motion: mean 2.590, max 7.442 /255, against the source's OWN consecutive face motion inside the window of mean 3.701, max 11.573 - i.e. always within, never exceeding, the motion the source itself makes. For context, Diane's shipped v4 base carries a known limitation of 0.42 px head RMS; this base moves 3.8x that. 206 legs, median 14 frames (0.58 s), mean 16.6, max 45; direction changes average one per 19.8 frames (0.82 s).",
+   "blink_validity": "PASS on integrity; rate accepted on tolerance. INTEGRITY - PASS outright: 31 complete in-order forward runs of source frames 23-27, ZERO reversed blinks, ZERO blinks entered across a join, ZERO orphaned or partial blink frames, and no join lands on a blink frame. Audited straight off the delivered .seq and confirmed by eye on decoded delivered frames 58-68: open, open, open, closing, shut, shut, opening, open, open, open, open. RATE - 31 blinks / 143.417 s = 12.97 blinks/min, gaps 1.542-8.583 s, irregular. The established target is 13-20/min (docs/VIDEO_1_GENERATION_CONFIGS.md, 'Base QA gate'). 12.97 is 0.03/min under the floor - it rounds to 13 and is 0.23% below it. ACCEPTED as a documented non-blocking tolerance, NOT scored as a literal numeric 13-20 pass. See accepted_tolerances.blink_rate for the basis.",
+   "continuity_and_joins": "PASS - zero non-continuous steps outside the 31 declared joins across all 3441 transitions. Ordinary step RMS: median 0.889, p99 2.913, max 2.976 - the max is exactly the source's own 1-frame maximum inside the window, as it must be, since every ordinary step IS a source step. The 31 joins run 3.317-4.154 (median 3.686), which sits between the window's own 2-frame median (1.851) and 3-frame median (2.498) and BELOW its 2-frame maximum (4.873). Verified by eye at 2x on the cheapest and the most expensive join: both read as continuous motion, not as a cut.",
+   "photometric_stability": "PASS - across decoded delivered frames the channel-mean spread is R 0.242, G 0.134, B 0.268 /255 and the maximum channel shift is 0.386%. No correction applied or needed.",
+   "loop_fit": "PASS - first-vs-last whole-frame gap 1.575 /255 measured on the delivered file (Curtis 1.459, Diane 4.51). Relevant only if a single call ever exceeds 143.417 s and pingpong triggers - which the length rationale below is designed to prevent.",
+   "source_integrity": "PASS - after the build, re-checksummed: motion base 6fd0f857... unchanged, take 3 corrected 6fd0f857... unchanged, take 3 raw 0f690852... unchanged, production still bbf914e2... unchanged, approved master fbbd1f22... unchanged. Take 1, take 2 REJECTED and the selected voice master were also re-checksummed and are unchanged."
+  },
+  "direct_verification": {
+   "unbiased_step_sample": "122 consecutive delivered pairs spread evenly across the base: delivered median 0.835 / max 2.982 against planned median 0.849 / max 2.976, max per-pair difference 0.219 (h264 noise).",
+   "joins_on_delivered": "All 31 joins measured directly on decoded delivered frames: 3.294-4.154, median 3.703. Maximum difference from the planned value 0.0235.",
+   "note": "An earlier pass measured camera lock on a probe region that included the presenter and a 'shelf' region overlapping her hair; both were re-cut presenter-free before the figures above were taken. The contaminated readings measured her head movement, not the camera."
+  },
+  "accepted_minor": {
+   "row": "Two direction changes are 3-frame legs",
+   "where": "output frames 213 (src 21->18) and 1263 (src 16->13)",
+   "measured": "3 frames = 0.125 s each, out of 206 legs (1.0%). Each covers 3 frames of source travel, inside the source's own 3-frame motion (window median 2.498, max 6.377).",
+   "status": "ACCEPTED - these are the leftover-slack micro-legs the min_leg logic minimises but cannot always eliminate. At 0.125 s they are not perceptible, and every frame in them is still a source frame reached by +-1 steps."
+  },
+  "accepted_tolerances": {
+   "blink_rate": {
+    "row": "Blink rate 12.97/min against a 13-20/min target",
+    "measured": "31 blinks / 143.417 s = 12.97 blinks/min; gaps 1.542-8.583 s, irregular.",
+    "target": "13-20/min, irregular - docs/VIDEO_1_GENERATION_CONFIGS.md, 'Base QA gate - free, ffmpeg, before ANY lip-sync spend'.",
+    "shortfall": "0.03 blinks/min below the floor; 0.23%. Rounds to 13/min at the precision the target is stated in.",
+    "status": "ACCEPTED - documented non-blocking tolerance. This is deliberately NOT recorded as a numeric 13-20 PASS.",
+    "basis": [
+     "The shortfall is inside the rounding of the target as written. One additional blink would put the base at 13.39/min; one fewer at 12.55/min - the schedule cannot be tuned finer than ~0.42/min at this length, so 12.97 is the closest attainable value at or below 13.",
+     "PRECEDENT: both shipped predecessors sit in the same place and were accepted. Curtis's production driving base is 12.67/min and Diane's delivered claims-01 v4 measures 12.9/min (11-15/min per segment). Diane's earlier shipped base was 13.3/min.",
+     "The failure mode this target exists to catch is the opposite one: the first Diane base shipped at 47.6/min and had to be rebuilt. A rate marginally under the floor is not that defect.",
+     "Blink integrity - the part that is structurally verifiable - passes outright and is unaffected.",
+     "The gate as written is the MOTION-base gate, applied to a generated take where the rate is whatever the model produced. On a driving base the rate is a free parameter set by the build schedule, so this is a tuning value, not a property of an accepted generation."
+    ],
+    "how_to_change_it_if_ever_required": "Add one gap to GAPS in the build script and re-run: $0.00, no generation, no new approval. The existing frames stay identical and every other measured row is unaffected. Not done here - it was not judged worth reissuing a QA-passed asset over 0.03 blinks/min.",
+    "ruled_on": "Recorded 2026-08-20 at Luis's direction. Non-blocking; not an open QA item."
+   }
+  }
+ },
+ "length_rationale": {
+  "base_s": 143.417,
+  "documented_ceiling_s": 120,
+  "headroom": "19.5% above the ~120 s chunk ceiling in docs/COST_OPTIMIZATION_267.md 6.2. Curtis's base carries 18.4%.",
+  "why_it_matters": "The base must be longer than the longest single LatentSync call so loop_mode never triggers. That removes the repeating pattern and the reversed blinks structurally rather than statistically.",
+  "ew_01_context": "ew-01's 25 narration masters total 694.056 s and the longest single segment is rejoin-2a at 51.000 s - 2.81x inside this base. The batch table has NOT been cut yet; confirm the longest realized call stays under 143.417 s when it is. If any call ever exceeds it, extend by adding gaps to GAPS in the build script: $0.00, and the existing frames stay identical.",
+  "extensible": "Same seed, same source frames, same routes - an extension is strictly additive, as Curtis's v1->v2 was."
+ },
+ "date": "2026-08-20",
+ "before_first_production_use": {
+  "length_check": "SATISFIED against the documented ~120 s ceiling with 19.5% headroom. Re-confirm once ew-01's actual batches are cut.",
+  "unchanged_rules": "Locked pipeline rules are unaffected: LatentSync stays the engine, calls stay >=40 s, padding is computed AT 25 FPS (this base is 24 fps, like Diane's and Curtis's), LatentSync's returned audio is discarded and the 24 kHz master remuxed, delivery conformed to exactly 1920x1080.",
+  "not_done_here": "No exhibits, no batch table, no LatentSync call, nothing paid, nothing committed."
+ }
+}

@@ -1,6 +1,8 @@
 import type { Lesson, LessonSummary } from "@/lib/branching/types";
 import { validateLesson } from "@/lib/branching/engine";
 import { claimsInvestigationApplication1 } from "./claims-investigation-application-1";
+import { ew01Av1 } from "./ew-01-av1";
+import { siu01Av1 } from "./siu-01-av1";
 import { waterDamageClaim } from "./water-damage-claim";
 
 /**
@@ -15,7 +17,12 @@ import { waterDamageClaim } from "./water-damage-claim";
  * key them the same way; the player only depends on the `Lesson` shape, not on
  * where the data comes from.
  */
-const allLessons: Lesson[] = [claimsInvestigationApplication1, waterDamageClaim];
+const allLessons: Lesson[] = [
+  claimsInvestigationApplication1,
+  siu01Av1,
+  ew01Av1,
+  waterDamageClaim,
+];
 
 /**
  * Validate every lesson graph as the registry loads. Because this module is

@@ -227,7 +227,14 @@ export type SummaryIconName =
   | "issue"
   | "burden"
   | "standard"
-  | "evidence";
+  | "evidence"
+  // Any other name renders the neutral marker rather than throwing — that is
+  // already what `summaryIcon()` does, and this makes the type say so. A video
+  // whose four categories fall outside the claims vocabulary (ew-01's scoped
+  // engagement: speed, angle, sequence, occupant) is then authored as DATA
+  // instead of forcing either a mislabelled icon or a template fork. The union
+  // stays first so the registered names keep autocompleting.
+  | (string & {});
 
 export interface SummaryCardItem {
   icon: SummaryIconName;

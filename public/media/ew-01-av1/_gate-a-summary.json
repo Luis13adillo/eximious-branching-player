@@ -1,0 +1,584 @@
+{
+  "lesson": "ew-01-av1",
+  "presenter": "Selena Navarro (Presenter 3)",
+  "model": "gpt-4o-mini-tts-2025-12-15",
+  "voice": "sage",
+  "date": "2026-08-21T00:00:00.000Z",
+  "reconstructed": "Rebuilt on 2026-08-21 from the 25 approved audio sidecars, which carry every figure below. scripts/tts-narration.mjs writes this file at the end of a synthesis run; Selena's run predates that step, so the file was missing while claims-01 and siu-01 had theirs. No audio was re-synthesised and no master was touched - verified by sha256 against every sidecar after measuring.",
+  "segments": 25,
+  "characters": 9881,
+  "characters_synthesised": 9881,
+  "spend_usd": 0.0059,
+  "spend_this_run_usd": 0,
+  "spend_note": "TEXT-IN ONLY. gpt-4o-mini-tts bills $0.60 / 1M text-in characters AND $12.00 / 1M audio-out tokens; the script's cost model (scripts/tts-narration.mjs PRICE) counts only characters, and its own entry says so. Curtis and Diane are on tts-1-hd, which is billed per character alone, so their spend_usd is complete and Selena's is not. The audio-out portion was never metered at the time and is NOT recoverable from these files - read the OpenAI billing record for the true figure. It does not change any decision: even at a generous estimate the whole of Gate A sits far inside the catalog budget.",
+  "measured_total_s": 694.056,
+  "measured_chars_per_sec": 14.24,
+  "gate_b": {
+    "loudness": "25/25",
+    "true_peak": "25/25",
+    "format": "25/25",
+    "flat": "25/25",
+    "no_trunc": "19/25",
+    "pause": "22/25",
+    "f0": "14/25",
+    "duration": "13/25"
+  },
+  "gate_b_note": "These are the AUDIO rows, scored as scripts/tts-narration.mjs first wrote them - the same field name and the same eight rows as siu-01's summary, so the two are directly comparable. The 'duration' row measures a chars/sec model, not the audio; every segment that fails it passes the corrected duration test (within 3 SD of the corpus) recorded per-segment as qa_corrected. Do not confuse this field with the ASR script-fidelity check, which this repo also calls Gate B and which is recorded per-segment as asr_adjudications.",
+  "gate_b_corrected": {
+    "loudness": "25/25",
+    "true_peak": "25/25",
+    "format": "25/25",
+    "flat": "25/25",
+    "fidelity": "25/25",
+    "no_trunc_v4": "25/25",
+    "no_nonboundary_pause_over_0_9s": "25/25",
+    "f0_onset_ge_0_75_body": "25/25",
+    "duration_within_3sd": "25/25"
+  },
+  "asr_fidelity": {
+    "status": "COMPLETE",
+    "coverage": "25/25 segments carry an ASR adjudication record",
+    "adjudications": [
+      {
+        "id": "assignment-2",
+        "note": "invented proper nouns ('Halloway', 'Ferrin Haulage') spelled Whisper's way"
+      },
+      {
+        "id": "assignment-2",
+        "note": "'end terminal' heard as 'and terminal' at sentence level; the ISOLATED window reads 'Rail end terminal and rolled.' - byte-identical to the correct-text control, and unlike the 'and terminal' control. The audio is correct."
+      },
+      {
+        "id": "fb-1c",
+        "note": "an inserted \"We'll\" at the script's em-dash; the isolated window contains no such word and a fresh control of the clause does not produce it"
+      },
+      {
+        "id": "fb-3a",
+        "note": "\"plaintiff's firms\" tokenised as 'plaintiffs firm'"
+      },
+      {
+        "id": "intro",
+        "note": "'if it stuck' heard as \"if it's stuck\" - control renders identically"
+      },
+      {
+        "id": "rejoin-2b",
+        "note": "'lapsed' heard as 'lapse'; the correct-text control transcribes as 'Elapsed certification' too - Whisper merges the article and cannot separate the two readings"
+      },
+      {
+        "id": "rejoin-3",
+        "note": "'from' heard as 'for'; the transcript reads correctly in context"
+      },
+      {
+        "id": "resolution-1",
+        "note": "'restraint evidence' heard as 'restrained', 'boundary' as 'boundaries'; both are full-sentence smoothing, correct on the isolated window"
+      }
+    ],
+    "estimated_whisper_cost_usd": 0.0694,
+    "note": "Every segment was read back by ASR with word timestamps at synthesis time (see each sidecar's synthesis.method), and mismatches were adjudicated rather than ignored. claims-01 and siu-01 carry NO equivalent record - this pilot is ahead of them on this check, not behind."
+  },
+  "gate_a": {
+    "status": "PASS",
+    "per_segment": "25/25 PASS"
+  },
+  "segments_detail": [
+    {
+      "id": "assignment-1",
+      "chars": 291,
+      "duration_s": 19.656,
+      "lufs": -24.5,
+      "speech_lufs": -24.58,
+      "true_peak": -6.1,
+      "f0_body_hz": 177.8,
+      "qa": {
+        "loudness": true,
+        "true_peak": true,
+        "format": true,
+        "flat": true,
+        "no_trunc": true,
+        "pause": true,
+        "f0": true,
+        "fidelity": true,
+        "duration": true
+      }
+    },
+    {
+      "id": "assignment-2",
+      "chars": 340,
+      "duration_s": 26.856,
+      "lufs": -24.5,
+      "speech_lufs": -24.56,
+      "true_peak": -3.8,
+      "f0_body_hz": 181.8,
+      "qa": {
+        "loudness": true,
+        "true_peak": true,
+        "format": true,
+        "flat": true,
+        "no_trunc": true,
+        "pause": true,
+        "f0": false,
+        "fidelity": true,
+        "duration": false
+      }
+    },
+    {
+      "id": "assignment-3",
+      "chars": 47,
+      "duration_s": 3.6,
+      "lufs": -24.5,
+      "speech_lufs": -24.79,
+      "true_peak": -7.1,
+      "f0_body_hz": 181.8,
+      "qa": {
+        "loudness": true,
+        "true_peak": true,
+        "format": true,
+        "flat": true,
+        "no_trunc": false,
+        "pause": true,
+        "f0": true,
+        "fidelity": true,
+        "duration": false
+      }
+    },
+    {
+      "id": "assignment-4",
+      "chars": 14,
+      "duration_s": 2.4,
+      "lufs": -24.5,
+      "speech_lufs": -24.53,
+      "true_peak": -5.4,
+      "f0_body_hz": 160,
+      "qa": {
+        "loudness": true,
+        "true_peak": true,
+        "format": true,
+        "flat": true,
+        "no_trunc": true,
+        "pause": true,
+        "f0": false,
+        "fidelity": true,
+        "duration": false
+      }
+    },
+    {
+      "id": "decision-1",
+      "chars": 16,
+      "duration_s": 1.704,
+      "lufs": -24.5,
+      "speech_lufs": -24.85,
+      "true_peak": -7.9,
+      "f0_body_hz": 177.8,
+      "qa": {
+        "loudness": true,
+        "true_peak": true,
+        "format": true,
+        "flat": true,
+        "no_trunc": true,
+        "pause": true,
+        "f0": true,
+        "fidelity": true,
+        "duration": false
+      }
+    },
+    {
+      "id": "decision-2",
+      "chars": 154,
+      "duration_s": 11.352,
+      "lufs": -24.5,
+      "speech_lufs": -24.7,
+      "true_peak": -5.8,
+      "f0_body_hz": 177.8,
+      "qa": {
+        "loudness": true,
+        "true_peak": true,
+        "format": true,
+        "flat": true,
+        "no_trunc": true,
+        "pause": true,
+        "f0": true,
+        "fidelity": true,
+        "duration": true
+      }
+    },
+    {
+      "id": "decision-3",
+      "chars": 98,
+      "duration_s": 7.2,
+      "lufs": -24.5,
+      "speech_lufs": -24.73,
+      "true_peak": -7.8,
+      "f0_body_hz": 160,
+      "qa": {
+        "loudness": true,
+        "true_peak": true,
+        "format": true,
+        "flat": true,
+        "no_trunc": true,
+        "pause": true,
+        "f0": false,
+        "fidelity": true,
+        "duration": true
+      }
+    },
+    {
+      "id": "fb-1a",
+      "chars": 506,
+      "duration_s": 33.264,
+      "lufs": -24.5,
+      "speech_lufs": -24.51,
+      "true_peak": -4.9,
+      "f0_body_hz": 186,
+      "qa": {
+        "loudness": true,
+        "true_peak": true,
+        "format": true,
+        "flat": true,
+        "no_trunc": false,
+        "pause": false,
+        "f0": false,
+        "fidelity": true,
+        "duration": false
+      }
+    },
+    {
+      "id": "fb-1c",
+      "chars": 583,
+      "duration_s": 40.8,
+      "lufs": -24.5,
+      "speech_lufs": -24.59,
+      "true_peak": -4.9,
+      "f0_body_hz": 173.9,
+      "qa": {
+        "loudness": true,
+        "true_peak": true,
+        "format": true,
+        "flat": true,
+        "no_trunc": true,
+        "pause": true,
+        "f0": true,
+        "fidelity": true,
+        "duration": true
+      }
+    },
+    {
+      "id": "fb-1d",
+      "chars": 440,
+      "duration_s": 32.112,
+      "lufs": -24.5,
+      "speech_lufs": -24.64,
+      "true_peak": -5.6,
+      "f0_body_hz": 177.8,
+      "qa": {
+        "loudness": true,
+        "true_peak": true,
+        "format": true,
+        "flat": true,
+        "no_trunc": true,
+        "pause": true,
+        "f0": true,
+        "fidelity": true,
+        "duration": true
+      }
+    },
+    {
+      "id": "fb-2a",
+      "chars": 666,
+      "duration_s": 45.312,
+      "lufs": -24.5,
+      "speech_lufs": -24.62,
+      "true_peak": -4.2,
+      "f0_body_hz": 181.8,
+      "qa": {
+        "loudness": true,
+        "true_peak": true,
+        "format": true,
+        "flat": true,
+        "no_trunc": true,
+        "pause": false,
+        "f0": true,
+        "fidelity": true,
+        "duration": true
+      }
+    },
+    {
+      "id": "fb-2c",
+      "chars": 523,
+      "duration_s": 32.52,
+      "lufs": -24.5,
+      "speech_lufs": -24.65,
+      "true_peak": -5.5,
+      "f0_body_hz": 190.5,
+      "qa": {
+        "loudness": true,
+        "true_peak": true,
+        "format": true,
+        "flat": true,
+        "no_trunc": true,
+        "pause": true,
+        "f0": false,
+        "fidelity": true,
+        "duration": false
+      }
+    },
+    {
+      "id": "fb-2d",
+      "chars": 476,
+      "duration_s": 31.008,
+      "lufs": -24.5,
+      "speech_lufs": -24.56,
+      "true_peak": -5.2,
+      "f0_body_hz": 181.8,
+      "qa": {
+        "loudness": true,
+        "true_peak": true,
+        "format": true,
+        "flat": true,
+        "no_trunc": false,
+        "pause": true,
+        "f0": true,
+        "fidelity": true,
+        "duration": false
+      }
+    },
+    {
+      "id": "fb-3a",
+      "chars": 572,
+      "duration_s": 42,
+      "lufs": -24.5,
+      "speech_lufs": -24.57,
+      "true_peak": -5.9,
+      "f0_body_hz": 190.5,
+      "qa": {
+        "loudness": true,
+        "true_peak": true,
+        "format": true,
+        "flat": true,
+        "no_trunc": false,
+        "pause": true,
+        "f0": true,
+        "fidelity": true,
+        "duration": true
+      }
+    },
+    {
+      "id": "fb-3c",
+      "chars": 520,
+      "duration_s": 33.216,
+      "lufs": -24.5,
+      "speech_lufs": -24.54,
+      "true_peak": -4.8,
+      "f0_body_hz": 181.8,
+      "qa": {
+        "loudness": true,
+        "true_peak": true,
+        "format": true,
+        "flat": true,
+        "no_trunc": false,
+        "pause": true,
+        "f0": false,
+        "fidelity": true,
+        "duration": false
+      }
+    },
+    {
+      "id": "fb-3d",
+      "chars": 403,
+      "duration_s": 28.968,
+      "lufs": -24.5,
+      "speech_lufs": -24.54,
+      "true_peak": -5.2,
+      "f0_body_hz": 177.8,
+      "qa": {
+        "loudness": true,
+        "true_peak": true,
+        "format": true,
+        "flat": true,
+        "no_trunc": true,
+        "pause": false,
+        "f0": true,
+        "fidelity": true,
+        "duration": true
+      }
+    },
+    {
+      "id": "intro",
+      "chars": 152,
+      "duration_s": 11.808,
+      "lufs": -24.5,
+      "speech_lufs": -24.71,
+      "true_peak": -6.6,
+      "f0_body_hz": 177.8,
+      "qa": {
+        "loudness": true,
+        "true_peak": true,
+        "format": true,
+        "flat": true,
+        "no_trunc": true,
+        "pause": true,
+        "f0": true,
+        "fidelity": true,
+        "duration": false
+      }
+    },
+    {
+      "id": "rejoin-1a",
+      "chars": 702,
+      "duration_s": 50.16,
+      "lufs": -24.5,
+      "speech_lufs": -24.5,
+      "true_peak": -3.2,
+      "f0_body_hz": 163.3,
+      "qa": {
+        "loudness": true,
+        "true_peak": true,
+        "format": true,
+        "flat": true,
+        "no_trunc": true,
+        "pause": true,
+        "f0": false,
+        "fidelity": true,
+        "duration": true
+      }
+    },
+    {
+      "id": "rejoin-1b",
+      "chars": 289,
+      "duration_s": 23.52,
+      "lufs": -24.5,
+      "speech_lufs": -24.56,
+      "true_peak": -6,
+      "f0_body_hz": 160,
+      "qa": {
+        "loudness": true,
+        "true_peak": true,
+        "format": true,
+        "flat": true,
+        "no_trunc": true,
+        "pause": true,
+        "f0": false,
+        "fidelity": true,
+        "duration": false
+      }
+    },
+    {
+      "id": "rejoin-2a",
+      "chars": 757,
+      "duration_s": 51,
+      "lufs": -24.5,
+      "speech_lufs": -24.61,
+      "true_peak": -4.1,
+      "f0_body_hz": 173.9,
+      "qa": {
+        "loudness": true,
+        "true_peak": true,
+        "format": true,
+        "flat": true,
+        "no_trunc": true,
+        "pause": true,
+        "f0": false,
+        "fidelity": true,
+        "duration": true
+      }
+    },
+    {
+      "id": "rejoin-2b",
+      "chars": 323,
+      "duration_s": 25.416,
+      "lufs": -24.5,
+      "speech_lufs": -24.53,
+      "true_peak": -4.7,
+      "f0_body_hz": 177.8,
+      "qa": {
+        "loudness": true,
+        "true_peak": true,
+        "format": true,
+        "flat": true,
+        "no_trunc": false,
+        "pause": true,
+        "f0": true,
+        "fidelity": true,
+        "duration": false
+      }
+    },
+    {
+      "id": "rejoin-3",
+      "chars": 720,
+      "duration_s": 50.448,
+      "lufs": -24.5,
+      "speech_lufs": -24.62,
+      "true_peak": -4.2,
+      "f0_body_hz": 186,
+      "qa": {
+        "loudness": true,
+        "true_peak": true,
+        "format": true,
+        "flat": true,
+        "no_trunc": true,
+        "pause": true,
+        "f0": false,
+        "fidelity": true,
+        "duration": true
+      }
+    },
+    {
+      "id": "resolution-1",
+      "chars": 407,
+      "duration_s": 26.52,
+      "lufs": -24.5,
+      "speech_lufs": -24.71,
+      "true_peak": -6,
+      "f0_body_hz": 181.8,
+      "qa": {
+        "loudness": true,
+        "true_peak": true,
+        "format": true,
+        "flat": true,
+        "no_trunc": true,
+        "pause": true,
+        "f0": true,
+        "fidelity": true,
+        "duration": false
+      }
+    },
+    {
+      "id": "resolution-2",
+      "chars": 402,
+      "duration_s": 27.864,
+      "lufs": -24.5,
+      "speech_lufs": -24.67,
+      "true_peak": -4.6,
+      "f0_body_hz": 181.8,
+      "qa": {
+        "loudness": true,
+        "true_peak": true,
+        "format": true,
+        "flat": true,
+        "no_trunc": true,
+        "pause": true,
+        "f0": false,
+        "fidelity": true,
+        "duration": true
+      }
+    },
+    {
+      "id": "resolution-3",
+      "chars": 480,
+      "duration_s": 35.352,
+      "lufs": -24.5,
+      "speech_lufs": -24.72,
+      "true_peak": -7.1,
+      "f0_body_hz": 177.8,
+      "qa": {
+        "loudness": true,
+        "true_peak": true,
+        "format": true,
+        "flat": true,
+        "no_trunc": true,
+        "pause": true,
+        "f0": true,
+        "fidelity": true,
+        "duration": true
+      }
+    }
+  ]
+}

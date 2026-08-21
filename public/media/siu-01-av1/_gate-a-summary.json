@@ -1,0 +1,422 @@
+{
+  "lesson": "siu-01-av1",
+  "presenter": "Curtis Whitfield (Presenter 2)",
+  "model": "tts-1-hd",
+  "voice": "onyx",
+  "date": "2026-08-20T23:59:32.479Z",
+  "segments": 22,
+  "characters": 9325,
+  "characters_synthesised": 0,
+  "spend_usd": 0.2797,
+  "spend_this_run_usd": 0,
+  "measured_total_s": 586.872,
+  "measured_chars_per_sec": 15.89,
+  "gate_b": {
+    "loudness": "22/22",
+    "true_peak": "22/22",
+    "format": "22/22",
+    "flat": "22/22",
+    "no_trunc": "22/22",
+    "pause": "18/22",
+    "f0": "22/22",
+    "duration": "19/22"
+  },
+  "segments_detail": [
+    {
+      "id": "intro",
+      "chars": 143,
+      "duration_s": 8.256,
+      "lufs": -24.5,
+      "speech_lufs": -24.73,
+      "true_peak": -8.6,
+      "qa": {
+        "loudness": true,
+        "true_peak": true,
+        "format": true,
+        "flat": true,
+        "no_trunc": true,
+        "pause": true,
+        "f0": true,
+        "duration": false
+      }
+    },
+    {
+      "id": "assignment-1",
+      "chars": 494,
+      "duration_s": 38.256,
+      "lufs": -24.5,
+      "speech_lufs": -24.54,
+      "true_peak": -5.4,
+      "qa": {
+        "loudness": true,
+        "true_peak": true,
+        "format": true,
+        "flat": true,
+        "no_trunc": true,
+        "pause": true,
+        "f0": true,
+        "duration": false
+      }
+    },
+    {
+      "id": "assignment-2",
+      "chars": 373,
+      "duration_s": 23.496,
+      "lufs": -24.5,
+      "speech_lufs": -24.63,
+      "true_peak": -6.3,
+      "qa": {
+        "loudness": true,
+        "true_peak": true,
+        "format": true,
+        "flat": true,
+        "no_trunc": true,
+        "pause": true,
+        "f0": true,
+        "duration": true
+      }
+    },
+    {
+      "id": "decision-1",
+      "chars": 42,
+      "duration_s": 2.52,
+      "lufs": -24.5,
+      "speech_lufs": -24.69,
+      "true_peak": -9.4,
+      "qa": {
+        "loudness": true,
+        "true_peak": true,
+        "format": true,
+        "flat": true,
+        "no_trunc": true,
+        "pause": true,
+        "f0": true,
+        "duration": true
+      }
+    },
+    {
+      "id": "fb-1a",
+      "chars": 627,
+      "duration_s": 39.216,
+      "lufs": -24.5,
+      "speech_lufs": -24.54,
+      "true_peak": -5.8,
+      "qa": {
+        "loudness": true,
+        "true_peak": true,
+        "format": true,
+        "flat": true,
+        "no_trunc": true,
+        "pause": true,
+        "f0": true,
+        "duration": true
+      }
+    },
+    {
+      "id": "fb-1c",
+      "chars": 540,
+      "duration_s": 34.392,
+      "lufs": -24.5,
+      "speech_lufs": -24.59,
+      "true_peak": -6,
+      "qa": {
+        "loudness": true,
+        "true_peak": true,
+        "format": true,
+        "flat": true,
+        "no_trunc": true,
+        "pause": true,
+        "f0": true,
+        "duration": true
+      }
+    },
+    {
+      "id": "fb-1d",
+      "chars": 542,
+      "duration_s": 32.88,
+      "lufs": -24.5,
+      "speech_lufs": -24.54,
+      "true_peak": -5.4,
+      "qa": {
+        "loudness": true,
+        "true_peak": true,
+        "format": true,
+        "flat": true,
+        "no_trunc": true,
+        "pause": true,
+        "f0": true,
+        "duration": true
+      }
+    },
+    {
+      "id": "rejoin-1",
+      "chars": 752,
+      "duration_s": 46.488,
+      "lufs": -24.5,
+      "speech_lufs": -24.63,
+      "true_peak": -6.2,
+      "qa": {
+        "loudness": true,
+        "true_peak": true,
+        "format": true,
+        "flat": true,
+        "no_trunc": true,
+        "pause": false,
+        "f0": true,
+        "duration": true
+      }
+    },
+    {
+      "id": "decision-2",
+      "chars": 233,
+      "duration_s": 14.784,
+      "lufs": -24.5,
+      "speech_lufs": -24.72,
+      "true_peak": -6.7,
+      "qa": {
+        "loudness": true,
+        "true_peak": true,
+        "format": true,
+        "flat": true,
+        "no_trunc": true,
+        "pause": true,
+        "f0": true,
+        "duration": true
+      }
+    },
+    {
+      "id": "fb-2a",
+      "chars": 498,
+      "duration_s": 31.8,
+      "lufs": -24.5,
+      "speech_lufs": -24.59,
+      "true_peak": -3.2,
+      "qa": {
+        "loudness": true,
+        "true_peak": true,
+        "format": true,
+        "flat": true,
+        "no_trunc": true,
+        "pause": true,
+        "f0": true,
+        "duration": true
+      }
+    },
+    {
+      "id": "fb-2b",
+      "chars": 412,
+      "duration_s": 25.776,
+      "lufs": -24.5,
+      "speech_lufs": -24.64,
+      "true_peak": -7,
+      "qa": {
+        "loudness": true,
+        "true_peak": true,
+        "format": true,
+        "flat": true,
+        "no_trunc": true,
+        "pause": true,
+        "f0": true,
+        "duration": true
+      }
+    },
+    {
+      "id": "fb-2d",
+      "chars": 497,
+      "duration_s": 30.6,
+      "lufs": -24.5,
+      "speech_lufs": -24.66,
+      "true_peak": -5.9,
+      "qa": {
+        "loudness": true,
+        "true_peak": true,
+        "format": true,
+        "flat": true,
+        "no_trunc": true,
+        "pause": true,
+        "f0": true,
+        "duration": true
+      }
+    },
+    {
+      "id": "rejoin-2",
+      "chars": 961,
+      "duration_s": 59.232,
+      "lufs": -24.5,
+      "speech_lufs": -24.63,
+      "true_peak": -5,
+      "qa": {
+        "loudness": true,
+        "true_peak": true,
+        "format": true,
+        "flat": true,
+        "no_trunc": true,
+        "pause": false,
+        "f0": true,
+        "duration": true
+      }
+    },
+    {
+      "id": "decision-3",
+      "chars": 128,
+      "duration_s": 7.944,
+      "lufs": -24.5,
+      "speech_lufs": -24.68,
+      "true_peak": -6.6,
+      "qa": {
+        "loudness": true,
+        "true_peak": true,
+        "format": true,
+        "flat": true,
+        "no_trunc": true,
+        "pause": true,
+        "f0": true,
+        "duration": true
+      }
+    },
+    {
+      "id": "fb-3a",
+      "chars": 568,
+      "duration_s": 35.568,
+      "lufs": -24.5,
+      "speech_lufs": -24.53,
+      "true_peak": -6.1,
+      "qa": {
+        "loudness": true,
+        "true_peak": true,
+        "format": true,
+        "flat": true,
+        "no_trunc": true,
+        "pause": false,
+        "f0": true,
+        "duration": true
+      }
+    },
+    {
+      "id": "fb-3c",
+      "chars": 515,
+      "duration_s": 32.016,
+      "lufs": -24.5,
+      "speech_lufs": -24.61,
+      "true_peak": -5.6,
+      "qa": {
+        "loudness": true,
+        "true_peak": true,
+        "format": true,
+        "flat": true,
+        "no_trunc": true,
+        "pause": true,
+        "f0": true,
+        "duration": true
+      }
+    },
+    {
+      "id": "fb-3d",
+      "chars": 538,
+      "duration_s": 33.432,
+      "lufs": -24.5,
+      "speech_lufs": -24.51,
+      "true_peak": -4.7,
+      "qa": {
+        "loudness": true,
+        "true_peak": true,
+        "format": true,
+        "flat": true,
+        "no_trunc": true,
+        "pause": false,
+        "f0": true,
+        "duration": true
+      }
+    },
+    {
+      "id": "rejoin-3",
+      "chars": 444,
+      "duration_s": 27.336,
+      "lufs": -24.5,
+      "speech_lufs": -24.57,
+      "true_peak": -5.6,
+      "qa": {
+        "loudness": true,
+        "true_peak": true,
+        "format": true,
+        "flat": true,
+        "no_trunc": true,
+        "pause": true,
+        "f0": true,
+        "duration": true
+      }
+    },
+    {
+      "id": "resolution-1",
+      "chars": 302,
+      "duration_s": 18.672,
+      "lufs": -24.5,
+      "speech_lufs": -24.68,
+      "true_peak": -6.3,
+      "qa": {
+        "loudness": true,
+        "true_peak": true,
+        "format": true,
+        "flat": true,
+        "no_trunc": true,
+        "pause": true,
+        "f0": true,
+        "duration": true
+      }
+    },
+    {
+      "id": "resolution-2",
+      "chars": 308,
+      "duration_s": 19.008,
+      "lufs": -24.5,
+      "speech_lufs": -24.53,
+      "true_peak": -6.6,
+      "qa": {
+        "loudness": true,
+        "true_peak": true,
+        "format": true,
+        "flat": true,
+        "no_trunc": true,
+        "pause": true,
+        "f0": true,
+        "duration": true
+      }
+    },
+    {
+      "id": "resolution-3",
+      "chars": 45,
+      "duration_s": 2.544,
+      "lufs": -24.5,
+      "speech_lufs": -24.88,
+      "true_peak": -7.6,
+      "qa": {
+        "loudness": true,
+        "true_peak": true,
+        "format": true,
+        "flat": true,
+        "no_trunc": true,
+        "pause": true,
+        "f0": true,
+        "duration": false
+      }
+    },
+    {
+      "id": "resolution-4",
+      "chars": 363,
+      "duration_s": 22.656,
+      "lufs": -24.5,
+      "speech_lufs": -24.5,
+      "true_peak": -5.8,
+      "qa": {
+        "loudness": true,
+        "true_peak": true,
+        "format": true,
+        "flat": true,
+        "no_trunc": true,
+        "pause": true,
+        "f0": true,
+        "duration": true
+      }
+    }
+  ]
+}

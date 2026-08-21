@@ -1,0 +1,69 @@
+{
+  "asset": "intro.mp3",
+  "lesson": "siu-01-av1",
+  "presenter": "Curtis Whitfield (Presenter 2)",
+  "provider": "OpenAI",
+  "endpoint": "POST https://api.openai.com/v1/audio/speech",
+  "model": "tts-1-hd",
+  "voice": "onyx",
+  "speed": 1,
+  "response_format": "mp3",
+  "instructions": null,
+  "note": "tts-1-hd takes no `instructions` parameter; that belongs to Selena's locked config only.",
+  "script_chars": 143,
+  "script_sha256": "fd9389706bea6b482a5d69fc97bfac77241a16025801cb1d08f34d3af2f1787c",
+  "mastering": "single calibrated encode from raw; linear gain only (ffmpeg volume=NdB); no compression, no limiting",
+  "mastering_detail": {
+    "i_raw": -24.6,
+    "gain_db": 0.5,
+    "calibration_passes": [
+      {
+        "gain_db": 0.1,
+        "measured": -24.9
+      },
+      {
+        "gain_db": 0.5,
+        "measured": -24.5
+      }
+    ]
+  },
+  "audio": {
+    "lufs_integrated": -24.5,
+    "lra": 7.8,
+    "true_peak_dbfs": -8.6,
+    "speech_lufs": -24.73,
+    "sample_rate": 24000,
+    "channels": 1,
+    "bit_rate": 128000,
+    "duration_s": 8.256
+  },
+  "f0": {
+    "onset_hz": 91.3,
+    "body_hz": 100.4,
+    "voiced_frames": 585
+  },
+  "qa": {
+    "loudness": true,
+    "true_peak": true,
+    "format": true,
+    "flat": true,
+    "no_trunc": true,
+    "pause": true,
+    "f0": true,
+    "duration": false
+  },
+  "sha256": "f7fe60a262c3903e86add9e0590752086e24c7ced81192a7eca23c7f86d9d695",
+  "date": "2026-08-20",
+  "qa_detail": {
+    "pauses": [],
+    "estimated_s": 8.805,
+    "duration_delta_pct": -6.2,
+    "truncation": {
+      "ok": true,
+      "tailRatio": 0.00049,
+      "falling": true
+    },
+    "f0_onset_ratio": 0.909,
+    "momentary_frames": 82
+  }
+}

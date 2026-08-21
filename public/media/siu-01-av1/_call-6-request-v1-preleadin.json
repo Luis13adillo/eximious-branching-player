@@ -1,0 +1,37 @@
+{
+  "lesson": "siu-01-av1",
+  "call": 6,
+  "request_id": "01a021be-5da7-7333-b6ff-a49788d562cb",
+  "status_url": "https://queue.fal.run/fal-ai/latentsync/requests/01a021be-5da7-7333-b6ff-a49788d562cb/status",
+  "response_url": "https://queue.fal.run/fal-ai/latentsync/requests/01a021be-5da7-7333-b6ff-a49788d562cb",
+  "payload": {
+    "video_url": "[temporary fal input, 24 h]",
+    "audio_url": "[temporary fal input, 24 h]",
+    "loop_mode": "pingpong",
+    "seed": 20260820,
+    "guidance_scale": 1
+  },
+  "input_expiry": {
+    "audio": "2026-08-22T00:35:08.400Z",
+    "video": "2026-08-22T00:35:18.693Z"
+  },
+  "submitted_utc": "2026-08-21T00:35:19.110Z",
+  "projected_cost_usd": 0.465,
+  "completed_utc": "2026-08-21T00:45:08.703Z",
+  "returned": {
+    "frames": 2320,
+    "duration_s": 92.8,
+    "dims": "1920x1080",
+    "fps": "25/1",
+    "audio": {
+      "codec": "aac",
+      "sample_rate": 16000,
+      "channels": 1,
+      "bit_rate": 58857
+    },
+    "sha256": "217b9fe7caacc062ab4d85a71c0dc4e8fe0fed8c2d5e89fefbaacd0123dea901"
+  },
+  "actual_cost_usd": 0.464,
+  "lead_in_s": 0,
+  "rule_note": "Submitted under the pre-lead-in batching rule. The canary's finding - rejoin-3's open-mouth first frame - is what introduced the 0.640 s silent lead-in on 2026-08-20. This request is the evidence for that change, and the four 0.5 s inter-segment gaps in its own audio are the measurement the lead-in length was chosen from."
+}

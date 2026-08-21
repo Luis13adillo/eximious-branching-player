@@ -409,13 +409,16 @@ export function LessonPlayer({
           <AiDisclosure started={clock.started} />
         </div>
 
-        {/* interaction area */}
+        {/* interaction area — the gold panel frame is the approved case-panel
+            treatment for the whole catalog: one border here, so every scene
+            (context, assignment, decision, feedback, rejoin, quiz, summary)
+            and every presenter's lesson carries it without a per-lesson edit. */}
         <section
           key={current.id}
           ref={panelRef}
           tabIndex={-1}
           aria-label="Lesson interaction"
-          className="rounded-2xl border border-white/10 bg-navy-900/40 p-5 outline-none [outline-offset:-3px] sm:p-6 lg:h-full lg:min-h-0 lg:flex-1 lg:min-w-0 lg:overflow-y-auto"
+          className="rounded-2xl border border-gold-500/70 bg-navy-900/40 p-5 outline-none [outline-offset:-3px] sm:p-6 lg:h-full lg:min-h-0 lg:flex-1 lg:min-w-0 lg:overflow-y-auto"
         >
           {/* Center the interaction + tracker as one group so short scenes
               don't leave a dead band between them. */}

@@ -90,3 +90,28 @@ public/media/presenter-*-voice-v[0-9].json
 #
 # Also NOT matched, and must stay tracked: presenter-1-diane-* motion-base /
 # driving-base / production-still .json .seq .filter .build.py provenance sidecars.
+
+# ---------------------------------------------------------------------------
+# Per-video DELIVERABLES produced by export-thinkific/assemble.mjs and
+# scripts/package-source.mjs. Both scripts rmSync and rebuild these on every run,
+# so they are reproducible from tracked source + tracked media. Together they are
+# ~2.7 GB; committing them would bloat the repo permanently for no gain.
+EA_*_AV[0-9]/
+EA_*_AV[0-9].zip
+EA_*_AV[0-9]_source/
+EA_*_AV[0-9]_source.zip
+# Legacy/superseded package names (the exact-name rules above predate these).
+eximious-*-thinkific-html5*.zip
+
+# Superseded delivered media, kept on disk as an archive of what a revision
+# replaced. The delivered set that ships is public/media/<lesson>/ only.
+public/media/*-superseded/
+public/media/*-v[0-9]-superseded/
+
+# Production INTERMEDIATES — motion bases, driving bases and their raw takes.
+# They are inputs to the lip-sync pipeline, never served by the player, and the
+# Curtis (109.6 MB) and Selena (156.0 MB) driving bases both exceed GitHub's
+# 100 MB hard file limit, so a push carrying them is rejected outright.
+# Their small .json/.seq/.filter/.build.py provenance sidecars stay tracked.
+public/media/presenter-*-driving-base*.mp4
+public/media/presenter-*-motion-base*.mp4

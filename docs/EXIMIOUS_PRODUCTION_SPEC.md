@@ -18,7 +18,7 @@ _Last updated from the authoritative sources below. Where this document and the 
 
 **Color roles — LOCKED.**
 - **Sky blue `#7BAFD4` — secondary accent ONLY.** Uses: decision states, evidence / exhibit tabs, right / wrong feedback states, and comparable secondary interactive states where appropriate. Do **not** overuse; **never** a panel or background fill.
-- **Gold `#C7A254` — primary (actions + progress).** Uses: primary actions, CTA / button emphasis, and progress indicators — **including buttons, the current‑step indicator, and the scrubber**.
+- **Gold `#C7A254` — primary (actions + progress).** Uses: primary actions, CTA / button emphasis, and progress indicators — **including buttons, the current‑step indicator, and the scrubber**. **Extended 2026‑08‑21 (see ★ LOCKED — Case panel frame below): gold is also the frame of the case panel.**
 - **Off‑white `#F4F7FA` — text / readability ONLY.** **Not** a panel or background color.
 
 **Also CLIENT APPROVED / LOCKED (this round):**
@@ -120,6 +120,43 @@ inventory, the A ≠ B comparison, the process chain, retry reshuffle, the
 completion hand‑off, and all generated media. **No media is re‑rendered by this
 change** — it is player behavior only, which is exactly what locked pipeline
 rule 8 (nothing baked into the footage) exists to make possible.
+
+---
+
+### ★ LOCKED — Case panel frame: gold border on every scene
+
+**Locked 2026‑08‑21 by the project owner as the forward design for the whole
+catalog. This is a project-owner design lock, NOT a Roger-approved item — it is
+recorded here so no later session reverts it as an off-role use of gold.**
+
+**The rule.** The case panel — the interaction panel beside the video — carries a
+**gold `#C7A254` border** (`border-gold-500/70`) on **every scene**, in **every
+lesson**, for **all three presenters**. Not the opening scene only. The scenes it
+covers are the whole set: case application, assignment, decision, feedback,
+rejoin, resolution, graded quiz and completion summary. It applies on desktop and
+on the stacked mobile layout, and on both the `/lesson` and `/embed` routes.
+
+**Why it is a role extension, not a conflict.** The locked color roles above
+assign gold to actions and progress (buttons, current‑step indicator, scrubber)
+and reserve sky `#7BAFD4` for decision / evidence / feedback states. A panel
+frame is a **new** gold role, deliberately added: it gives the case panel a single
+consistent identity across the 12–14 steps of a video, and it is a border only —
+gold is still never a panel or background **fill**, and sky keeps every state it
+already owned.
+
+**Where it lives.** One line — the interaction `<section>` in
+`src/components/player/LessonPlayer.tsx`. Because that is the reusable template,
+the frame reaches all 267 videos without a per-lesson edit; there is no
+per-presenter or per-pilot styling to keep in sync.
+
+**Unchanged by this rule:** the video stage keeps its neutral `border-white/10`
+edge; the gold focus ring on the panel is unchanged (it lands inside the border on
+scene change and reads as a second, finer line); captions, controls, branching,
+the progress rail, the lower‑third, exhibits and the AI disclosure are all
+untouched. **No media is re‑rendered by this change** — it is player styling only,
+again by pipeline rule 8. The three delivered Thinkific packages were re-assembled
+so their `index.html` carries it; the media inside them was rebuilt by the same
+documented commands, and `public/media` was not touched (rule 6).
 
 ---
 

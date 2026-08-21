@@ -1,0 +1,78 @@
+{
+  "asset": "presenter-2-curtis-whitfield-production-still-1920x1080.png",
+  "presenter": "Curtis Whitfield (Presenter 2)",
+  "purpose": "Production-fit still. Sole input to Curtis's reusable Kling motion base. Not an approval record.",
+  "derived_from": {
+    "file": "public/media/presenter-2-curtis-whitfield-master.png",
+    "sha256": "c3226a91f610d9a99ae004f23b40d0b81fa07f38b5936778e846b47ab7534949",
+    "dimensions": "1672x941",
+    "status": "APPROVED appearance reference - below the 1920x1080 floor. Byte-identical, never modified."
+  },
+  "why_this_exists": "Spec F-1 / C-12a: the approved reference is 1672x941, below the A 1.4.1 / B 6 1080p floor, and is recorded as a pilot-render blocker. This file closes that gap for Curtis by upscaling to a NEW file. It does not supersede the approval record.",
+  "operation": {
+    "step_1_upscale": {
+      "provider": "KIE",
+      "endpoint": "POST https://api.kie.ai/api/v1/jobs/createTask",
+      "model": "topaz/image-upscale",
+      "why_this_model": "Precision/photo upscaler, non-generative. The documented route (docs/PRODUCTION_READINESS_COST_LOCK.md 1.4). A generative model would reinterpret identity, wardrobe, lighting and environment - the things Roger approved.",
+      "input": { "image_url": "<fal CDN temporary input, 24 h expiry, neutral filename>", "upscale_factor": "2" },
+      "taskId": "26265a3f552186025ab05816092a48b7",
+      "output_dimensions": "3344x1882",
+      "cost": { "credits": 10.0, "usd": 0.05 },
+      "cost_time_seconds": 77
+    },
+    "step_2_conform": {
+      "tool": "ffmpeg",
+      "filter": "crop=3344:1881:0:0,format=rgb48le,scale=1920:1080:flags=lanczos,format=rgb24",
+      "rows_removed": "1 row from the BOTTOM of the 2x image = 0.5 row of the approved image (0.053% of height), from the dark desk surface at the frame edge",
+      "why_2x_then_down": "3344x1881 is EXACTLY 16:9, so the crop is a single row and the downscale to 1920x1080 is a UNIFORM 0.574163x on both axes - zero aspect distortion. Going 1672->1920 directly lands at 1920x1081 and forces either an anisotropic scale or a full-resolution row crop. Downscaling from 2x also retains more real detail than a 1.148x enlargement.",
+      "bit_depth": "16-bit RGB intermediate (rgb48le); 8-bit output only at write",
+      "output_codec": "png (lossless), rgb24"
+    }
+  },
+  "verification": {
+    "output_dimensions": "1920x1080",
+    "output_sha256": "74e03fb473dbaf72d44e4406aef4a4383f67205615140c2972ba4552bea70027",
+    "source_sha256_after_operation": "c3226a91f610d9a99ae004f23b40d0b81fa07f38b5936778e846b47ab7534949",
+    "source_unchanged": true,
+    "measured_at_approval_resolution": {
+      "method": "new still resampled back to 1672x941 (lanczos) and differenced against the approved reference",
+      "whole_frame_mean_abs": "2.543/255",
+      "whole_frame_p99": "18/255",
+      "control_plain_lanczos_round_trip": "0.330/255 (what a pure resample costs; the difference is the detail Topaz reconstructed)",
+      "region_face": "2.957/255",
+      "region_beard_mouth": "3.744/255",
+      "region_wall_screen": "1.500/255",
+      "region_mug": "3.212/255",
+      "region_window": "2.669/255"
+    },
+    "registration": "best 2D fit over +/-6 px on the wall-screen block is dx=0, dy=0 - no shift, no crop, no reframing",
+    "colour": {
+      "approved_channel_means_rgb": [61.415, 55.362, 52.171],
+      "new_still_channel_means_rgb": [61.809, 55.763, 52.603],
+      "shift": "+0.39 / +0.40 / +0.43 out of 255 (~+0.7%) - no re-grade"
+    },
+    "detail_gain_at_1920x1080": {
+      "method": "laplacian variance vs a plain lanczos enlargement of the approved reference",
+      "whole_frame": "2.43x",
+      "beard_mouth_region": "2.75x",
+      "relevance": "Curtis carries the project's only mouth-specific softness watch item (-11.8 pp, beard). Real reconstructed detail in that region is exactly what that watch item needs."
+    },
+    "visual_inspection": "Face, beard, wardrobe, expression, environment and framing unchanged at 1:1. All in-scene lettering verified letter-for-letter against the reference: wall screen 'EXIMIOUS ACADEMY', mug 'EXIMIOUS ACADEMY', book spines 'LEADERSHIP EXCELLENCE' / 'CLAIMS LEADERSHIP' (the third spine's pre-existing garbled lettering is reproduced garbled in the same way - proof the text was sharpened, not regenerated)."
+  },
+  "conflict_flagged": {
+    "what": "Fit decision - pad vs crop.",
+    "source_a": "docs/PRODUCTION_READINESS_COST_LOCK.md 1.4 recommends PAD, not crop, and calls for one line of sign-off.",
+    "source_b": "public/media/presenter-1-diane-marchetti-production-still-1920x1080.json is the EXECUTED precedent and CROPPED (4 rows top + 4 bottom), recording that no separate Roger approval is required for a technical conform and that open item O-1 is CLOSED.",
+    "resolution": "Followed the executed Diane precedent (crop), at the smallest possible magnitude: 1 row of the 2x image = half a row of the approved image, taken from the dark desk edge. NOT silently reconciled - flagged here and in the run report for Luis. If the pad reading is preferred, this file is cheap to rebuild from the same Topaz output at $0.00.",
+    "note_on_padding": "Padding would insert a 1-row band of non-image pixels into an approved composition and carry it into all ~68 of Curtis's videos. Cropping half a row of desk surface does not."
+  },
+  "authority": "APPROVED INTERNALLY 2026-08-20 by Luis (contractor), on the same basis as Diane's conform: a technical production conform to the contractual 1920x1080 floor, not a change to Curtis's approved appearance. Permitted by locked rule 6 (derive to new files; approved masters stay byte-identical) and required by locked rule 5 (delivery exactly 1920x1080).",
+  "compliance": {
+    "locked_rule_5": "Delivery is exactly 1920x1080.",
+    "locked_rule_6": "Approved master stays byte-identical; derived artifact written to a new file. Verified by checksum before and after.",
+    "locked_rule_9": "No recasting or redesign. Non-generative upscaler only."
+  },
+  "date": "2026-08-20",
+  "status": "APPROVED - cleared for use as the sole input to Curtis's reusable motion base."
+}

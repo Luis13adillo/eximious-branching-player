@@ -1,0 +1,92 @@
+{
+  "asset": "presenter-3-selena-navarro-motion-base-take2-REJECTED.mp4",
+  "presenter": "Selena Navarro (Presenter 3)",
+  "status": "REJECTED - failed the base QA gate. Take 2. Continuous push-in. Do NOT use as the production base.",
+  "supersedes": null,
+  "superseded_by": null,
+  "provider": "KIE",
+  "endpoint": "POST https://api.kie.ai/api/v1/jobs/createTask",
+  "taskId": "c95d753769f47e6821fedf322f83d384",
+  "request": {
+    "model": "kling/v2-1-pro",
+    "input": {
+      "duration": "5",
+      "cfg_scale": 0.8,
+      "prompt": "A professional woman seated at her desk in a bright modern office, listening attentively. She is NOT speaking: lips closed throughout, no lip, mouth or jaw movement. Her eyes look directly into the camera lens the entire clip - no downward glance, side glance, gaze shift, eye wandering or half-lidded look. Only 1-2 brief blinks in the whole clip; eyes otherwise open and steady. A neutral attentive expression that never changes. Head, hair and facial motion at the minimum natural level - only faint breathing. No head turns, tilts, nodding, leaning or gestures. Hands stay as in the source image, loosely clasped and still on the desk. Camera locked and stationary: ZERO zoom, push-in, pull-out, pan, tilt, crop, reframing, perspective shift or drift. Facial expression, gaze, head position and framing at the LAST FRAME must match the FIRST FRAME exactly. Preserve her face, hair, wardrobe, skin tone, lighting, contrast, colour, the office and desk objects as shown; do not brighten, lift the shadows or re-grade. Lettering on the wall logo, mug and books unchanged. One continuous locked-off 5-second shot, no cuts.",
+      "negative_prompt": "gaze shift, looking down, looking away, eye wandering, head tilt, expression change, excessive facial motion, camera movement, zoom, push-in, pull-out, pan, tilt, reframing, crop, camera drift, perspective shift, speaking, talking, mouth opening, lip movement, gesturing, hand movement, leaning, cut, transition, face change, lighting change, brightening, re-grading, added text, watermark, distortion, warping, morphing"
+    }
+  },
+  "changes_vs_take1": {
+    "unchanged": "model, duration '5', cfg_scale 0.8, no seed, image_url, source still, provider - pipeline untouched per instruction",
+    "prompt": "Added eye-contact, bounded-blink, neutral-expression and minimum-motion instructions per Luis's brief.",
+    "negative_prompt": "Added the 7 terms Luis named: gaze shift, looking down, looking away, eye wandering, head tilt, expression change, excessive facial motion. To stay inside the 435-char envelope, dropped: scene change, wardrobe change, hairstyle change, room change, standing, added logos, overlays, extra people.",
+    "REGRESSION - the change that appears to have caused the failure": "To fit the new eye instructions inside the 1126-char prompt envelope, take 1's first/last-frame clause was rewritten from 'The framing, camera position, subject scale, desk visibility and background composition at the LAST FRAME must be visually identical to the FIRST FRAME' to 'Facial expression, gaze, head position and framing at the LAST FRAME must match the FIRST FRAME exactly'. That removed camera position, subject scale, desk visibility and background composition from the clause and replaced them with facial terms. That clause is precisely what Diane's take 2 added in order to FIX her take-1 push-in."
+  },
+  "source_still": {
+    "file": "public/media/presenter-3-selena-navarro-production-still-1920x1080.png",
+    "sha256": "bbf914e2ab370b6e09455042759e0982237610317a85abe7f51038d898a6e28e",
+    "note": "Identical still as take 1. Not regenerated."
+  },
+  "no_seed_parameter": "kling/v2-1-pro exposes no seed. This clip is NOT reproducible; it is the artifact of record. Preserve it.",
+  "raw_output": {
+    "file": "public/media/presenter-3-selena-navarro-motion-base-take2-REJECTED.mp4",
+    "sha256": "0fb6d36c5c234ade0843ea406cef80cfdad4fa355546958d5cf3a722fdf3e14f",
+    "width": 1920, "height": 1080, "fps": 24, "frames": 121, "duration_sec": 5.041667, "audio_streams": 0
+  },
+  "exposure_correction": {
+    "applied_and_committed": false,
+    "why_not": "Take 2's raw exposure drift is 13.66% peak / 3.52% mean (take 1 was 2.30 / 1.78), and it is TWO-SIDED: 22 of 121 frames are DARKER than frame 0, down to 1.84% below. Diane's locked correction only ever scales DOWN (all gains <= 1.0, so no highlight clipping is possible). Clamping a two-sided swing leaves residual - a trial correction landed at 1.78% peak, ten times worse than take 1's corrected 0.16%. Since the take is rejected on other grounds, no corrected version was produced for the repo.",
+    "note_for_future_takes": "If a future take shows a two-sided exposure swing, Diane's clamp-to-1.0 method is not sufficient on its own. This has not been an issue on any accepted take so far."
+  },
+  "qa_gate": {
+    "verdict": "FAIL - continuous push-in. Worse than take 1.",
+    "root_cause": "Kling applied a continuous push-in over the 5 s despite 'camera movement, zoom, push-in, pull-out, pan, tilt, reframing, crop, camera drift, perspective shift' ALL appearing in negative_prompt and 'The camera is locked and stationary: ZERO zoom, push-in...' in the positive prompt. By 5 s the desk, mug and notebook are out of frame. This is the identical failure that rejected Diane's take 1.",
+    "push_in_measured": {
+      "method": "frame 0 magnified and centre-cropped to best-match each later frame",
+      "1.25s": "1.00x (residual 5.28)",
+      "2.50s": "1.12x (residual 29.50)",
+      "3.75s": "1.29x (residual 42.99)",
+      "5.00s": "1.39x (residual 49.07)",
+      "profile": "monotonic and accelerating after ~1.25 s: whole-frame drift vs frame 0 runs 0.0, 4.4, 5.3, 22.5, 39.0, 51.3, 57.8, 61.2, 63.0 across the clip"
+    },
+    "rows": {
+      "Dimensions": "PASS - 1920x1080, 24 fps, 121 frames, 5.04 s",
+      "Audio": "PASS - no audio stream",
+      "Identity (frame 0)": "PASS - 2.802/255 vs the source still (take 1 2.73). Kling did not redesign her; the start frame is correct.",
+      "Camera lock": "FAIL - background region drift 49.49 mean / 93.20 max (take 1: 4.02 / 4.48)",
+      "Registration": "FAIL - 2D search saturated at the +/-12 px boundary (dx=12, dy=12, residual 90.71). The shift exceeds the search window.",
+      "Desk visibility": "FAIL - desk band drift 64.49 (take 1: 6.44). Desk, mug and notebook leave frame.",
+      "Loop seam / pingpong fit": "FAIL - first-vs-last gap 59.38 (take 1: 6.24). Unusable for pingpong.",
+      "Lettering": "FAIL - wall logo region drift 45.57 (take 1: 4.21), driven by the logo being magnified and pushed out of position.",
+      "Presenter motion": "FAIL as measured - face meanD 3.963 (take 1: 3.001). Inflated by the push-in; not independently meaningful.",
+      "Lips sealed": "PASS - aperture min 71.6/255, never near the 30 threshold. No speech baked in.",
+      "Blink / gaze": "NOT ASSESSABLE - eye signal above 8/255 on 25% of frame pairs vs take 1's 43%, and peak-to-mean ratio 3.22x vs 2.39x, both moving the right way. But every eye metric is contaminated by the push-in, so the gaze fix cannot be scored from this clip. Visual inspection at frames 81 and 121 shows her eyes on the lens with a neutral expression, which suggests the new eye instructions DID work."
+    }
+  },
+  "causation_note": "Two explanations are consistent with one sample. (1) The weakened first/last-frame clause - a specific, identifiable regression that maps exactly onto Diane's documented take-1 root cause. (2) Ordinary run-to-run variance: kling/v2-1-pro exposes no seed, take 1 held the camera with a very similar prompt, and nothing else changed. These cannot be separated without another run. The leading hypothesis is (1) because the removed wording is the exact wording that fixed the same failure for Diane.",
+  "credits": {
+    "before": 613.0,
+    "after": 1563.0,
+    "delta_unusable": true,
+    "why": "The account was topped up DURING this run, so the balance rose. The take-2 cost cannot be read from the delta.",
+    "established_price": "50 credits = $0.25 for kling/v2-1-pro at duration 5, measured cleanly on Selena take 1 (713 -> 663) and on Diane take 2 (1653 -> 1603).",
+    "unexplained_discrepancy": "Balance read 663 immediately after take 1 but 613 immediately before take 2, with no generation call in between. 50 credits are unaccounted for. Possibly delayed settlement of take 1 (which would make take 1 cost 100 credits / $0.50 rather than 50), possibly unrelated account activity. FLAGGED, not resolved - worth checking the KIE dashboard before the next run."
+  },
+  "recommendation": {
+    "verdict": "Reject. Re-run once with the take-1 camera clause restored ALONGSIDE the take-2 eye instructions.",
+    "key_insight": "Take 1 held the camera but let Selena perform. Take 2 fixed the performance but lost the camera. The two constraints were traded against each other only because both were squeezed into the 1126-char prompt envelope. They fit together if the wording is tightened elsewhere - verified at exactly 1126 characters.",
+    "verified_take3_prompt_fits": true,
+    "proposed_take3_prompt": "A professional woman seated at her desk in a bright modern office, listening. The camera is locked and stationary: ZERO zoom, push-in, pull-out, pan, tilt, crop, reframing, perspective shift or drift. The framing, camera position, subject scale, desk visibility and background composition at the LAST FRAME must be visually identical to the FIRST FRAME - the desk, mug and notebook stay fully in frame the whole clip. She is NOT speaking: lips closed throughout, no lip, mouth or jaw movement. Her eyes look directly into the camera lens the entire clip - no downward glance, side glance, gaze shift, eye wandering or half-lidded look. Only 1-2 brief blinks; eyes otherwise open and steady. A neutral attentive expression that never changes. Head, hair and facial motion at the minimum natural level - only faint breathing. No head turns, tilts, nodding, leaning or gestures. Hands stay as in the source image, loosely clasped and still on the desk. Preserve her face, hair, wardrobe, lighting, colour, the office and desk objects as shown; do not brighten, lift the shadows or re-grade. Wall logo and mug lettering unchanged.",
+    "proposed_take3_changes": [
+      "Restore take 1's full first/last-frame clause verbatim, including camera position, subject scale, desk visibility and background composition.",
+      "Move the camera constraint to the FRONT of the prompt, ahead of the eye instructions - take 2 buried it two thirds of the way down.",
+      "Name the desk, mug and notebook explicitly as having to stay in frame, so the failure has a concrete referent.",
+      "Keep all take-2 eye and expression instructions - they appear to have worked.",
+      "Keep take-2's negative prompt unchanged at 420 chars; it retained every camera term and still did not prevent the push-in, so the positive clause is the lever, not the negative."
+    ],
+    "cost_of_take3": "50 credits = $0.25.",
+    "not_run": "No third take was generated. Luis's standing instruction is to stop after one take and report."
+  },
+  "authority": "Generated 2026-08-20 under Luis's approval for ONE Selena re-run: same still, same pipeline, same model/duration/cfg_scale/no-seed, motion instructions modified only; run the same QA gate and stop.",
+  "date": "2026-08-20"
+}

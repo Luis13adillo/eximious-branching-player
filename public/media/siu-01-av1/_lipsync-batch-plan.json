@@ -1,0 +1,355 @@
+{
+  "lesson": "siu-01-av1",
+  "generated_from": "measured mastered-audio durations (Gate A sidecars)",
+  "driving_base": {
+    "file": "presenter-2-curtis-whitfield-driving-base.mp4",
+    "dur_s": 142.083,
+    "fps": "24/1",
+    "frames": 3410
+  },
+  "rules": {
+    "chunk_ceiling_s": 125,
+    "call_limit_s": 125,
+    "lead_in_s": 0.64,
+    "lead_in_blocks": 1,
+    "lead_in_reason": "One full 16-frame block of silence before the first narrated segment, so frame 0 is generated during silence and the delivered first frame has lips closed. Motivated by the call-6 canary: rejoin-3 at offset 0.000 returned an open mouth with visible teeth on frame 1.",
+    "gap_s": 0.5,
+    "fps": 25,
+    "block": 16,
+    "clearance_s": 0.2,
+    "min_call_s": 40,
+    "per_sec_usd": 0.005,
+    "min_call_cost_usd": 0.2
+  },
+  "locked_params": {
+    "model": "fal-ai/latentsync",
+    "loop_mode": "pingpong",
+    "seed": 20260820,
+    "guidance_scale": 1
+  },
+  "calls": 6,
+  "total_audio_s": 586.872,
+  "total_submitted_s": 602.16,
+  "projected_cost_usd": 3.0108,
+  "longest_call_s": 112.2,
+  "plan": [
+    {
+      "call": 1,
+      "segments": [
+        "assignment-1",
+        "assignment-2",
+        "decision-1",
+        "decision-2",
+        "decision-3"
+      ],
+      "raw_s": 87,
+      "content_s": 89.64,
+      "blocks": 141,
+      "frames": 2256,
+      "submit_s": 90.44,
+      "cost_usd": 0.4522,
+      "headroom_s": 51.643,
+      "offsets": [
+        {
+          "id": "assignment-1",
+          "batch_start_s": 0.64,
+          "audio_dur_s": 38.256
+        },
+        {
+          "id": "assignment-2",
+          "batch_start_s": 39.396,
+          "audio_dur_s": 23.496
+        },
+        {
+          "id": "decision-1",
+          "batch_start_s": 63.392,
+          "audio_dur_s": 2.52
+        },
+        {
+          "id": "decision-2",
+          "batch_start_s": 66.412,
+          "audio_dur_s": 14.784
+        },
+        {
+          "id": "decision-3",
+          "batch_start_s": 81.696,
+          "audio_dur_s": 7.944
+        }
+      ],
+      "status": "DELIVERED 2026-08-21. Returned 2256 frames = exactly 141 x 16 blocks, matching the plan. All segments PASS; first and last frames confirmed lips-closed by eye.",
+      "actual_cost_usd": 0.4512
+    },
+    {
+      "call": 2,
+      "segments": [
+        "fb-1a",
+        "fb-1c",
+        "fb-1d"
+      ],
+      "raw_s": 106.488,
+      "content_s": 108.128,
+      "blocks": 169,
+      "frames": 2704,
+      "submit_s": 108.36,
+      "cost_usd": 0.5418,
+      "headroom_s": 33.723,
+      "offsets": [
+        {
+          "id": "fb-1a",
+          "batch_start_s": 0.64,
+          "audio_dur_s": 39.216
+        },
+        {
+          "id": "fb-1c",
+          "batch_start_s": 40.356,
+          "audio_dur_s": 34.392
+        },
+        {
+          "id": "fb-1d",
+          "batch_start_s": 75.248,
+          "audio_dur_s": 32.88
+        }
+      ],
+      "status": "DELIVERED 2026-08-21. Returned 2704 frames = exactly 169 x 16 blocks, matching the plan. All segments PASS; first and last frames confirmed lips-closed by eye.",
+      "actual_cost_usd": 0.5408
+    },
+    {
+      "call": 3,
+      "segments": [
+        "fb-2a",
+        "fb-2b",
+        "fb-2d"
+      ],
+      "raw_s": 88.176,
+      "content_s": 89.816,
+      "blocks": 141,
+      "frames": 2256,
+      "submit_s": 90.44,
+      "cost_usd": 0.4522,
+      "headroom_s": 51.643,
+      "offsets": [
+        {
+          "id": "fb-2a",
+          "batch_start_s": 0.64,
+          "audio_dur_s": 31.8
+        },
+        {
+          "id": "fb-2b",
+          "batch_start_s": 32.94,
+          "audio_dur_s": 25.776
+        },
+        {
+          "id": "fb-2d",
+          "batch_start_s": 59.216,
+          "audio_dur_s": 30.6
+        }
+      ],
+      "status": "DELIVERED 2026-08-21. Returned 2256 frames = exactly 141 x 16 blocks, matching the plan. All segments PASS; first and last frames confirmed lips-closed by eye.",
+      "actual_cost_usd": 0.4512
+    },
+    {
+      "call": 4,
+      "segments": [
+        "fb-3a",
+        "fb-3c",
+        "fb-3d",
+        "intro"
+      ],
+      "raw_s": 109.272,
+      "content_s": 111.412,
+      "blocks": 175,
+      "frames": 2800,
+      "submit_s": 112.2,
+      "cost_usd": 0.561,
+      "headroom_s": 29.883,
+      "offsets": [
+        {
+          "id": "fb-3a",
+          "batch_start_s": 0.64,
+          "audio_dur_s": 35.568
+        },
+        {
+          "id": "fb-3c",
+          "batch_start_s": 36.708,
+          "audio_dur_s": 32.016
+        },
+        {
+          "id": "fb-3d",
+          "batch_start_s": 69.224,
+          "audio_dur_s": 33.432
+        },
+        {
+          "id": "intro",
+          "batch_start_s": 103.156,
+          "audio_dur_s": 8.256
+        }
+      ],
+      "status": "DELIVERED 2026-08-21. Returned 2800 frames = exactly 175 x 16 blocks, matching the plan. All segments PASS; first and last frames confirmed lips-closed by eye.",
+      "executed": {
+        "request_id": "01a0223b-6140-7660-9992-635f34fa5c50",
+        "submitted_utc": "2026-08-21T02:51:51.932Z",
+        "completed_utc": "2026-08-21T03:04:00.956Z",
+        "lead_in_s": 0.64,
+        "submitted_s": 112.2,
+        "returned_frames": 2800,
+        "returned_s": 112,
+        "blocks_returned": 175,
+        "projected_cost_usd": 0.561,
+        "actual_cost_usd": 0.56,
+        "note": "Returned 2800 frames = exactly 175 x 16, matching the planned block count. Billed on the returned 112.000 s, not the 112.200 s submitted."
+      },
+      "actual_cost_usd": 0.56
+    },
+    {
+      "call": 5,
+      "segments": [
+        "rejoin-1",
+        "rejoin-2"
+      ],
+      "raw_s": 105.72,
+      "content_s": 106.86,
+      "blocks": 167,
+      "frames": 2672,
+      "submit_s": 107.08,
+      "cost_usd": 0.5354,
+      "headroom_s": 35.003,
+      "offsets": [
+        {
+          "id": "rejoin-1",
+          "batch_start_s": 0.64,
+          "audio_dur_s": 46.488
+        },
+        {
+          "id": "rejoin-2",
+          "batch_start_s": 47.628,
+          "audio_dur_s": 59.232
+        }
+      ],
+      "status": "DELIVERED 2026-08-21. Returned 2672 frames = exactly 167 x 16 blocks, matching the plan. All segments PASS; first and last frames confirmed lips-closed by eye.",
+      "actual_cost_usd": 0.5344
+    },
+    {
+      "call": 6,
+      "segments": [
+        "rejoin-3",
+        "resolution-1",
+        "resolution-2",
+        "resolution-3",
+        "resolution-4"
+      ],
+      "raw_s": 90.216,
+      "content_s": 92.856,
+      "blocks": 146,
+      "frames": 2336,
+      "submit_s": 93.64,
+      "cost_usd": 0.4682,
+      "headroom_s": 48.443,
+      "offsets": [
+        {
+          "id": "rejoin-3",
+          "batch_start_s": 0.64,
+          "audio_dur_s": 27.336
+        },
+        {
+          "id": "resolution-1",
+          "batch_start_s": 28.476,
+          "audio_dur_s": 18.672
+        },
+        {
+          "id": "resolution-2",
+          "batch_start_s": 47.648,
+          "audio_dur_s": 19.008
+        },
+        {
+          "id": "resolution-3",
+          "batch_start_s": 67.156,
+          "audio_dur_s": 2.544
+        },
+        {
+          "id": "resolution-4",
+          "batch_start_s": 70.2,
+          "audio_dur_s": 22.656
+        }
+      ],
+      "status": "DELIVERED 2026-08-21. Returned 2336 frames = exactly 146 x 16 blocks, matching the plan. All segments PASS; first and last frames confirmed lips-closed by eye.",
+      "executed": {
+        "request_id": "01a021be-5da7-7333-b6ff-a49788d562cb",
+        "submitted_utc": "2026-08-21T00:35:19.110Z",
+        "completed_utc": "2026-08-21T00:45:08.703Z",
+        "actual_cost_usd": 0.464,
+        "lead_in_s": 0,
+        "content_s": 92.216,
+        "blocks": 145,
+        "submit_s": 93,
+        "returned_frames": 2320,
+        "offsets": [
+          {
+            "id": "rejoin-3",
+            "batch_start_s": 0,
+            "audio_dur_s": 27.336
+          },
+          {
+            "id": "resolution-1",
+            "batch_start_s": 27.836,
+            "audio_dur_s": 18.672
+          },
+          {
+            "id": "resolution-2",
+            "batch_start_s": 47.008,
+            "audio_dur_s": 19.008
+          },
+          {
+            "id": "resolution-3",
+            "batch_start_s": 66.516,
+            "audio_dur_s": 2.544
+          },
+          {
+            "id": "resolution-4",
+            "batch_start_s": 69.56,
+            "audio_dur_s": 22.656
+          }
+        ],
+        "note": "These are the offsets the delivered files were actually cut at. The `offsets` field above this block is what a RE-RUN under the lead-in rule would use."
+      },
+      "rerun_if_approved": {
+        "status": "DONE 2026-08-20, request 01a02221-0644-7663-b68a-a5e290b17fe7",
+        "additional_spend_usd": 0.4682,
+        "sunk_usd": 0.464,
+        "correction": "An earlier note framed this as +$0.0042. That was WRONG. $0.0042 is only the difference between the two call prices; it is not what a re-run costs. The $0.4640 already spent on the pre-lead-in call is SUNK and is not recovered. A re-run is an ADDITIONAL $0.4682, taking total Gate C spend on call 6 to $0.9322.",
+        "would_fix": "rejoin-3s open-mouth first frame - the only segment in this call at batch offset 0.",
+        "scope": "Only rejoin-3.mp4 is replaced. The four already-passing segments (resolution-1..4) are retained as delivered.",
+        "actual_spend_usd": 0.4672
+      },
+      "actual_cost_usd": 0.4672
+    }
+  ],
+  "rule_change": {
+    "date": "2026-08-20",
+    "what": "A silent lead-in of one full 16-frame block (0.64 s) now precedes the first narrated segment of every batch.",
+    "why": "Gate C canary defect. Call 6's rejoin-3 sat at batch offset 0.000 with narration starting on sample 0; LatentSync opened the mouth on frame 0 to match, and the delivered segment's first frame showed open lips with visible teeth.",
+    "scope": "Batch audio construction only. Narration, segment order, seed (20260820), guidance_scale (1), loop_mode (pingpong), the driving base and every approved master are UNCHANGED. The batch partition is byte-for-byte the same six calls with the same segments in the same order.",
+    "effect": "blocks +1 and submit +0.64 s per call, exactly, with no rounding interaction: ceil((c + 16/25) * 25/16) === ceil(c * 25/16) + 1. Cost +$0.0032 per call.",
+    "evidence": "The canary's four inter-segment gaps are 0.5 s (12.5 frames) of digital silence. Mouth activity there sits at the re-encode noise floor from 6 frames before onset through the onset frame, and all 28 frames inspected by eye across the four gaps show lips CLOSED, including the frame where audio begins. One block is 16 frames - more silence than the condition already proven to work - and it is the smallest lead-in that is structural rather than empirical, because the model provably works in 16-frame blocks (the canary returned exactly 145 x 16 = 2320 frames)."
+  },
+  "cost_summary": {
+    "gate_c_calls_usd": 3.0048,
+    "call6_first_run_sunk_usd": 0.464,
+    "gate_c_total_usd": 3.4688,
+    "note": "Six calls delivered 22 segments. call6_first_run_sunk_usd is the pre-lead-in canary; it bought the evidence for the boundary rule and is recorded as spend, not waste. Every call returned exactly its predicted 16-frame block count."
+  },
+  "split_rule": {
+    "date": "2026-08-21",
+    "what": "Delivered segments are cut at the MIDPOINT of the surrounding silence: 0.240 s before the narration and 0.240 s after, instead of at the audio onset.",
+    "why": "LatentSync articulates before the sound. Call 4 measured ~6 frames of anticipation on Curtis - the mouth is open at return frame 913 while the first audible sample is at 919.3. Cutting at the onset lands inside that window, so a delivered first frame showed closed lips or open teeth depending on the segment first phoneme.",
+    "source": "Already specified in docs/VIDEO_1_GENERATION_CONFIGS.md (Split specification) and not implemented. The 0.640 s batch lead-in from 2026-08-20 is RETAINED - it gives the opening segment silence to cut into and absorbs the model own 3-frame cold start.",
+    "cost": "$0.00. Calls 4 and 6 were RE-CUT from returns already paid for. The batch plan, offsets, seed, guidance, loop mode, driving base and every narration master are unchanged, so calls 1, 2, 3 and 5 need no replanning.",
+    "loudness_note": "Integrated LUFS is now measured over the narration window, excluding the pad. Including 0.48 s of digital silence moves the figure on short segments (resolution-3: -24.5 as a master, -24.8 padded) without altering one narration sample. The whole-file figure is kept alongside it in each sidecar.",
+    "diane_flagged": "Diane delivered claims-01 was cut under the old rule and carries open first frames on most of its 22 segments, including intro - the frame the start gate holds. FLAGGED for a later decision; her raw returns are not retained, so re-cutting her means re-running her LatentSync calls."
+  },
+  "tail_margin_finding": {
+    "date": "2026-08-21",
+    "what": "The block rounding can leave almost no pad after the CLOSING segment of a batch: call 5 left 0.020 s and call 2 left 0.032 s, against the 0.240 s the cut rule wants.",
+    "resolved_how": "No re-run. Every Gate A master already carries 400-600 ms of its own trailing silence, which is the silence the mouth closes into. The tail is clamped to what the return offers and the real condition is asserted instead - at least 0.240 s of silence before the last delivered frame, counting the master internal trailing silence.",
+    "planner_gap": "plan-lipsync-batches.mjs still computes blocks from content alone. For the remaining catalog it should reserve the tail as well - blocks = ceil((content + 0.24) * 25 / 16) - so the closing segment always has pad. NOT changed here: all six calls for this video are already executed, and changing the planner now would make the stored plan disagree with what was run."
+  }
+}

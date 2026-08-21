@@ -34,7 +34,7 @@
  * authorized shared credential store; never prints or persists it.
  */
 
-import { readFileSync, existsSync } from "node:fs";
+import { readFileSync, existsSync, statSync, openSync, readSync, closeSync } from "node:fs";
 import { basename } from "node:path";
 
 /**
@@ -78,15 +78,55 @@ const CT = {
   ".png": "image/png", ".jpg": "image/jpeg", ".jpeg": "image/jpeg",
 };
 
-export async function uploadTemporaryInput(path, contentType, retainSeconds = RETENTION_SECONDS) {
-  const ct = contentType || CT[path.slice(path.lastIndexOf(".")).toLowerCase()] || "application/octet-stream";
-  const key = falKey();
+/**
+ * fal's single PUT endpoint refuses anything over ~100 MB with
+ * `413 File too large, use multipart solution`.
+ *
+ * Measured on the ew-01 run (2026-08-21): a 99.11 MB driving window uploaded fine, a
+ * 113.93 MB one was refused. The threshold below sits under that with margin, because the
+ * exact cap is not documented and a 413 costs a whole batch build to rediscover.
+ *
+ * Selena's driving windows cross it whenever a call carries more than ~95 s of audio, which
+ * on ew-01 alone is calls 2, 4 and 6. The catalog will hit it constantly, so this is a
+ * permanent route rather than a workaround.
+ */
+const SINGLE_PUT_MAX = 90 * 1024 * 1024;
+const PART_SIZE = 16 * 1024 * 1024;
 
-  // Retention is only settable here, at upload time. Never omit this header.
-  const lifecycle = JSON.stringify({ expiration_duration_seconds: retainSeconds });
+/** Read one slice of a file without holding the whole thing in memory. */
+function readSlice(path, offset, length) {
+  const fd = openSync(path, "r");
+  try {
+    const b = Buffer.allocUnsafe(length);
+    let read = 0;
+    while (read < length) {
+      const n = readSync(fd, b, read, length - read, offset + read);
+      if (n <= 0) break;
+      read += n;
+    }
+    return read === length ? b : b.subarray(0, read);
+  } finally {
+    closeSync(fd);
+  }
+}
 
+/**
+ * Multipart upload for files over the single-PUT cap.
+ *
+ * RETENTION IS SET AT INITIATE, and only there. Verified 2026-08-21 by uploading with and
+ * without the lifecycle header repeated on the part PUTs and on complete: both produced an
+ * object expiring in 24.00 h, so initiate carries it. The header is still sent on every
+ * request, because sending it costs nothing and omitting it would depend on undocumented
+ * server behaviour staying put.
+ *
+ * The round trip was verified byte-exact on 7 MB of incompressible random data (sha256 of
+ * the downloaded object equals the sha256 of the source). An earlier check against a buffer
+ * of identical bytes appeared to mismatch on content-length only because the CDN compressed
+ * it - that was an artifact of the test data, not of the transfer.
+ */
+async function uploadMultipart(path, ct, key, lifecycle, size) {
   const init = await fetch(
-    "https://rest.alpha.fal.ai/storage/upload/initiate?storage_type=fal-cdn-v3",
+    "https://rest.alpha.fal.ai/storage/upload/initiate-multipart?storage_type=fal-cdn-v3",
     {
       method: "POST",
       headers: {
@@ -97,18 +137,91 @@ export async function uploadTemporaryInput(path, contentType, retainSeconds = RE
       body: JSON.stringify({ content_type: ct, file_name: basename(path) }),
     }
   );
-  if (!init.ok) throw new Error(`initiate failed: ${init.status} ${await init.text()}`);
+  if (!init.ok) throw new Error(`multipart initiate failed: ${init.status} ${await init.text()}`);
   const { upload_url, file_url } = await init.json();
 
-  const put = await fetch(upload_url, {
-    method: "PUT",
+  const partUrl = (n) => {
+    const u = new URL(upload_url);
+    u.pathname = u.pathname.replace(/\/$/, "") + "/" + n;
+    return u;
+  };
+
+  const parts = [];
+  for (let offset = 0, n = 1; offset < size; offset += PART_SIZE, n++) {
+    const body = readSlice(path, offset, Math.min(PART_SIZE, size - offset));
+    const r = await fetch(partUrl(n), {
+      method: "PUT",
+      headers: { "Content-Type": ct, "X-Fal-Object-Lifecycle-Preference": lifecycle },
+      body,
+    });
+    if (!r.ok) throw new Error(`multipart part ${n} failed: ${r.status} ${await r.text()}`);
+    const etag = r.headers.get("etag");
+    if (!etag) throw new Error(`multipart part ${n} returned no ETag - cannot complete the upload`);
+    parts.push({ partNumber: n, etag });
+  }
+
+  const done = await fetch(partUrl("complete"), {
+    method: "POST",
     headers: {
-      "Content-Type": ct,
+      Authorization: `Key ${key}`,
+      "Content-Type": "application/json",
       "X-Fal-Object-Lifecycle-Preference": lifecycle,
     },
-    body: readFileSync(path),
+    body: JSON.stringify({ parts }),
   });
-  if (!put.ok) throw new Error(`upload failed: ${put.status} ${await put.text()}`);
+  if (!done.ok) throw new Error(`multipart complete failed: ${done.status} ${await done.text()}`);
+
+  return file_url;
+}
+
+export async function uploadTemporaryInput(path, contentType, retainSeconds = RETENTION_SECONDS) {
+  const ct = contentType || CT[path.slice(path.lastIndexOf(".")).toLowerCase()] || "application/octet-stream";
+  const key = falKey();
+  const size = statSync(path).size;
+
+  // Retention is only settable here, at upload time. Never omit this header.
+  const lifecycle = JSON.stringify({ expiration_duration_seconds: retainSeconds });
+
+  let file_url;
+  if (size > SINGLE_PUT_MAX) {
+    file_url = await uploadMultipart(path, ct, key, lifecycle, size);
+  } else {
+    const init = await fetch(
+      "https://rest.alpha.fal.ai/storage/upload/initiate?storage_type=fal-cdn-v3",
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Key ${key}`,
+          "Content-Type": "application/json",
+          "X-Fal-Object-Lifecycle-Preference": lifecycle,
+        },
+        body: JSON.stringify({ content_type: ct, file_name: basename(path) }),
+      }
+    );
+    if (!init.ok) throw new Error(`initiate failed: ${init.status} ${await init.text()}`);
+    const initJson = await init.json();
+    file_url = initJson.file_url;
+
+    const put = await fetch(initJson.upload_url, {
+      method: "PUT",
+      headers: {
+        "Content-Type": ct,
+        "X-Fal-Object-Lifecycle-Preference": lifecycle,
+      },
+      body: readFileSync(path),
+    });
+    if (!put.ok) throw new Error(`upload failed: ${put.status} ${await put.text()}`);
+  }
+
+  // THE UPLOADED OBJECT MUST BE THE WHOLE FILE.
+  //
+  // A multipart upload can complete with a part missing and still answer 200, which would
+  // hand the model a truncated driving video and silently produce a short generation.
+  const sizeHead = await fetch(file_url, { method: "HEAD" });
+  const got = Number(sizeHead.headers.get("content-length"));
+  if (!sizeHead.headers.get("content-encoding") && got !== size) {
+    throw new Error(`upload size mismatch on ${file_url}: remote ${got} bytes, local ${size}`);
+  }
 
   // VERIFY THE POLICY ACTUALLY LANDED.
   //

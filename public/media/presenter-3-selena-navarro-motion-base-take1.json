@@ -1,0 +1,104 @@
+{
+  "asset": "presenter-3-selena-navarro-motion-base-take1.mp4",
+  "presenter": "Selena Navarro (Presenter 3)",
+  "purpose": "Reusable motion base candidate. Generated ONCE, intended for reuse across all 42 of Selena's courses and every application video she presents.",
+  "status": "QA GATE FAIL - presenter motion. Take 1. NOT promoted to the production base. Awaiting Luis's decision; no second take run.",
+  "provider": "KIE",
+  "endpoint": "POST https://api.kie.ai/api/v1/jobs/createTask",
+  "taskId": "5df55d9f9a2edd82262a4ae0741982bb",
+  "request": {
+    "model": "kling/v2-1-pro",
+    "input": {
+      "duration": "5",
+      "cfg_scale": 0.8,
+      "prompt": "A professional woman seated at her desk in a bright modern corporate office, listening between takes. She is NOT speaking: her lips stay closed and together for the entire clip, with no lip, mouth or jaw movement. Natural irregular blinking every 3-4 seconds. Only subtle breathing and tiny organic head and posture settling. No deliberate head turns, nodding, leaning or gestures. Her hands stay exactly as in the source image, loosely clasped and completely still on the desk. The camera is locked and stationary. ZERO zoom, push-in, pull-out, pan, tilt, crop, reframing, perspective shift or camera drift. The framing, camera position, subject scale, desk visibility and background composition at the LAST FRAME must be visually identical to the FIRST FRAME. Preserve her face, hair, wardrobe, skin tone, lighting, contrast, colour, shadows, the office, the desk objects and the approved composition exactly as shown; do not brighten, lift the shadows or re-grade. The lettering on the wall logo, the mug and the books keeps its exact appearance. One continuous locked-off 5-second shot, no cuts, no transitions.",
+      "negative_prompt": "camera movement, zoom, push-in, pull-out, pan, tilt, reframing, crop, camera drift, perspective shift, speaking, talking, mouth opening, lip movement, gesturing, hand movement, standing, leaning, scene change, cut, transition, wardrobe change, hairstyle change, face change, lighting change, room change, brightening, re-grading, added text, added logos, added graphics, overlays, watermark, extra people, distortion, warping, morphing"
+    }
+  },
+  "prompt_provenance": {
+    "base": "Luis's Selena motion prompt, 2026-08-20.",
+    "changes": [
+      "'10-second' -> '5-second' to match duration '5' (a 10 s request is what produced Diane's rejected push-in take).",
+      "'Selina' -> 'Selena'.",
+      "Grafted in Diane take-2's proven explicit first/last-frame sentence.",
+      "Added Diane take-2's anti-brightening clause.",
+      "Condensed 1375 -> 1115 chars; negative_prompt 759 -> 435 chars."
+    ],
+    "length_limit_note": "The first attempt was REJECTED BY THE API with 'Input exceeds maximum length' at prompt 1375 / negative 759 chars. No task was created and NOTHING was spent. Both fields were brought inside Diane take-2's proven envelope (1126 / 435) and the request then validated. The negative_prompt is now byte-identical to Diane take-2's. KIE does not name the offending field, so the exact caps remain unmeasured - staying inside 1126/435 is the safe envelope."
+  },
+  "source_still": {
+    "file": "public/media/presenter-3-selena-navarro-production-still-1920x1080.png",
+    "sha256": "bbf914e2ab370b6e09455042759e0982237610317a85abe7f51038d898a6e28e"
+  },
+  "no_seed_parameter": "kling/v2-1-pro exposes no seed. This clip is NOT reproducible; it is the artifact of record. Preserve it. (Selena's 2026-08-18 QA-passed base was lost because it was left in a session scratchpad - hence both raw and corrected are committed here.)",
+  "credits": { "before": 713.0, "after": 663.0, "spent": 50.0, "usd": 0.25 },
+  "raw_output": {
+    "file": "public/media/presenter-3-selena-navarro-motion-base-take1-raw.mp4",
+    "sha256": "ab457a336f9b10c154c6e7ba8e1ae416a77196a72dcb166fa7194fa6c5d1edad",
+    "width": 1920, "height": 1080, "fps": 24, "frames": 121, "duration_sec": 5.041667, "audio_streams": 0
+  },
+  "correction": {
+    "what": "Removed the temporal brightness/colour drift only. Nothing else was touched.",
+    "why": "Kling lifted overall exposure 2.30% peak / 1.78% mean across the 5 s despite 'brightening', 're-grading' and 'lighting change' all appearing in negative_prompt. Same known Kling behaviour as Diane (whose uncorrected take measured 9.54% peak).",
+    "method": "Per-frame per-channel linear gain returning each frame's RGB channel means to frame 0's. Frame 0 is the reference and carries NO gain. All gains <= 1.0 (measured range 0.97350 - 1.00000), so the correction only scales down - no highlight clipping is possible.",
+    "cost": "$0.00 - ffmpeg only",
+    "filter_script": "public/media/presenter-3-selena-navarro-motion-base-take1.filter",
+    "filter_script_sha256": "f1f792b08eb4ebd1e15b3124e85cf25701f4f7374886ba9230bf946648209941",
+    "command": "ffmpeg -i presenter-3-selena-navarro-motion-base-take1-raw.mp4 -filter_complex_script presenter-3-selena-navarro-motion-base-take1.filter -an -c:v libx264 -preset slow -crf 12 -pix_fmt yuv420p -movflags +faststart presenter-3-selena-navarro-motion-base-take1.mp4",
+    "result": "exposure drift 2.30% -> 0.16% peak, 1.78% -> 0.05% mean",
+    "important": "The correction did NOT reduce the motion measurements (camera-lock 3.76 -> 4.02, face motion 3.041 -> 3.001). Unlike Diane take 2, where 87% of the residual was photometric, this clip's residual is real subject movement. The exposure lift was a separate and minor issue."
+  },
+  "output": {
+    "file": "public/media/presenter-3-selena-navarro-motion-base-take1.mp4",
+    "sha256": "13ca2ef1aa919d0792b9a58f1fd84081602607231a5727f3a49e4896eb25c8a5",
+    "width": 1920, "height": 1080, "fps": 24, "frames": 121, "duration_sec": 5.041667, "audio_streams": 0
+  },
+  "fps_note": "Base is 24 fps. LatentSync normalises output to 25 fps regardless of input, so the 16-frame padding must be computed at 25 fps (locked rule 3).",
+  "qa_gate": {
+    "verdict": "FAIL - presenter motion. Structurally sound; the presenter does not hold still.",
+    "pass": {
+      "Dimensions": "1920x1080, 24 fps, 121 frames, 5.04 s - exactly matches Diane take 2's profile",
+      "Audio": "no audio stream, as required",
+      "Identity (frame 0 vs source still)": "2.73/255 (Diane take2 2.33, Selena prior gate 1.66)",
+      "Reframing - whole frame": "best-fit zoom 1.00x (6.44); 1.02x=17.47, 1.04x=23.54, rising monotonically. No zoom, no crop.",
+      "Reframing - subject only": "face/shoulder box best-fits frame 0 at 1.00x at 1.25 s, 2.50 s, 3.75 s and 5.00 s. She does NOT lean toward camera.",
+      "Registration": "2D search +/-12 px on a background-only region returns dx=0, dy=0 with zero improvement from shifting. No camera translation.",
+      "Camera lock (geometric)": "Spatial drift map shows the background at a uniform 2-5/255 with NO spatial gradient. A pan, zoom or drift produces a gradient; there is none.",
+      "Lips sealed - no speech baked in": "Lip-aperture test over 31 samples: darkest row-mean inside the mouth region never falls below 72.0/255 (an exposed oral cavity reads well under 30). Visual check at the minimum-aperture frame (61) shows a continuous sealed lip seam, no gap, no teeth. THE CRITICAL PROPERTY HOLDS.",
+      "Lettering preservation": "EXIMIOUS ACADEMY wall logo region max drift 4.21/255, within the clip's own noise floor. Logo, mug and book lettering intact.",
+      "Desk visibility": "desk band max drift 6.44/255 - desk, mug, notebook and pen in frame throughout",
+      "Exposure after correction": "0.16% peak / 0.05% mean - resolved"
+    },
+    "fail": {
+      "Presenter motion": {
+        "measured": "face-region frame-to-frame meanD 3.001/255 (max 6.348) against an expected 0.5-1.5. Selena's own prior gate measured 0.97 mean / 2.79 max.",
+        "survives_correction": true,
+        "diagnosis": "REAL. 2-3x more facial movement than the brief allows. The spatial drift map puts essentially all of the change on her head and hair (hottest block 49.7/255 at the hair) while the background sits at 2-5. Residual against frame 0 grows monotonically: 7.31 at 1.25 s, 15.08 at 2.50 s, 19.99 at 3.75 s, 19.10 at 5.00 s."
+      },
+      "Blink behaviour": {
+        "measured": "eye-region frame-to-frame signal is above 4/255 on 70% of frame pairs and above 8 on 43%. Peak-to-mean ratio only 2.39x. Eye-region brightness swings over a range of 23.3 in a broad plateau peaking near frame 64.",
+        "diagnosis": "REAL, and the more serious of the two. This is not blinking. A blink is a narrow 2-4 frame spike against a near-zero baseline; this is near-continuous eye movement. Visual inspection at frames 1, 21, 41, 61, 81, 101 shows a sequence of expression changes including a sustained half-lidded downward glance around frame 61 (2.5 s) - eyes off camera, lids lowered, head tilted - resolving by frame 81.",
+        "why_it_matters": "Selena's own prior QA gate established that LatentSync preserves base-clip eye motion FRAME FOR FRAME. Whatever the eyes do here ships into all 42 of her courses. Under pingpong looping, a sustained downward glance every 5 seconds reads as the presenter repeatedly looking away from the learner during direct address."
+      }
+    },
+    "measured_but_not_a_fault": {
+      "Camera lock row as written": "4.02 mean / 4.48 max against a <1.5 threshold. NOT a geometric fault - registration finds no translation, the whole-frame and subject-only zoom tests both return 1.00x, and the drift map shows a flat background noise floor with no gradient. The <1.5 threshold was calibrated on Selena's 2026-08-18 base (0.069), an exceptionally clean result; Diane take 2 measured 3.11 on the same row and was likewise reclassified. This clip's generative noise floor is simply ~4.",
+      "Loop seam / pingpong fit": "first-vs-last whole-frame gap 6.24/255 (Diane take2 4.51). Inflated by the same head/expression drift; no cut, reversal ratio 0.53x of typical."
+    }
+  },
+  "recommendation": {
+    "verdict": "Do not promote. Re-run once with a tightened motion constraint.",
+    "reasoning": "Everything structural is right - resolution, frame rate, no audio, identity, locked camera, sealed lips, preserved lettering. The single defect is that Selena performs rather than holds still. That is a prompt-side problem, not a pipeline problem.",
+    "proposed_take2_changes": [
+      "State the eye direction explicitly: eyes stay on the lens the entire time, no looking away, down or to the side.",
+      "Replace 'natural irregular blinking every 3-4 seconds' with a bounded instruction - one or two blinks only, eyes otherwise open and steady.",
+      "Forbid expression change explicitly: the facial expression at the last frame is the same as the first; no smile forming or fading.",
+      "Add to negative_prompt, inside the 435-char envelope: 'looking away, looking down, eyes closed, gaze shift, squinting, expression change, smiling, frowning, head tilt'. Requires dropping lower-value terms to stay within the cap.",
+      "Consider cfg_scale 0.9 to bind the prompt more tightly (0.8 held the camera successfully; 0.5 did not)."
+    ],
+    "cost_of_take2": "50 credits = $0.25. Balance after take 1: 663 credits ($3.32).",
+    "not_run": "No second take was generated. Luis's standing instruction was to stop after the first generation and report."
+  },
+  "authority": "Generated 2026-08-20 under Luis's instruction: one generation only, kling/v2-1-pro, duration 5, cfg_scale 0.8, no seed, Selena's motion prompt plus the shared negative prompt, first and last framing identical; stop and report.",
+  "date": "2026-08-20"
+}
