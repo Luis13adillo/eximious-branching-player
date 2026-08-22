@@ -132,7 +132,18 @@ for (const l of new Set(logos)) {
 // --- 3) verify -------------------------------------------------------------
 // Straight copies must be byte-for-byte identical in size. Re-encoded copies
 // cannot be, so they are held to the delivery invariants instead: still exactly
-// 1920x1080, and still carrying the locked mp3 master rather than a re-encode.
+// 1920x1080, and still carrying the locked narration rather than a re-encode.
+//
+// Rule 4 is "the locked 24 kHz master survives to delivery". This used to be
+// checked as `codec_name === "mp3"`, which conflated the rule with the container
+// codec and would have blocked the Safari fix (delivery audio is now AAC-LC —
+// MP3-in-MP4 is `mp4a.69`, which WebKit refuses to decode, so every iOS learner
+// got a silent video). The rule itself is now asserted DIRECTLY and more
+// strictly: the packaged audio stream must be byte-identical to the delivered
+// master's audio stream, which is exactly what `-c:a copy` guarantees.
+const audioStreamMd5 = (file) =>
+  execFileSync("ffmpeg", ["-v", "error", "-i", file, "-map", "0:a:0", "-c", "copy", "-f", "md5", "-"],
+    { encoding: "utf8" }).trim().replace(/^MD5=/, "");
 const mismatched = [];
 const badDims = [];
 const badAudio = [];
@@ -153,8 +164,15 @@ for (const f of referenced) {
   const v = probe.streams.find((x) => x.codec_type === "video") || {};
   const a = probe.streams.find((x) => x.codec_type === "audio");
   if (+v.width !== 1920 || +v.height !== 1080) badDims.push(`${f} (${v.width}x${v.height})`);
-  if (!a || a.codec_name !== "mp3" || +a.sample_rate !== 24000 || +a.channels !== 1) {
+  // Shape: 24 kHz mono, in a codec a browser will actually decode. AAC-LC is
+  // the delivery codec; mp3 is accepted so an older package still verifies.
+  if (!a || !["aac", "mp3"].includes(a.codec_name) || +a.sample_rate !== 24000 || +a.channels !== 1) {
     badAudio.push(`${f} (${a ? `${a.codec_name}/${a.sample_rate}/${a.channels}ch` : "no audio"})`);
+    continue;
+  }
+  // Identity: the re-encode must not have touched a single audio byte.
+  if (audioStreamMd5(src) !== audioStreamMd5(dest)) {
+    badAudio.push(`${f} (audio stream ALTERED by the video re-encode)`);
   }
 }
 

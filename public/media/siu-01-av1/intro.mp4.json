@@ -1,157 +1,168 @@
 {
- "asset": "intro.mp4",
- "video": "EA_siu-01_AV1",
- "presenter": "Curtis Whitfield (Presenter 2)",
- "motion_base": {
-  "provider": "KIE",
-  "model": "kling/v2-1-pro",
-  "file": "public/media/presenter-2-curtis-whitfield-motion-base-take2.mp4",
-  "sha256": "1a7740bbab8eb58566fb73dbaa78a024938f23e954fd3f3ed34e3f43988d1065",
-  "note": "Take 2 passed 11 of 12 QA rows. The one failure was confined to the head of the clip: Curtis's lips are parted with visible teeth from about frame 5 to frame 40 (0.17-1.63 s). From frame 41 to 121 the mouth is closed, the camera is locked at 1.000x, and every gate row passes.",
-  "cost_usd": 0.5
- },
- "driving_base": {
-  "file": "presenter-2-curtis-whitfield-driving-base.mp4",
-  "sha256": "56428c51fea9719e20a9b865f7a10867dbb44e61d45d2f3283211a54a7fbc304",
-  "dur_s": 142.083,
-  "fps": 24,
-  "frames": 3410,
-  "method": "Every output frame is a copy of a decoded frame of take 2. Only the ORDER changes. No filtering, no colour work, no scaling, no upscale.",
-  "window": {
-   "offset_s": 0,
-   "dur_s": 113.208,
-   "frames": 2717,
-   "method": "stream copy from the head of the approved base; every frame bit-exact (frames counted on the uploaded window)"
+  "asset": "intro.mp4",
+  "video": "EA_siu-01_AV1",
+  "presenter": "Curtis Whitfield (Presenter 2)",
+  "motion_base": {
+    "provider": "KIE",
+    "model": "kling/v2-1-pro",
+    "file": "public/media/presenter-2-curtis-whitfield-motion-base-take2.mp4",
+    "sha256": "1a7740bbab8eb58566fb73dbaa78a024938f23e954fd3f3ed34e3f43988d1065",
+    "note": "Take 2 passed 11 of 12 QA rows. The one failure was confined to the head of the clip: Curtis's lips are parted with visible teeth from about frame 5 to frame 40 (0.17-1.63 s). From frame 41 to 121 the mouth is closed, the camera is locked at 1.000x, and every gate row passes.",
+    "cost_usd": 0.5
   },
-  "blink_rate_per_min": 12.67,
-  "joins": 30
- },
- "lipsync": {
-  "provider": "fal.ai",
-  "model": "fal-ai/latentsync",
-  "loop_mode": "pingpong",
-  "loop_mode_note": "Never triggers: the 113.208 s driving window exceeds the 112.200 s batch audio.",
-  "seed": 20260820,
-  "guidance_scale": 1,
-  "request_id": "01a0223b-6140-7660-9992-635f34fa5c50",
-  "submitted_utc": "2026-08-21T02:51:51.932Z",
-  "completed_utc": "2026-08-21T03:04:00.956Z",
-  "batch_index": 4,
-  "batch_segments": [
-   "fb-3a",
-   "fb-3c",
-   "fb-3d",
-   "intro"
-  ],
-  "batch_content_s": 111.412,
-  "batch_blocks": 175,
-  "batch_padded_s": 112.2,
-  "returned": {
-   "frames": 2800,
-   "duration_s": 112,
-   "dims": "1920x1080",
-   "fps": "25/1",
-   "audio": {
-    "codec": "aac",
-    "sample_rate": 16000,
-    "channels": 1,
-    "bit_rate": 58656
-   },
-   "sha256": "6c1abe65a73c2cdc211bdcd0e2e29fa60bf699404a86eee9220d75785de934c0"
+  "driving_base": {
+    "file": "presenter-2-curtis-whitfield-driving-base.mp4",
+    "sha256": "56428c51fea9719e20a9b865f7a10867dbb44e61d45d2f3283211a54a7fbc304",
+    "dur_s": 142.083,
+    "fps": 24,
+    "frames": 3410,
+    "method": "Every output frame is a copy of a decoded frame of take 2. Only the ORDER changes. No filtering, no colour work, no scaling, no upscale.",
+    "window": {
+      "offset_s": 0,
+      "dur_s": 113.208,
+      "frames": 2717,
+      "method": "stream copy from the head of the approved base; every frame bit-exact (frames counted on the uploaded window)"
+    },
+    "blink_rate_per_min": 12.67,
+    "joins": 30
   },
-  "input_retention": "fal CDN temporary inputs, 24 h expiry VERIFIED at upload (scripts/fal-upload.mjs)"
- },
- "split": {
-  "batch_start_s": 103.156,
-  "narration_dur_s": 8.256,
-  "audio_dur_s": 8.784,
-  "video_dur_s": 8.8,
-  "frames": 220,
-  "video_start_s": 102.916,
-  "lead_s": 0.24,
-  "lead_mp3_frames": 10,
-  "lead_video_frames": 6,
-  "tail_s": 0.24,
-  "frames_short_of_padded_audio_ms": 0,
-  "narration_starts_at_s": 0.24,
-  "align_err_ms": 16,
-  "method": "Cut at the MIDPOINT of the surrounding silence - 0.24s (10 mp3 frames = 6 video frames) before the narration and the same after it - per the documented split specification, because LatentSync opens the mouth about 6 frames BEFORE the first audible sample. Cutting at the audio onset lands inside that anticipation. Re-encoded at the cut; a stream copy snaps to the nearest keyframe and would desync the remuxed audio. Frame count rounded UP so video always covers the audio.",
-  "caption_offset_note": "Caption cues tile the DELIVERED asset, not the narration. The first cue starts at 0 and the last ends at video_dur_s (8.8s) - which is what the lesson tests assert: captions[0].start === 0, captions.at(-1).end === durationSec, and contiguity between. Do NOT offset cues by the 0.24s lead pad. That silence is INSIDE the asset and therefore inside the first cue; offsetting would push the last cue past the end of the video and fail the test. All three shipped pilots (claims-01, siu-01, ew-01) are authored this way.",
-  "caption_offset_note_superseded": "Cleared 2026-08-21. This sidecar previously carried: 'Caption cues are authored against narration time. This asset begins with 0.24s of silence, so cues must be offset by +0.24s when they are regenerated at Gate D.' That instruction was STALE and would have broken the delivery tests - the shipped cues are not offset and must not be."
- },
- "audio": {
-  "source": "intro.mp3",
-  "sha256": "f7fe60a262c3903e86add9e0590752086e24c7ced81192a7eca23c7f86d9d695",
-  "note": "LatentSync's returned audio (aac 16 kHz) is DISCARDED. The delivered stream is 10 digitally silent mp3 frames + the locked 24 kHz -24.5 LUFS master + 10 more, concatenated with -c copy. The master's frames are never re-encoded.",
-  "verified_bit_exact": true,
-  "master_at_byte_offset": 3840,
-  "lufs_integrated": -24.6,
-  "lufs_measured_over": "the narration window only - 0.24s to 0.24s + the narration length. The asset's leading and trailing digital silence is excluded, because including it moves the integrated figure on short segments without touching a single narration sample.",
-  "lufs_integrated_whole_file": -24.6,
-  "true_peak_dbfs": -8.6,
-  "mp3_frame_payload_sha256": "392e57453dc8a6a9d02a60b982bdf01ff2a572eccb58890132508677009e58c2",
-  "bit_exact_method": "containment: the Gate A master's compressed MP3 frame payload appears intact and contiguous inside the delivered payload at byte 3840 (10 silent frames x 384 bytes), which proves both that it was copied and that nothing shifted it",
-  "stream": "mp3,24000,1,128000"
- },
- "delivery": {
-  "dims": "1920x1080",
-  "fps": "25/1",
-  "codec": "h264 High",
-  "pix_fmt": "yuv420p",
-  "native": "NO upscaling anywhere - the base is native 1920x1080"
- },
- "qa": {
-  "dims": true,
-  "fps": true,
-  "pix_fmt": true,
-  "frames_cover_narration": true,
-  "frames_exact": true,
-  "audio_stream": true,
-  "audio_is_master_bit_exact": true,
-  "loudness": true,
-  "true_peak": true,
-  "no_truncation": true,
-  "cut_clears_anticipation": true
- },
- "cost_usd": 0.14,
- "sha256": "1df392d3703bc1cf888e0083c77533b5a4ae212e9905435a9229665c09a933d1",
- "date": "2026-08-21",
- "qa_method": "Mouth claims confirmed BY EYE at 2-4x zoom on extracted frames, never from a pixel metric alone (known-mistakes #18). A share-above-luma-150 box calibrated on take 2's known-open frames 5-40 and known-closed frames 41-121 does not separate them for Curtis at all (best gap 0.0000) - his beard and skin tone flatten the contrast the metric needs.",
- "split_rule": {
+  "lipsync": {
+    "provider": "fal.ai",
+    "model": "fal-ai/latentsync",
+    "loop_mode": "pingpong",
+    "loop_mode_note": "Never triggers: the 113.208 s driving window exceeds the 112.200 s batch audio.",
+    "seed": 20260820,
+    "guidance_scale": 1,
+    "request_id": "01a0223b-6140-7660-9992-635f34fa5c50",
+    "submitted_utc": "2026-08-21T02:51:51.932Z",
+    "completed_utc": "2026-08-21T03:04:00.956Z",
+    "batch_index": 4,
+    "batch_segments": [
+      "fb-3a",
+      "fb-3c",
+      "fb-3d",
+      "intro"
+    ],
+    "batch_content_s": 111.412,
+    "batch_blocks": 175,
+    "batch_padded_s": 112.2,
+    "returned": {
+      "frames": 2800,
+      "duration_s": 112,
+      "dims": "1920x1080",
+      "fps": "25/1",
+      "audio": {
+        "codec": "aac",
+        "sample_rate": 16000,
+        "channels": 1,
+        "bit_rate": 58656
+      },
+      "sha256": "6c1abe65a73c2cdc211bdcd0e2e29fa60bf699404a86eee9220d75785de934c0"
+    },
+    "input_retention": "fal CDN temporary inputs, 24 h expiry VERIFIED at upload (scripts/fal-upload.mjs)"
+  },
+  "split": {
+    "batch_start_s": 103.156,
+    "narration_dur_s": 8.256,
+    "audio_dur_s": 8.784,
+    "video_dur_s": 8.8,
+    "frames": 220,
+    "video_start_s": 102.916,
+    "lead_s": 0.24,
+    "lead_mp3_frames": 10,
+    "lead_video_frames": 6,
+    "tail_s": 0.24,
+    "frames_short_of_padded_audio_ms": 0,
+    "narration_starts_at_s": 0.24,
+    "align_err_ms": 16,
+    "method": "Cut at the MIDPOINT of the surrounding silence - 0.24s (10 mp3 frames = 6 video frames) before the narration and the same after it - per the documented split specification, because LatentSync opens the mouth about 6 frames BEFORE the first audible sample. Cutting at the audio onset lands inside that anticipation. Re-encoded at the cut; a stream copy snaps to the nearest keyframe and would desync the remuxed audio. Frame count rounded UP so video always covers the audio.",
+    "caption_offset_note": "Caption cues tile the DELIVERED asset, not the narration. The first cue starts at 0 and the last ends at video_dur_s (8.8s) - which is what the lesson tests assert: captions[0].start === 0, captions.at(-1).end === durationSec, and contiguity between. Do NOT offset cues by the 0.24s lead pad. That silence is INSIDE the asset and therefore inside the first cue; offsetting would push the last cue past the end of the video and fail the test. All three shipped pilots (claims-01, siu-01, ew-01) are authored this way.",
+    "caption_offset_note_superseded": "Cleared 2026-08-21. This sidecar previously carried: 'Caption cues are authored against narration time. This asset begins with 0.24s of silence, so cues must be offset by +0.24s when they are regenerated at Gate D.' That instruction was STALE and would have broken the delivery tests - the shipped cues are not offset and must not be."
+  },
+  "audio": {
+    "source": "intro.mp3",
+    "sha256": "f7fe60a262c3903e86add9e0590752086e24c7ced81192a7eca23c7f86d9d695",
+    "note": "LatentSync's returned audio (aac 16 kHz) is DISCARDED; the locked 24 kHz -24.5 LUFS master is muxed with -c:a copy, then transcoded ONCE to AAC-LC 128k/24 kHz/mono for delivery. MP3-in-MP4 is signalled as mp4a.69, which WebKit refuses to decode, so the original delivery was silent on Safari and on every browser on iOS. Video stream is COPIED bit-for-bit; nothing was re-rendered and no paid step was repeated. Verified 2026-08-21: frame count, duration, 1920x1080/25 and audio onset all unchanged; loudness held within 0.1 LU.",
+    "verified_bit_exact": true,
+    "master_at_byte_offset": 3840,
+    "lufs_integrated": -24.6,
+    "lufs_measured_over": "the narration window only - 0.24s to 0.24s + the narration length. The asset's leading and trailing digital silence is excluded, because including it moves the integrated figure on short segments without touching a single narration sample.",
+    "lufs_integrated_whole_file": -24.6,
+    "true_peak_dbfs": -8.6,
+    "mp3_frame_payload_sha256": "392e57453dc8a6a9d02a60b982bdf01ff2a572eccb58890132508677009e58c2",
+    "bit_exact_method": "containment: the Gate A master's compressed MP3 frame payload appears intact and contiguous inside the delivered payload at byte 3840 (10 silent frames x 384 bytes), which proves both that it was copied and that nothing shifted it",
+    "stream": "aac,24000,1,83088",
+    "codec_tag": "mp4a.40.2 (AAC-LC)",
+    "master_container_stream": "mp3,24000,1,128000"
+  },
+  "delivery": {
+    "dims": "1920x1080",
+    "fps": "25/1",
+    "codec": "h264 High",
+    "pix_fmt": "yuv420p",
+    "native": "NO upscaling anywhere - the base is native 1920x1080"
+  },
+  "qa": {
+    "dims": true,
+    "fps": true,
+    "pix_fmt": true,
+    "frames_cover_narration": true,
+    "frames_exact": true,
+    "audio_stream": true,
+    "audio_is_master_bit_exact": true,
+    "loudness": true,
+    "true_peak": true,
+    "no_truncation": true,
+    "cut_clears_anticipation": true
+  },
+  "cost_usd": 0.14,
+  "sha256": "f952fe171211d0053100503eb49ca6263969c716b705232d76617aea35ce8b2b",
   "date": "2026-08-21",
-  "what": "Segments are cut at the MIDPOINT of the surrounding silence - 0.240 s before the narration and 0.240 s after - instead of at the audio onset.",
-  "why": "LatentSync begins articulating before the sound. Curtis's call 4 measured it: the mouth is already open at return frame 913 while the first audible sample is at frame 919.3, about 6 frames (250 ms) of anticipation. Cutting at the audio onset lands inside that window, so whether a delivered first frame showed closed lips or open teeth depended on the segment's first phoneme.",
-  "source": "This is the split specification already written in docs/VIDEO_1_GENERATION_CONFIGS.md ('cut at the midpoint of each 0.5 s silence... the Selena run measured anticipatory mouth opening 36 ms before speech'). It was not implemented. The 0.640 s batch lead-in added on 2026-08-20 addressed only the batch-OPENING segment and is retained - it also absorbs the model's own 3-frame cold start, which returns an open mouth on frames 0-2 even when the audio is digitally silent.",
-  "why_0_24": "0.240 s is the only value that is a whole number of both units in play: 10 mp3 frames (24 ms each at 24 kHz) and 6 video frames (40 ms each at 25 fps). It fits inside the 0.5 s inter-segment gap twice with 10 ms to spare, so the approved batch plan is unchanged and NOTHING was regenerated - these assets were re-cut from the returns already paid for, at $0.00.",
-  "audio_effect": "The delivered stream is now 10 silent mp3 frames + the locked master + 10 more, concatenated with -c copy. The master's frames are never re-encoded and its payload is asserted to appear intact and contiguous at byte 3840. Integrated loudness can read up to 0.2 LU from -24.5 because the measurement window now includes digital silence; the narration itself is byte-identical and therefore unchanged.",
-  "known_scope": "Diane's delivered claims-01 set was cut under the old rule and carries open first frames on most of its 22 segments, including `intro` - the frame the start gate holds. FLAGGED, not actioned; her raw returns are not retained, so re-cutting her means re-running her LatentSync calls."
- },
- "measured": {
-  "mouth_cheek_sharpness": 1.292,
-  "mouth_cheek_softening_pct": -21.5,
-  "mouth_cheek_reference": "Curtis UNTOUCHED base measures 1.646 with identical boxes, so his absolute value is not comparable to Diane (hers sits near 0.85 - a full beard is dense high-frequency texture and loads whichever box holds it). Direction and magnitude are what matter: 1.646 -> this figure is a SOFTENING, the correct direction. Diane v4 softened 0.85 -> 0.74 (-12.9%). The REJECTED demo-driven route inverted UPWARD to 1.10 and read as pasted on.",
-  "head_rms_px": 0.659,
-  "camera_lock": "best-fit zoom vs the approved base frame 1 is 1.000x, 1.000x, 1.000x at start, middle and end - zero drift",
-  "background_drift_vs_base_frame1": {
-   "wall_screen": 2.802,
-   "window": 3.548,
-   "desk_left": 3.401,
-   "desk_right": 2.914
+  "qa_method": "Mouth claims confirmed BY EYE at 2-4x zoom on extracted frames, never from a pixel metric alone (known-mistakes #18). A share-above-luma-150 box calibrated on take 2's known-open frames 5-40 and known-closed frames 41-121 does not separate them for Curtis at all (best gap 0.0000) - his beard and skin tone flatten the contrast the metric needs.",
+  "split_rule": {
+    "date": "2026-08-21",
+    "what": "Segments are cut at the MIDPOINT of the surrounding silence - 0.240 s before the narration and 0.240 s after - instead of at the audio onset.",
+    "why": "LatentSync begins articulating before the sound. Curtis's call 4 measured it: the mouth is already open at return frame 913 while the first audible sample is at frame 919.3, about 6 frames (250 ms) of anticipation. Cutting at the audio onset lands inside that window, so whether a delivered first frame showed closed lips or open teeth depended on the segment's first phoneme.",
+    "source": "This is the split specification already written in docs/VIDEO_1_GENERATION_CONFIGS.md ('cut at the midpoint of each 0.5 s silence... the Selena run measured anticipatory mouth opening 36 ms before speech'). It was not implemented. The 0.640 s batch lead-in added on 2026-08-20 addressed only the batch-OPENING segment and is retained - it also absorbs the model's own 3-frame cold start, which returns an open mouth on frames 0-2 even when the audio is digitally silent.",
+    "why_0_24": "0.240 s is the only value that is a whole number of both units in play: 10 mp3 frames (24 ms each at 24 kHz) and 6 video frames (40 ms each at 25 fps). It fits inside the 0.5 s inter-segment gap twice with 10 ms to spare, so the approved batch plan is unchanged and NOTHING was regenerated - these assets were re-cut from the returns already paid for, at $0.00.",
+    "audio_effect": "The delivered stream is now 10 silent mp3 frames + the locked master + 10 more, concatenated with -c copy. The master's frames are never re-encoded and its payload is asserted to appear intact and contiguous at byte 3840. Integrated loudness can read up to 0.2 LU from -24.5 because the measurement window now includes digital silence; the narration itself is byte-identical and therefore unchanged.",
+    "known_scope": "Diane's delivered claims-01 set was cut under the old rule and carries open first frames on most of its 22 segments, including `intro` - the frame the start gate holds. FLAGGED, not actioned; her raw returns are not retained, so re-cutting her means re-running her LatentSync calls."
   },
-  "background_drift_note": "Inside the base's own declared walk (whole-frame drift median 2.103, max 3.384 /255 across its 3410 frames). Isolating the model on the call-6 canary - raw return vs the exact driving window, frame for corresponding frame - gave wall 2.78, window 3.46, desk 2.77-3.22, torso 3.12, eyes 3.77, MOUTH 18.12: the change is 5.8x concentrated in the mouth and uniform elsewhere, the signature of a whole-frame re-encode rather than localised corruption.",
-  "lipsync_alignment": {
-   "method": "per-frame mouth activity correlated against the audio envelope across all frames of the batch",
-   "best_lag_frames": -1,
-   "best_lag_ms": -40,
-   "r": 0.3383,
-   "speech_vs_silence": "5.043 during speech vs 3.127 during silence (1.61x)",
-   "note": "Peak is one frame from zero - inside EBU R37 (+-40 ms) and well inside ITU-R BT.1359."
+  "measured": {
+    "mouth_cheek_sharpness": 1.292,
+    "mouth_cheek_softening_pct": -21.5,
+    "mouth_cheek_reference": "Curtis UNTOUCHED base measures 1.646 with identical boxes, so his absolute value is not comparable to Diane (hers sits near 0.85 - a full beard is dense high-frequency texture and loads whichever box holds it). Direction and magnitude are what matter: 1.646 -> this figure is a SOFTENING, the correct direction. Diane v4 softened 0.85 -> 0.74 (-12.9%). The REJECTED demo-driven route inverted UPWARD to 1.10 and read as pasted on.",
+    "head_rms_px": 0.659,
+    "camera_lock": "best-fit zoom vs the approved base frame 1 is 1.000x, 1.000x, 1.000x at start, middle and end - zero drift",
+    "background_drift_vs_base_frame1": {
+      "wall_screen": 2.802,
+      "window": 3.548,
+      "desk_left": 3.401,
+      "desk_right": 2.914
+    },
+    "background_drift_note": "Inside the base's own declared walk (whole-frame drift median 2.103, max 3.384 /255 across its 3410 frames). Isolating the model on the call-6 canary - raw return vs the exact driving window, frame for corresponding frame - gave wall 2.78, window 3.46, desk 2.77-3.22, torso 3.12, eyes 3.77, MOUTH 18.12: the change is 5.8x concentrated in the mouth and uniform elsewhere, the signature of a whole-frame re-encode rather than localised corruption.",
+    "lipsync_alignment": {
+      "method": "per-frame mouth activity correlated against the audio envelope across all frames of the batch",
+      "best_lag_frames": -1,
+      "best_lag_ms": -40,
+      "r": 0.3383,
+      "speech_vs_silence": "5.043 during speech vs 3.127 during silence (1.61x)",
+      "note": "Peak is one frame from zero - inside EBU R37 (+-40 ms) and well inside ITU-R BT.1359."
+    },
+    "blinks": {
+      "expected_from_base_schedule": 24,
+      "matched_within_0_5s": 24,
+      "rate_per_min": 15
+    },
+    "first_last_frame_lips_closed": "PASS - confirmed by eye at 2-4x zoom on every first and last frame of this call after the re-cut."
   },
-  "blinks": {
-   "expected_from_base_schedule": 24,
-   "matched_within_0_5s": 24,
-   "rate_per_min": 15
-  },
-  "first_last_frame_lips_closed": "PASS - confirmed by eye at 2-4x zoom on every first and last frame of this call after the re-cut."
- }
+  "revision": {
+    "safari_audio_fix_2026_08_21": {
+      "what": "delivery audio re-containered from MP3 (mp4a.69) to AAC-LC (mp4a.40.2); +faststart added",
+      "why": "WebKit does not decode MP3 inside MP4 \u2014 picture played, narration was silent on Safari/iOS",
+      "video_stream": "bit-identical (stream copy)",
+      "cost_usd": 0.0,
+      "supersedes_sha256": "1df392d3703bc1cf888e0083c77533b5a4ae212e9905435a9229665c09a933d1"
+    }
+  }
 }

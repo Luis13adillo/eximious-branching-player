@@ -5,6 +5,38 @@ Presenter: Diane Marchetti · Released 2026-08-21
 
 ---
 
+---
+
+## ⚠️ REVISION 2026-08-21 — Safari / iOS audio fix. This package was REBUILT.
+
+**The released package played the presenter but no sound on Safari and on every browser
+on iOS.** Cause: the delivered MP4s carried the narration as **MP3 inside an MP4**, which
+is signalled as `mp4a.69`. WebKit does not decode it — the picture ran normally and the
+audio stream was dropped in silence. Chromium decodes `mp4a.69`, which is why it passed
+review. Measured with Playwright/WebKit on 2026-08-21: `canPlayType('…mp4a.69')` returned
+`""`, video advanced to t=6.01 s, audio peak amplitude **0.000**; the identical file with
+AAC audio played at peak 0.336.
+
+**Fix:** every delivered segment was re-containered to **AAC-LC 128 kbps / 24 kHz / mono**
+(`mp4a.40.2`) with the **video stream copied bit-for-bit**, and `+faststart` added. Nothing
+was re-rendered, no avatar or lip-sync asset was regenerated, and **no paid API was called
+— $0.00**.
+
+Verified across all 69 delivered segments of the three pilots: video stream MD5 identical,
+frame count identical, duration delta 0.000 s, 1920×1080 / 25 fps held, audio onset shift
+**0 ms**, loudness within 0.1 LU of −24.5 LUFS. Gate D functional acceptance re-run on the
+rebuilt package: **18/18 PASS**.
+
+| | Size | SHA-256 |
+|---|---|---|
+| `EA_claims-01_AV1.zip` **(current)** | 108.2 MB | `214c986f9b10ddf610f7387018dfd3638f7c859fd733811306978c6770d07fb5` |
+| `EA_claims-01_AV1-mp3audio-SUPERSEDED.zip` | 115.2 MB | `7cacea398fabd6f3ba90e706dc3cd8524275268ac1f9e47d64dbc5905551d206` |
+
+The superseded archive is retained on disk. **The hash table below records the superseded
+build** — it is left unedited as the release record of what was originally shipped.
+
+---
+
 ## Files
 
 | File | Size | SHA-256 |

@@ -180,7 +180,9 @@ locked script → OpenAI TTS (per-presenter locked voice config)
   → batch narration into calls of ≥40 s, pad past the 16-frame boundary AT 25 FPS
   → fal-ai/latentsync (loop_mode pingpong, seed recorded)
   → DISCARD LatentSync's returned audio; REMUX the locked 24 kHz master
-  → split + conform to exactly 1920×1080 / 25 fps → player → Thinkific HTML5 zip
+  → split + conform to exactly 1920×1080 / 25 fps
+  → encode delivered audio to AAC-LC 128k / 24 kHz / mono, video COPIED (`-c:v copy`)
+  → player → Thinkific HTML5 zip
 ```
 
 | | Locked value |
@@ -189,7 +191,8 @@ locked script → OpenAI TTS (per-presenter locked voice config)
 | Motion base | **KIE `kling/v2-1-pro`**, generated **once per presenter**, reused across all 267 |
 | Delivery | **exactly 1920×1080, 25 fps** |
 | Returned lip-sync audio | **DISCARDED** (it returns AAC 16 kHz) |
-| Delivered audio | the locked **24 kHz mono 128 kbps −24.5 LUFS** master, **remuxed** |
+| Delivered audio | the locked **24 kHz mono 128 kbps −24.5 LUFS** master, carried to delivery as **AAC-LC** (`mp4a.40.2`) |
+| Delivered audio codec | **AAC-LC only.** MP3-in-MP4 (`mp4a.69`) is forbidden — WebKit will not decode it, so every iOS learner gets silence. See §7 F‑7. |
 | Diane Marchetti | OpenAI `tts-1-hd` · `shimmer` · speed 1.0 |
 | Curtis Whitfield | OpenAI `tts-1-hd` · `onyx` · speed 1.0 |
 | Selena Navarro | OpenAI **`gpt-4o-mini-tts-2025-12-15`** (pinned) · `sage` · **+ the locked `instructions` string**, read byte-exact from `presenter-3-selena-navarro-voice-SELECTED.json` (§7 F‑6) |
@@ -408,6 +411,16 @@ Recorded when the approved Curtis Whitfield and Selena Navarro masters were regi
 **F‑4 — ~~Voice approval status is unchanged by this round.~~ SUPERSEDED — both voices are now approved (see F‑6 and ★ LOCKED).** Historical note follows. Roger's approval covered the **identities and visuals**. The `ash` (Presenter 2) and `sage` (Presenter 3) voice candidates in `docs/PRESENTER_VOICE_APPROVAL.md` are **not** recorded here as approved, because no such approval was stated. The Presenter 3 demo was rendered under the "Simone" working name; the voice itself is independent of the name change.
 
 **F‑5 — RESOLVED: stale Diane production-base line corrected.** §4 C item 13 previously read "**Approved brighter‑office Diane** as the production base," contradicting the ★ LOCKED decision. Corrected: the locked production base is the **ORIGINAL DARK-OFFICE Diane** (`presenter-diane.jpg`); the brighter-office and light-studio versions are retained as **superseded historical exploration only**. Audit row 12 was updated to name both lighter files explicitly. **Documentation only — no Diane image file was modified** (all three verified byte-identical by checksum).
+
+**F‑7 — RESOLVED: delivered MP4 audio is AAC-LC, not MP3 (Safari / iOS playback fix, 2026-08-21).** All three pilots were released with the locked narration muxed into the delivered MP4 as **MP3**, because pipeline rule 4 ("remux the locked 24 kHz master") had been implemented as a literal stream copy of the `.mp3` master. ffmpeg writes that as an `mp4a` sample entry with ESDS objectTypeIndication **`0x69`** — codec string **`mp4a.69`**. **WebKit does not decode it.** Every browser on iOS is WebKit, so every iPhone and iPad learner received picture and silence. Chromium decodes it normally, which is why all four gates passed and the fault reached the client.
+
+Measured on the same file in both engines: WebKit `canPlayType('video/mp4; codecs="avc1.640028, mp4a.69"')` → `""`, video advanced to t=6.01 s, audio peak **0.000**; Chromium → `"probably"`, peak 0.337. Controls confirmed WebKit plays a bare `.mp3` (peak 0.3363) and AAC-in-MP4 (0.3357) without complaint, so the container/codec pairing was the fault, not the audio.
+
+**The player was not at fault.** It unmuted correctly in both engines (`muted=false`, `volume=1` after Start). The hardcoded `muted` attribute on the `<video>` in `MediaStage.tsx` is initial state only — React does not re-apply an unchanged prop, and the media clock's imperative unmute wins.
+
+**Correction — $0.00, nothing regenerated.** The delivered audio is transcoded once to **AAC-LC 128 kbps / 24 kHz / mono** with `-c:v copy` and `+faststart`. Across all 69 delivered segments: video stream MD5 **identical**, frame count identical, duration delta 0.000 s, 1920×1080 / 25 fps held, **audio onset shift 0 ms**, integrated loudness within 0.1 LU of −24.5. `scripts/lipsync-deliver.mjs` now writes an mp3 intermediate in the working directory — where every rule-4 byte-exactness proof still runs unchanged — and transcodes once for delivery, adding five Gate C rows: `delivered_audio_browser_safe`, `delivered_dims`, `delivered_video_bit_identical`, `delivered_frames_identical`, `delivered_loudness`. `export-thinkific/assemble.mjs`'s packaging guard previously asserted `codec_name === "mp3"`, which would have blocked this fix; it now asserts the packaged audio stream is **byte-identical to the delivered master's**, which states rule 4 directly and more strictly.
+
+**Rule 4 in `CLAUDE.md` was amended accordingly** — the locked 24 kHz / −24.5 LUFS master remains the sole authoritative source and LatentSync's returned audio is still discarded, but the delivered container must carry it as AAC-LC and MP3-in-MP4 is forbidden. Superseded packages retained locally as `EA_*-mp3audio-SUPERSEDED.zip`; the three delivery documents carry a revision block with the new sizes and hashes.
 
 ---
 

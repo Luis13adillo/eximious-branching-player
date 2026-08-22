@@ -1,99 +1,108 @@
 {
- "asset": "fb-3d.mp4",
- "video": "EA_claims-01_AV1",
- "presenter": "Diane Marchetti (Presenter 1)",
- "motion_base": {
-  "provider": "KIE",
-  "model": "kling/v2-1-pro",
-  "taskId": "9a16ce872a23ff367b12b26c7db6dc8a",
-  "duration_s": 10,
-  "cfg_scale": 0.5,
-  "cost_usd": 0.5,
-  "file": "scratchpad bases/base2.mp4",
-  "sha256": "95e63b09e7181484f0711a22d6ef3c6cb6f74eb75326c511f20a47b2210c19c1",
-  "note": "Diane NOT speaking - lips closed and still for the whole clip. Generated with the locked CONFIG 1 prompt and negative prompt, byte-exact from docs/VIDEO_1_GENERATION_CONFIGS.md. Native 1920x1080. 1 of 4 draws passed QA; the other three failed on camera drift (0.24/0.60/0.63 vs gate 0.1) or a moving mouth.",
-  "qa": {
-   "lips_closed": true,
-   "blinks_per_min": 17.9,
-   "face_motion": 1.13,
-   "camera_drift": 0.0876
+  "asset": "fb-3d.mp4",
+  "video": "EA_claims-01_AV1",
+  "presenter": "Diane Marchetti (Presenter 1)",
+  "motion_base": {
+    "provider": "KIE",
+    "model": "kling/v2-1-pro",
+    "taskId": "9a16ce872a23ff367b12b26c7db6dc8a",
+    "duration_s": 10,
+    "cfg_scale": 0.5,
+    "cost_usd": 0.5,
+    "file": "scratchpad bases/base2.mp4",
+    "sha256": "95e63b09e7181484f0711a22d6ef3c6cb6f74eb75326c511f20a47b2210c19c1",
+    "note": "Diane NOT speaking - lips closed and still for the whole clip. Generated with the locked CONFIG 1 prompt and negative prompt, byte-exact from docs/VIDEO_1_GENERATION_CONFIGS.md. Native 1920x1080. 1 of 4 draws passed QA; the other three failed on camera drift (0.24/0.60/0.63 vs gate 0.1) or a moving mouth.",
+    "qa": {
+      "lips_closed": true,
+      "blinks_per_min": 17.9,
+      "face_motion": 1.13,
+      "camera_drift": 0.0876
+    }
+  },
+  "driving_base": {
+    "file": "scratchpad diane_drive_base2.mp4",
+    "sha256": "11156d1bb372bbbb53c93c37497275042a6da43a1181cc70706379f6dfc66adc",
+    "dur_s": 480.0,
+    "fps": 24,
+    "frames": 11520,
+    "method": "base2's 241 frames reordered into a continuous walk. Every output frame is a bit-exact copy; only the ORDER changes. ffmpeg only, $0.00.",
+    "distinct_source_frames": "192 of 241",
+    "blink_rate_per_min": 12.9,
+    "joins": 103,
+    "join_size": "0.738 vs base2's own max consecutive-frame step of 0.657",
+    "guarantees": [
+      "no cut outside the 103 declared joins",
+      "no blink ever played in reverse",
+      "direction changes ~1.4 s apart - drifts rather than nods"
+    ]
+  },
+  "lipsync": {
+    "provider": "fal.ai",
+    "model": "fal-ai/latentsync",
+    "loop_mode": "pingpong",
+    "loop_mode_note": "Never triggers: each driving window exceeds its audio.",
+    "seed": 20260820,
+    "guidance_scale": 1,
+    "request_id": "01a020fe-b2d0-7322-b6f6-fbac6e7095f8",
+    "batch_index": 2,
+    "batch_segments": [
+      "fb-3c",
+      "fb-3d",
+      "intro",
+      "rejoin-1a",
+      "rejoin-1b"
+    ],
+    "batch_padded_s": 107.08
+  },
+  "split": {
+    "batch_start_s": 27.932,
+    "video_start_s": 27.92,
+    "align_err_ms": -12.0,
+    "frames": 506,
+    "video_dur_s": 20.24,
+    "audio_dur_s": 20.232,
+    "method": "Re-encoded at the cut; a stream copy snaps to the nearest keyframe and would desync the remuxed audio. Frame count rounded UP so video always covers the audio.",
+    "measured": "frames and video_dur_s are ffprobe measurements of the delivered v4 asset on 2026-08-21, not values carried over from an earlier revision. video_start_s is the batch offset snapped DOWN to the 25 fps frame grid; align_err_ms is that snap (video_start_s - batch_start_s), always <= 0, so the cut never starts late."
+  },
+  "audio": {
+    "source": "fb-3d.mp3",
+    "note": "LatentSync's returned audio (aac 16 kHz) is DISCARDED; the locked 24 kHz -24.5 LUFS master is muxed with -c:a copy, then transcoded ONCE to AAC-LC 128k/24 kHz/mono for delivery. MP3-in-MP4 is signalled as mp4a.69, which WebKit refuses to decode, so the original delivery was silent on Safari and on every browser on iOS. Video stream is COPIED bit-for-bit; nothing was re-rendered and no paid step was repeated. Verified 2026-08-21: frame count, duration, 1920x1080/25 and audio onset all unchanged; loudness held within 0.1 LU.",
+    "lufs_integrated": -24.5,
+    "stream": "aac,24000,1,98185",
+    "codec_tag": "mp4a.40.2 (AAC-LC)",
+    "master_container_stream": "mp3,24000,1,128000"
+  },
+  "delivery": {
+    "dims": "1920x1080",
+    "fps": "25/1",
+    "native": "NO upscaling anywhere - base2 is native 1920x1080"
+  },
+  "measured": {
+    "mouth_cheek_sharpness": 0.74,
+    "mouth_cheek_reference": "approved demo 0.85, prior v2 0.84 - lower is softer, which is the correct direction; the rejected demo-driven set inverted to 1.10 and read as pasted on",
+    "blinks_per_min": "11-15 measured on delivered segments",
+    "head_rms_px": 0.42,
+    "head_rms_note": "Below the prior v2 (2.08) and well below the approved demo (6.16). KNOWN LIMITATION: base2 was generated from the locked prompt, which asks her to hold still. Fixing this needs a new base generated with a movement-positive prompt (lips still closed), ~$0.50 per draw plus a segment regeneration."
+  },
+  "cost_usd": 0.1071,
+  "sha256": "9d5d9ac315bb9aa751c0636a1191d1f42ff809d4dea14859e009214196d49fcc",
+  "date": "2026-08-20",
+  "revision": {
+    "version": 4,
+    "supersedes": "public/media/claims-01-av1-v3-demo-driven-superseded/fb-3d.mp4",
+    "supersedes_sha256": "e57f7011db6c725a697a817fcb6a49e61a96b95abf9e48775970df2d7cad311a",
+    "reason": "v3 drove LatentSync from the approved demo's own footage, in which Diane is already speaking. Repainting a mouth over a moving mouth inverted the mouth/face sharpness to 1.10 and left her jaw following the demo's words - rejected on review. v4 drives from a purpose-made clip in which her lips are closed, which restores a clean mouth and returns delivery to native 1920x1080.",
+    "chain": [
+      "v1 -> v2: blink cadence",
+      "v2 -> v3: demo-driven performance (REJECTED)",
+      "v3 -> v4: purpose-made non-speaking base"
+    ],
+    "safari_audio_fix_2026_08_21": {
+      "what": "delivery audio re-containered from MP3 (mp4a.69) to AAC-LC (mp4a.40.2); +faststart added",
+      "why": "WebKit does not decode MP3 inside MP4 \u2014 picture played, narration was silent on Safari/iOS",
+      "video_stream": "bit-identical (stream copy)",
+      "cost_usd": 0.0,
+      "supersedes_sha256": "3661384197aa589e778accba85fb89ebf7f638e18c654aa8e40c943bf7568c0d"
+    }
   }
- },
- "driving_base": {
-  "file": "scratchpad diane_drive_base2.mp4",
-  "sha256": "11156d1bb372bbbb53c93c37497275042a6da43a1181cc70706379f6dfc66adc",
-  "dur_s": 480.0,
-  "fps": 24,
-  "frames": 11520,
-  "method": "base2's 241 frames reordered into a continuous walk. Every output frame is a bit-exact copy; only the ORDER changes. ffmpeg only, $0.00.",
-  "distinct_source_frames": "192 of 241",
-  "blink_rate_per_min": 12.9,
-  "joins": 103,
-  "join_size": "0.738 vs base2's own max consecutive-frame step of 0.657",
-  "guarantees": [
-   "no cut outside the 103 declared joins",
-   "no blink ever played in reverse",
-   "direction changes ~1.4 s apart - drifts rather than nods"
-  ]
- },
- "lipsync": {
-  "provider": "fal.ai",
-  "model": "fal-ai/latentsync",
-  "loop_mode": "pingpong",
-  "loop_mode_note": "Never triggers: each driving window exceeds its audio.",
-  "seed": 20260820,
-  "guidance_scale": 1,
-  "request_id": "01a020fe-b2d0-7322-b6f6-fbac6e7095f8",
-  "batch_index": 2,
-  "batch_segments": [
-   "fb-3c",
-   "fb-3d",
-   "intro",
-   "rejoin-1a",
-   "rejoin-1b"
-  ],
-  "batch_padded_s": 107.08
- },
- "split": {
-  "batch_start_s": 27.932,
-  "video_start_s": 27.92,
-  "align_err_ms": -12.0,
-  "frames": 506,
-  "video_dur_s": 20.24,
-  "audio_dur_s": 20.232,
-  "method": "Re-encoded at the cut; a stream copy snaps to the nearest keyframe and would desync the remuxed audio. Frame count rounded UP so video always covers the audio.",
-  "measured": "frames and video_dur_s are ffprobe measurements of the delivered v4 asset on 2026-08-21, not values carried over from an earlier revision. video_start_s is the batch offset snapped DOWN to the 25 fps frame grid; align_err_ms is that snap (video_start_s - batch_start_s), always <= 0, so the cut never starts late."
- },
- "audio": {
-  "source": "fb-3d.mp3",
-  "note": "LatentSync's returned audio (aac 16 kHz) is DISCARDED; the locked 24 kHz -24.5 LUFS master is remuxed with -c:a copy.",
-  "lufs_integrated": -24.5,
-  "stream": "mp3,24000,1,128000"
- },
- "delivery": {
-  "dims": "1920x1080",
-  "fps": "25/1",
-  "native": "NO upscaling anywhere - base2 is native 1920x1080"
- },
- "measured": {
-  "mouth_cheek_sharpness": 0.74,
-  "mouth_cheek_reference": "approved demo 0.85, prior v2 0.84 - lower is softer, which is the correct direction; the rejected demo-driven set inverted to 1.10 and read as pasted on",
-  "blinks_per_min": "11-15 measured on delivered segments",
-  "head_rms_px": 0.42,
-  "head_rms_note": "Below the prior v2 (2.08) and well below the approved demo (6.16). KNOWN LIMITATION: base2 was generated from the locked prompt, which asks her to hold still. Fixing this needs a new base generated with a movement-positive prompt (lips still closed), ~$0.50 per draw plus a segment regeneration."
- },
- "cost_usd": 0.1071,
- "sha256": "3661384197aa589e778accba85fb89ebf7f638e18c654aa8e40c943bf7568c0d",
- "date": "2026-08-20",
- "revision": {
-  "version": 4,
-  "supersedes": "public/media/claims-01-av1-v3-demo-driven-superseded/fb-3d.mp4",
-  "supersedes_sha256": "e57f7011db6c725a697a817fcb6a49e61a96b95abf9e48775970df2d7cad311a",
-  "reason": "v3 drove LatentSync from the approved demo's own footage, in which Diane is already speaking. Repainting a mouth over a moving mouth inverted the mouth/face sharpness to 1.10 and left her jaw following the demo's words - rejected on review. v4 drives from a purpose-made clip in which her lips are closed, which restores a clean mouth and returns delivery to native 1920x1080.",
-  "chain": [
-   "v1 -> v2: blink cadence",
-   "v2 -> v3: demo-driven performance (REJECTED)",
-   "v3 -> v4: purpose-made non-speaking base"
-  ]
- }
 }

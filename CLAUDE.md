@@ -134,6 +134,7 @@ locked script
   → trim to whole frames, ROUNDING UP one frame so video covers the audio
   → discard LatentSync's returned audio; remux the locked 24 kHz narration
   → ffmpeg split at segment offsets + conform to exactly 1920×1080
+  → encode the delivered audio to AAC-LC 128k / 24 kHz / mono, video stream COPIED
   → existing Next.js branching player
   → export-thinkific self-contained HTML5 zip
 ```
@@ -150,8 +151,26 @@ locked script
    minimum applies; per-segment calling raises catalog cost ~79%.
 3. **LatentSync always returns 25 fps**, whatever the input frame rate. Compute the
    16-frame padding at 25 fps or the fix under-pads and silently clips narration.
-4. **Always discard LatentSync's returned audio** (it comes back AAC 16 kHz) and remux the
-   locked 24 kHz master. This is what preserves −24.5 LUFS to delivery.
+4. **The locked narration is the only audio that reaches delivery, and it must be in a
+   codec every browser decodes.** Three parts, all binding:
+   - **Always discard LatentSync's returned audio** (it comes back AAC 16 kHz). The
+     authoritative source is always the locked **24 kHz / mono / 128 kbps / −24.5 LUFS**
+     master produced at the mastering step. Nothing else may be substituted for it.
+   - **The delivered MP4's audio must be AAC-LC** (`mp4a.40.2`), 128 kbps / 24 kHz / mono,
+     transcoded once from that master with the video stream copied (`-c:v copy`), plus
+     `+faststart`. −24.5 LUFS must survive the transcode — verify with `ebur128`.
+   - **MP3 inside the final MP4 is forbidden.** A stream-copied `.mp3` becomes an `mp4a`
+     sample entry with ESDS objectTypeIndication `0x69` (`mp4a.69`), which **WebKit refuses
+     to decode**. Every iOS browser is WebKit, so all three pilots shipped 2026-08-21 with
+     picture and silence on iPhone and iPad. Corrected the same day at $0.00 by
+     re-containering; nothing was regenerated. An mp3 intermediate inside the working
+     directory is fine and is where the byte-exactness proofs run — it must not be the
+     delivered file.
+
+   **Never judge delivery audio by codec name or by "is the locked master in the file?"
+   alone.** In the defect above the master WAS in the file, bit-exact. Assert what the
+   browser can actually decode: Gate C rows `delivered_audio_browser_safe`, `delivered_dims`,
+   `delivered_video_bit_identical`, `delivered_frames_identical`, `delivered_loudness`.
 5. **Delivery is exactly 1920×1080.** Conform every asset; never assume the model's output
    dimensions are correct.
 6. **Approved masters stay byte-identical.** Never regenerate, edit, crop, recolour,

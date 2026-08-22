@@ -258,6 +258,26 @@ for (const o of row.offsets) {
   const mp3Hash = sha256(mp3);
   const cut = join(workDir, `${id}-cut.mp4`);
   const padded = join(workDir, `${id}-padded.mp3`);
+  /**
+   * TWO files, deliberately.
+   *
+   * `outMp3` is the mp3-in-MP4 mux this stage has always produced. Every rule-4 proof
+   * below still runs against it, unchanged: the master's compressed frame bytes are
+   * located inside it, loudness is measured over that located span, truncation is checked
+   * on it. Nothing about the existing gate moved.
+   *
+   * `out` is what actually ships, and it is the SAME video stream with the audio in
+   * AAC-LC. MP3 inside an MP4 is signalled as `mp4a.69`, which WebKit refuses to decode —
+   * so the first three pilots shipped with picture and no sound on Safari and on every
+   * browser on iOS (they all use WebKit). Chromium decodes it, which is why it survived
+   * QA. Measured 2026-08-21: WebKit `canPlayType('…mp4a.69')` returns "", video advanced
+   * normally, audio peak amplitude 0.000; the same file with AAC audio played at 0.336.
+   *
+   * The conversion copies the video stream, so nothing is re-rendered and no paid step
+   * is repeated. Across all 69 delivered pilot segments it held frame count, duration
+   * (delta 0.000 s), 1920x1080/25, loudness (worst case 0.1 LU), and audio onset (0 ms).
+   */
+  const outMp3 = join(workDir, `${id}-mp3audio.mp4`);
   const out = join(mediaDir, `${id}.mp4`);
 
   // The cut must have real silence to sit in on both sides. The batch's own lead-in
@@ -327,12 +347,22 @@ for (const o of row.offsets) {
       "-c:v", "libx264", "-preset", "slow", "-crf", "18", "-pix_fmt", "yuv420p", cut]);
 
   // 3. Mux with -c:a copy. LatentSync's returned audio never reaches here.
+  //    This is the file every rule-4 assertion below is made against.
   ff(["-y", "-i", cut, "-i", padded, "-map", "0:v:0", "-map", "1:a:0",
-      "-c:v", "copy", "-c:a", "copy", "-movflags", "+faststart", out]);
+      "-c:v", "copy", "-c:a", "copy", "-movflags", "+faststart", outMp3]);
+
+  // 3b. Deliver it in a codec browsers will actually decode. Video is COPIED —
+  //     the generated pixels are untouched and no paid step is repeated.
+  ff(["-y", "-i", outMp3, "-map", "0:v:0", "-map", "0:a:0",
+      "-c:v", "copy", "-c:a", "aac", "-profile:a", "aac_low",
+      "-b:a", "128k", "-ar", "24000", "-ac", "1",
+      "-movflags", "+faststart", out]);
 
   // ---- QA -----------------------------------------------------------------
-  const vi = videoProbe(out);
-  const nf = countFrames(out);
+  // Everything from here to `cut_clears_anticipation` is measured on `outMp3`, exactly
+  // as it always was. The delivered AAC file is checked separately, further down.
+  const vi = videoProbe(outMp3);
+  const nf = countFrames(outMp3);
   const vidDur = nf / OUT_FPS;
 
   // Audio identity - rule 4's proof.
@@ -351,12 +381,12 @@ for (const o of row.offsets) {
   const payloadBytes = (p) => execFileSync("bash", ["-c",
     `ffmpeg -hide_banner -loglevel error -i "${p}" -map 0:a:0 -c:a copy -f data -`],
     { encoding: "buffer", maxBuffer: 256 * 1024 * 1024 });
-  const pDelivered = payloadBytes(out);
+  const pDelivered = payloadBytes(outMp3);
   const pMaster = payloadBytes(mp3);
   const masterAt = pDelivered.indexOf(pMaster);
   const expectedAt = LEAD_MP3_FRAMES * 384;            // 384 bytes per frame at 128 kbps CBR
   const payloadDelivered = execFileSync("bash", ["-c",
-    `ffmpeg -hide_banner -loglevel error -i "${out}" -map 0:a:0 -c:a copy -f data - | shasum -a 256`],
+    `ffmpeg -hide_banner -loglevel error -i "${outMp3}" -map 0:a:0 -c:a copy -f data - | shasum -a 256`],
     { encoding: "utf8", maxBuffer: 256 * 1024 * 1024 }).split(" ")[0];
 
   /**
@@ -381,13 +411,33 @@ for (const o of row.offsets) {
    * actually sit inside the delivered audio and measure exactly that span. Failing to find
    * them is itself a QA failure - it would mean the delivered audio is not the master.
    */
-  const narr = locateNarration(out, mp3);
+  const narr = locateNarration(outMp3, mp3);
   const narrWav = join(workDir, `${id}-narration-window.wav`);
-  ff(["-y", "-ss", (narr ? narr.offsetS : LEAD_S).toFixed(6), "-t", (narr ? narr.durS : o.audio_dur_s).toFixed(6),
-      "-i", out, "-map", "0:a:0", narrWav]);
+  const narrOffset = (narr ? narr.offsetS : LEAD_S).toFixed(6);
+  const narrDur = (narr ? narr.durS : o.audio_dur_s).toFixed(6);
+  ff(["-y", "-ss", narrOffset, "-t", narrDur,
+      "-i", outMp3, "-map", "0:a:0", narrWav]);
   const lu = ebur128(narrWav);
-  const luWhole = ebur128(out);
-  const trunc = truncationCheck(out);
+  const luWhole = ebur128(outMp3);
+  const trunc = truncationCheck(outMp3);
+
+  /**
+   * ---- The DELIVERED file (AAC) -------------------------------------------
+   * Three things have to be true of it, and each is asserted rather than assumed:
+   *   1. the picture is bit-identical to the file every check above ran on;
+   *   2. the audio is in a codec WebKit will decode, at the locked 24 kHz mono;
+   *   3. the narration still measures -24.5 LUFS over the SAME located window.
+   * (3) is what proves the transcode was transparent — it is the only step in this
+   * stage that touches audio samples at all.
+   */
+  const viOut = videoProbe(out);
+  const nfOut = countFrames(out);
+  const vStreamMd5 = (p) => execFileSync("ffmpeg",
+    ["-v", "error", "-i", p, "-map", "0:v:0", "-c", "copy", "-f", "md5", "-"],
+    { encoding: "utf8" }).trim().replace(/^MD5=/, "");
+  const narrWavOut = join(workDir, `${id}-narration-window-delivered.wav`);
+  ff(["-y", "-ss", narrOffset, "-t", narrDur, "-i", out, "-map", "0:a:0", narrWavOut]);
+  const luOut = ebur128(narrWavOut);
 
   const qa = {
     dims: vi.width === 1920 && vi.height === 1080,
@@ -415,9 +465,25 @@ for (const o of row.offsets) {
      * structural claim; the binding check remains visual (known-mistakes #18).
      */
     cut_clears_anticipation: cutStart >= (o.batch_start_s - LEAD_S - DECODER_DELAY_FIX_S) - 1e-9 && LEAD_VID_FRAMES >= 6,
+
+    // ---- the file that actually ships ----
+    /**
+     * The row the first three pilots needed and did not have. `audio_stream` above
+     * proves the locked master reached the container; it says nothing about whether a
+     * learner can hear it. MP3-in-MP4 passed every check in this gate and was silent on
+     * every Apple device. This asserts the delivery codec is one WebKit decodes.
+     */
+    delivered_audio_browser_safe:
+      viOut.audio?.codec === "aac" && viOut.audio.sample_rate === 24000 && viOut.audio.channels === 1,
+    delivered_dims: viOut.width === 1920 && viOut.height === 1080 && viOut.fps === "25/1",
+    // The transcode touched audio only — the generated pixels must be bit-identical.
+    delivered_video_bit_identical: vStreamMd5(out) === vStreamMd5(outMp3),
+    delivered_frames_identical: nfOut === nf,
+    // -24.5 LUFS has to survive the one lossy step in this stage.
+    delivered_loudness: Math.abs(luOut.integrated - TARGET_LUFS) <= LUFS_TOLERANCE,
   };
   const pass = Object.values(qa).every(Boolean);
-  results.push({ id, frames: nf, vidDur, audioDur: o.audio_dur_s, paddedDur, cutStart, cover_ms: +((vidDur - paddedDur) * 1000).toFixed(1), narr, vi, lu, luWhole, trunc, qa, pass, mp3Hash, framesShortMs, tailS, availableTail, masterTailSilenceS, silenceBeforeLastFrame, batch_start_s: o.batch_start_s, payload_sha256: payloadDelivered, master_at_byte: masterAt });
+  results.push({ id, frames: nf, vidDur, audioDur: o.audio_dur_s, paddedDur, cutStart, cover_ms: +((vidDur - paddedDur) * 1000).toFixed(1), narr, vi, lu, luWhole, trunc, qa, pass, mp3Hash, framesShortMs, tailS, availableTail, masterTailSilenceS, silenceBeforeLastFrame, batch_start_s: o.batch_start_s, payload_sha256: payloadDelivered, master_at_byte: masterAt, delivered: { audio: viOut.audio, frames: nfOut, lufs: luOut.integrated } });
 
   console.log(`    ${id.padEnd(14)} ${nf} fr ${vidDur.toFixed(3)}s vs audio ${paddedDur.toFixed(3)}s (+${((vidDur - paddedDur) * 1000).toFixed(0)} ms)  cut @ ${cutStart.toFixed(3)}s  ${vi.width}x${vi.height}  ${lu.integrated} LUFS  TP ${lu.truePeak}  ${pass ? "PASS" : "FAIL " + Object.entries(qa).filter(([, v]) => !v).map(([k]) => k).join(",")}`);
 }
