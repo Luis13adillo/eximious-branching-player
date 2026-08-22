@@ -36,6 +36,36 @@ const nextConfig: NextConfig = {
           },
         ],
       },
+      {
+        // Narration media caching.
+        //
+        // Next.js serves everything in `public/` as
+        // `cache-control: public, max-age=0, must-revalidate`, which tells the
+        // browser it may not reuse a file without asking the server first. For
+        // 1080p narration that is expensive: a <video> issues many range
+        // requests per clip, and iOS Safari evicts media buffers early under
+        // memory pressure, so a phone re-fetches video it already had. Measured
+        // 2026-08-22 on the deployed preview: transfers pinned at ~120 KB/s
+        // against the ~2.8-3.4 Mbps these clips need to play in real time.
+        //
+        // One hour, deliberately short. Delivered media HAS been replaced in
+        // place at the same path (the Selena recast, 2026-08-22), so a long
+        // max-age or `immutable` would keep serving a superseded voice to a
+        // reviewer. An hour covers a review session; after that the ETag makes
+        // revalidation a cheap 304. No `stale-while-revalidate`, for the same
+        // reason — correctness of WHICH cut is served outranks the last few
+        // percent of caching.
+        //
+        // Preview-side only: the Thinkific package is served by Thinkific with
+        // their own headers, so this does not travel with the deliverable.
+        source: "/media/:path*",
+        headers: [
+          {
+            key: "Cache-Control",
+            value: "public, max-age=3600, must-revalidate",
+          },
+        ],
+      },
     ];
   },
 };
