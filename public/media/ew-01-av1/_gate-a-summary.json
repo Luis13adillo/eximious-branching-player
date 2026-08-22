@@ -1,29 +1,192 @@
 {
   "lesson": "ew-01-av1",
   "presenter": "Selena Navarro (Presenter 3)",
-  "model": "gpt-4o-mini-tts-2025-12-15",
-  "voice": "sage",
-  "date": "2026-08-21T00:00:00.000Z",
-  "reconstructed": "Rebuilt on 2026-08-21 from the 25 approved audio sidecars, which carry every figure below. scripts/tts-narration.mjs writes this file at the end of a synthesis run; Selena's run predates that step, so the file was missing while claims-01 and siu-01 had theirs. No audio was re-synthesised and no master was touched - verified by sha256 against every sidecar after measuring.",
+  "provider": "fal.ai -> MiniMax",
+  "endpoint": "POST https://fal.run/fal-ai/minimax/speech-02-hd",
+  "model": "minimax/speech-02-hd",
+  "voice": "ttv-voice-2026082200132526-qth65Vqj",
+  "voice_label": "LA-1-mexican-american (voice-design, 2026-08-22)",
+  "date": "2026-08-22T15:07:50.960Z",
+  "rebuilt_from": "the per-segment Gate A sidecars on disk, not from a synthesis run",
+  "narration_lock": {
+    "narration_sha256": "54f55fcee0fc63ddfb8587922337bf630b275169c4a1b44ecee30652c68d48dc",
+    "narration_chars": 9881
+  },
   "segments": 25,
   "characters": 9881,
-  "characters_synthesised": 9881,
-  "spend_usd": 0.0059,
-  "spend_this_run_usd": 0,
-  "spend_note": "TEXT-IN ONLY. gpt-4o-mini-tts bills $0.60 / 1M text-in characters AND $12.00 / 1M audio-out tokens; the script's cost model (scripts/tts-narration.mjs PRICE) counts only characters, and its own entry says so. Curtis and Diane are on tts-1-hd, which is billed per character alone, so their spend_usd is complete and Selena's is not. The audio-out portion was never metered at the time and is NOT recoverable from these files - read the OpenAI billing record for the true figure. It does not change any decision: even at a generous estimate the whole of Gate A sits far inside the catalog budget.",
-  "measured_total_s": 694.056,
-  "measured_chars_per_sec": 14.24,
-  "gate_b": {
+  "spend_usd": 0.994,
+  "spend_note": null,
+  "provider_billed_units": [
+    {
+      "id": "intro",
+      "billable_units": "0.152",
+      "request_id": "01a029ac-f731-78c0-9523-820e96bdd4da",
+      "note": "initial draw (single-segment test run; entry restored — the full run overwrote the summary and intro was skipped as already rendered)"
+    },
+    {
+      "id": "assignment-1",
+      "billable_units": "0.291",
+      "request_id": "01a029b1-b02c-7513-8d2e-d522af3dcdb7",
+      "note": "initial draw"
+    },
+    {
+      "id": "assignment-2",
+      "billable_units": "0.34",
+      "request_id": "01a029b2-512d-7852-a1b7-05a656e8a886",
+      "note": "initial draw"
+    },
+    {
+      "id": "assignment-3",
+      "billable_units": "0.047",
+      "request_id": "01a029b2-6f61-7f80-a5d3-01ac82a072e8",
+      "note": "initial draw"
+    },
+    {
+      "id": "assignment-4",
+      "billable_units": "0.014",
+      "request_id": "01a029b2-7e31-7b70-86ac-bf8f740c5c74",
+      "note": "initial draw"
+    },
+    {
+      "id": "decision-1",
+      "billable_units": "0.016",
+      "request_id": "01a029b2-8a51-7662-9300-d635f37271f0",
+      "note": "initial draw"
+    },
+    {
+      "id": "fb-1a",
+      "billable_units": "0.506",
+      "request_id": "01a029b2-991d-71e1-a4bc-cb9a5f59e09b",
+      "note": "initial draw"
+    },
+    {
+      "id": "fb-1c",
+      "billable_units": "0.583",
+      "request_id": "01a029b2-b7e0-7ae2-b0fe-b5831d63f271",
+      "note": "initial draw"
+    },
+    {
+      "id": "fb-1d",
+      "billable_units": "0.44",
+      "request_id": "01a029b2-db7a-7991-a077-933a37c9db9c",
+      "note": "initial draw"
+    },
+    {
+      "id": "rejoin-1a",
+      "billable_units": "0.702",
+      "request_id": "01a029b2-f9a2-7c71-8d5e-491cfd85e10a",
+      "note": "initial draw"
+    },
+    {
+      "id": "rejoin-1b",
+      "billable_units": "0.289",
+      "request_id": "01a029b3-1c0c-75c1-9f27-5fce003b5797",
+      "note": "initial draw"
+    },
+    {
+      "id": "decision-2",
+      "billable_units": "0.154",
+      "request_id": "01a029b3-3864-77b3-80d4-65a4dcc75dbf",
+      "note": "initial draw"
+    },
+    {
+      "id": "fb-2a",
+      "billable_units": "0.666",
+      "request_id": "01a029b3-4bf0-7243-9b21-57dd61b2d18b",
+      "note": "initial draw"
+    },
+    {
+      "id": "fb-2c",
+      "billable_units": "0.523",
+      "request_id": "01a029b3-6d54-7853-9f60-e8d1c82ff61e",
+      "note": "initial draw"
+    },
+    {
+      "id": "fb-2d",
+      "billable_units": "0.476",
+      "request_id": "01a029b3-8bd4-7913-b62e-0b40db787d6c",
+      "note": "initial draw"
+    },
+    {
+      "id": "rejoin-2a",
+      "billable_units": "0.757",
+      "request_id": "01a029b3-a8ac-79b2-93f1-9b4251eb3b04",
+      "note": "initial draw"
+    },
+    {
+      "id": "rejoin-2b",
+      "billable_units": "0.323",
+      "request_id": "01a029b3-cabd-7871-88d1-9030235e116a",
+      "note": "initial draw"
+    },
+    {
+      "id": "decision-3",
+      "billable_units": "0.098",
+      "request_id": "01a029b3-f637-7f13-a3eb-4f25e005aa82",
+      "note": "initial draw"
+    },
+    {
+      "id": "fb-3a",
+      "billable_units": "0.572",
+      "request_id": "01a029b4-5fff-7f11-9a95-403cf1d0d289",
+      "note": "initial draw"
+    },
+    {
+      "id": "fb-3c",
+      "billable_units": "0.52",
+      "request_id": "01a029b4-d7d7-7050-bac3-13586bca8652",
+      "note": "initial draw"
+    },
+    {
+      "id": "fb-3d",
+      "billable_units": "0.403",
+      "request_id": "01a029b5-35bf-7610-ade4-194de650b35a",
+      "note": "initial draw"
+    },
+    {
+      "id": "rejoin-3",
+      "billable_units": "0.72",
+      "request_id": "01a029b5-a688-7222-9f82-cc7679fcc945",
+      "note": "initial draw"
+    },
+    {
+      "id": "resolution-1",
+      "billable_units": "0.407",
+      "request_id": "01a029b5-e46e-70e1-9895-3cb1b6fcc628",
+      "note": "initial draw"
+    },
+    {
+      "id": "resolution-2",
+      "billable_units": "0.402",
+      "request_id": "01a029b6-0373-7210-b4c8-25b011be66eb",
+      "note": "initial draw"
+    },
+    {
+      "id": "resolution-3",
+      "billable_units": "0.48",
+      "request_id": "01a029b6-229f-7801-bf85-6c855b4849a4",
+      "note": "initial draw"
+    },
+    {
+      "id": "rejoin-2a",
+      "billable_units": "0.757",
+      "note": "redraw 1 (accepted)"
+    }
+  ],
+  "provider_billed_units_total": 10.638,
+  "provider_billing_note": "fal bills MiniMax TTS per 1,000 characters; one unit = 1,000 characters. These are the counts fal returned in the x-fal-billable-units response header and are AUTHORITATIVE over any $/1M estimate. The list is only as complete as the runs that wrote it — a summary rebuilt after a partial run cannot recover entries an earlier overwrite dropped, so treat the total as a floor, not a closed account.",
+  "measured_total_s": 690.095,
+  "measured_chars_per_sec": 14.32,
+  "gate_b_as_written": {
     "loudness": "25/25",
     "true_peak": "25/25",
     "format": "25/25",
     "flat": "25/25",
-    "no_trunc": "19/25",
-    "pause": "22/25",
-    "f0": "14/25",
-    "duration": "13/25"
+    "no_trunc": "25/25",
+    "pause": "25/25",
+    "f0": "25/25",
+    "duration": "11/25"
   },
-  "gate_b_note": "These are the AUDIO rows, scored as scripts/tts-narration.mjs first wrote them - the same field name and the same eight rows as siu-01's summary, so the two are directly comparable. The 'duration' row measures a chars/sec model, not the audio; every segment that fails it passes the corrected duration test (within 3 SD of the corpus) recorded per-segment as qa_corrected. Do not confuse this field with the ASR script-fidelity check, which this repo also calls Gate B and which is recorded per-segment as asr_adjudications.",
   "gate_b_corrected": {
     "loudness": "25/25",
     "true_peak": "25/25",
@@ -35,550 +198,280 @@
     "f0_onset_ge_0_75_body": "25/25",
     "duration_within_3sd": "25/25"
   },
+  "gate_a_verdict": "PASS",
+  "redraws": [
+    {
+      "id": "rejoin-2a",
+      "draws": 1,
+      "accepted_draw": 1,
+      "reasons": [
+        "Gate B ASR: \"voir dire\" was not rendered correctly on the delivered draw"
+      ]
+    }
+  ],
   "asr_fidelity": {
     "status": "COMPLETE",
-    "coverage": "25/25 segments carry an ASR adjudication record",
-    "adjudications": [
-      {
-        "id": "assignment-2",
-        "note": "invented proper nouns ('Halloway', 'Ferrin Haulage') spelled Whisper's way"
-      },
-      {
-        "id": "assignment-2",
-        "note": "'end terminal' heard as 'and terminal' at sentence level; the ISOLATED window reads 'Rail end terminal and rolled.' - byte-identical to the correct-text control, and unlike the 'and terminal' control. The audio is correct."
-      },
-      {
-        "id": "fb-1c",
-        "note": "an inserted \"We'll\" at the script's em-dash; the isolated window contains no such word and a fresh control of the clause does not produce it"
-      },
-      {
-        "id": "fb-3a",
-        "note": "\"plaintiff's firms\" tokenised as 'plaintiffs firm'"
-      },
-      {
-        "id": "intro",
-        "note": "'if it stuck' heard as \"if it's stuck\" - control renders identically"
-      },
-      {
-        "id": "rejoin-2b",
-        "note": "'lapsed' heard as 'lapse'; the correct-text control transcribes as 'Elapsed certification' too - Whisper merges the article and cannot separate the two readings"
-      },
-      {
-        "id": "rejoin-3",
-        "note": "'from' heard as 'for'; the transcript reads correctly in context"
-      },
-      {
-        "id": "resolution-1",
-        "note": "'restraint evidence' heard as 'restrained', 'boundary' as 'boundaries'; both are full-sentence smoothing, correct on the isolated window"
-      }
-    ],
-    "estimated_whisper_cost_usd": 0.0694,
-    "note": "Every segment was read back by ASR with word timestamps at synthesis time (see each sidecar's synthesis.method), and mismatches were adjudicated rather than ignored. claims-01 and siu-01 carry NO equivalent record - this pilot is ahead of them on this check, not behind."
-  },
-  "gate_a": {
-    "status": "PASS",
-    "per_segment": "25/25 PASS"
+    "adjudicated_segments": [
+      "intro",
+      "assignment-1",
+      "assignment-2",
+      "decision-2",
+      "fb-2c",
+      "rejoin-2b",
+      "fb-3a",
+      "resolution-1"
+    ]
   },
   "segments_detail": [
     {
+      "id": "intro",
+      "chars": 152,
+      "duration_s": 10.101,
+      "lufs": -24.5,
+      "speech_lufs": -24.62,
+      "true_peak": -9,
+      "sha256": "bbf66b26287d1a1d49594b9d9ddee883bf2edf5f8994478028098f76676315e4",
+      "gate_a": "PASS"
+    },
+    {
       "id": "assignment-1",
       "chars": 291,
-      "duration_s": 19.656,
+      "duration_s": 22.518,
       "lufs": -24.5,
-      "speech_lufs": -24.58,
-      "true_peak": -6.1,
-      "f0_body_hz": 177.8,
-      "qa": {
-        "loudness": true,
-        "true_peak": true,
-        "format": true,
-        "flat": true,
-        "no_trunc": true,
-        "pause": true,
-        "f0": true,
-        "fidelity": true,
-        "duration": true
-      }
+      "speech_lufs": -24.62,
+      "true_peak": -9,
+      "sha256": "44fb140c8a5548b3524257a75a0bd5aca9704ba653abacb319b1276f21c5ef21",
+      "gate_a": "PASS"
     },
     {
       "id": "assignment-2",
       "chars": 340,
-      "duration_s": 26.856,
+      "duration_s": 27.455,
       "lufs": -24.5,
-      "speech_lufs": -24.56,
-      "true_peak": -3.8,
-      "f0_body_hz": 181.8,
-      "qa": {
-        "loudness": true,
-        "true_peak": true,
-        "format": true,
-        "flat": true,
-        "no_trunc": true,
-        "pause": true,
-        "f0": false,
-        "fidelity": true,
-        "duration": false
-      }
+      "speech_lufs": -24.54,
+      "true_peak": -7.5,
+      "sha256": "35a58c12c351bc5900d7644beeffd585bf4e5814b5d1659725e8f33166f4d63c",
+      "gate_a": "PASS"
     },
     {
       "id": "assignment-3",
       "chars": 47,
-      "duration_s": 3.6,
+      "duration_s": 3.878,
       "lufs": -24.5,
-      "speech_lufs": -24.79,
-      "true_peak": -7.1,
-      "f0_body_hz": 181.8,
-      "qa": {
-        "loudness": true,
-        "true_peak": true,
-        "format": true,
-        "flat": true,
-        "no_trunc": false,
-        "pause": true,
-        "f0": true,
-        "fidelity": true,
-        "duration": false
-      }
+      "speech_lufs": -24.88,
+      "true_peak": -10.8,
+      "sha256": "1789bc720fb19d29252307930c895fd9d6e9c119b1c78121df136ee8ea1329e9",
+      "gate_a": "PASS"
     },
     {
       "id": "assignment-4",
       "chars": 14,
-      "duration_s": 2.4,
+      "duration_s": 1.149,
       "lufs": -24.5,
-      "speech_lufs": -24.53,
-      "true_peak": -5.4,
-      "f0_body_hz": 160,
-      "qa": {
-        "loudness": true,
-        "true_peak": true,
-        "format": true,
-        "flat": true,
-        "no_trunc": true,
-        "pause": true,
-        "f0": false,
-        "fidelity": true,
-        "duration": false
-      }
+      "speech_lufs": -25.07,
+      "true_peak": -8.9,
+      "sha256": "701273f0da09c16e1503b7891af32fc0df0799a51dff7ef78cd07f7358e90c69",
+      "gate_a": "PASS"
     },
     {
       "id": "decision-1",
       "chars": 16,
-      "duration_s": 1.704,
+      "duration_s": 1.44,
       "lufs": -24.5,
-      "speech_lufs": -24.85,
-      "true_peak": -7.9,
-      "f0_body_hz": 177.8,
-      "qa": {
-        "loudness": true,
-        "true_peak": true,
-        "format": true,
-        "flat": true,
-        "no_trunc": true,
-        "pause": true,
-        "f0": true,
-        "fidelity": true,
-        "duration": false
-      }
-    },
-    {
-      "id": "decision-2",
-      "chars": 154,
-      "duration_s": 11.352,
-      "lufs": -24.5,
-      "speech_lufs": -24.7,
-      "true_peak": -5.8,
-      "f0_body_hz": 177.8,
-      "qa": {
-        "loudness": true,
-        "true_peak": true,
-        "format": true,
-        "flat": true,
-        "no_trunc": true,
-        "pause": true,
-        "f0": true,
-        "fidelity": true,
-        "duration": true
-      }
-    },
-    {
-      "id": "decision-3",
-      "chars": 98,
-      "duration_s": 7.2,
-      "lufs": -24.5,
-      "speech_lufs": -24.73,
-      "true_peak": -7.8,
-      "f0_body_hz": 160,
-      "qa": {
-        "loudness": true,
-        "true_peak": true,
-        "format": true,
-        "flat": true,
-        "no_trunc": true,
-        "pause": true,
-        "f0": false,
-        "fidelity": true,
-        "duration": true
-      }
+      "speech_lufs": -24.53,
+      "true_peak": -8.5,
+      "sha256": "e97acc0219cfee52b8b09619fcab8cfc582d508f87333e019b50a4725c844363",
+      "gate_a": "PASS"
     },
     {
       "id": "fb-1a",
       "chars": 506,
-      "duration_s": 33.264,
+      "duration_s": 35.135,
       "lufs": -24.5,
-      "speech_lufs": -24.51,
-      "true_peak": -4.9,
-      "f0_body_hz": 186,
-      "qa": {
-        "loudness": true,
-        "true_peak": true,
-        "format": true,
-        "flat": true,
-        "no_trunc": false,
-        "pause": false,
-        "f0": false,
-        "fidelity": true,
-        "duration": false
-      }
+      "speech_lufs": -24.66,
+      "true_peak": -8.2,
+      "sha256": "66d950db65e8e6f4d3f5fe45d400bdf91d28f9b0593e02b39f6d0792d1aa5e20",
+      "gate_a": "PASS"
     },
     {
       "id": "fb-1c",
       "chars": 583,
-      "duration_s": 40.8,
+      "duration_s": 43.677,
       "lufs": -24.5,
-      "speech_lufs": -24.59,
-      "true_peak": -4.9,
-      "f0_body_hz": 173.9,
-      "qa": {
-        "loudness": true,
-        "true_peak": true,
-        "format": true,
-        "flat": true,
-        "no_trunc": true,
-        "pause": true,
-        "f0": true,
-        "fidelity": true,
-        "duration": true
-      }
+      "speech_lufs": -24.57,
+      "true_peak": -7.8,
+      "sha256": "c01d14f2a84c13f89c19459d2a8ff24214a1d722f2420b9446155024c2e6453d",
+      "gate_a": "PASS"
     },
     {
       "id": "fb-1d",
       "chars": 440,
-      "duration_s": 32.112,
+      "duration_s": 32.784,
       "lufs": -24.5,
-      "speech_lufs": -24.64,
-      "true_peak": -5.6,
-      "f0_body_hz": 177.8,
-      "qa": {
-        "loudness": true,
-        "true_peak": true,
-        "format": true,
-        "flat": true,
-        "no_trunc": true,
-        "pause": true,
-        "f0": true,
-        "fidelity": true,
-        "duration": true
-      }
-    },
-    {
-      "id": "fb-2a",
-      "chars": 666,
-      "duration_s": 45.312,
-      "lufs": -24.5,
-      "speech_lufs": -24.62,
-      "true_peak": -4.2,
-      "f0_body_hz": 181.8,
-      "qa": {
-        "loudness": true,
-        "true_peak": true,
-        "format": true,
-        "flat": true,
-        "no_trunc": true,
-        "pause": false,
-        "f0": true,
-        "fidelity": true,
-        "duration": true
-      }
-    },
-    {
-      "id": "fb-2c",
-      "chars": 523,
-      "duration_s": 32.52,
-      "lufs": -24.5,
-      "speech_lufs": -24.65,
-      "true_peak": -5.5,
-      "f0_body_hz": 190.5,
-      "qa": {
-        "loudness": true,
-        "true_peak": true,
-        "format": true,
-        "flat": true,
-        "no_trunc": true,
-        "pause": true,
-        "f0": false,
-        "fidelity": true,
-        "duration": false
-      }
-    },
-    {
-      "id": "fb-2d",
-      "chars": 476,
-      "duration_s": 31.008,
-      "lufs": -24.5,
-      "speech_lufs": -24.56,
-      "true_peak": -5.2,
-      "f0_body_hz": 181.8,
-      "qa": {
-        "loudness": true,
-        "true_peak": true,
-        "format": true,
-        "flat": true,
-        "no_trunc": false,
-        "pause": true,
-        "f0": true,
-        "fidelity": true,
-        "duration": false
-      }
-    },
-    {
-      "id": "fb-3a",
-      "chars": 572,
-      "duration_s": 42,
-      "lufs": -24.5,
-      "speech_lufs": -24.57,
-      "true_peak": -5.9,
-      "f0_body_hz": 190.5,
-      "qa": {
-        "loudness": true,
-        "true_peak": true,
-        "format": true,
-        "flat": true,
-        "no_trunc": false,
-        "pause": true,
-        "f0": true,
-        "fidelity": true,
-        "duration": true
-      }
-    },
-    {
-      "id": "fb-3c",
-      "chars": 520,
-      "duration_s": 33.216,
-      "lufs": -24.5,
-      "speech_lufs": -24.54,
-      "true_peak": -4.8,
-      "f0_body_hz": 181.8,
-      "qa": {
-        "loudness": true,
-        "true_peak": true,
-        "format": true,
-        "flat": true,
-        "no_trunc": false,
-        "pause": true,
-        "f0": false,
-        "fidelity": true,
-        "duration": false
-      }
-    },
-    {
-      "id": "fb-3d",
-      "chars": 403,
-      "duration_s": 28.968,
-      "lufs": -24.5,
-      "speech_lufs": -24.54,
-      "true_peak": -5.2,
-      "f0_body_hz": 177.8,
-      "qa": {
-        "loudness": true,
-        "true_peak": true,
-        "format": true,
-        "flat": true,
-        "no_trunc": true,
-        "pause": false,
-        "f0": true,
-        "fidelity": true,
-        "duration": true
-      }
-    },
-    {
-      "id": "intro",
-      "chars": 152,
-      "duration_s": 11.808,
-      "lufs": -24.5,
-      "speech_lufs": -24.71,
-      "true_peak": -6.6,
-      "f0_body_hz": 177.8,
-      "qa": {
-        "loudness": true,
-        "true_peak": true,
-        "format": true,
-        "flat": true,
-        "no_trunc": true,
-        "pause": true,
-        "f0": true,
-        "fidelity": true,
-        "duration": false
-      }
+      "speech_lufs": -24.63,
+      "true_peak": -8.7,
+      "sha256": "163339df02ac11ca3704355cc67d4226be9de69d24756764e2b67ad3779cca1b",
+      "gate_a": "PASS"
     },
     {
       "id": "rejoin-1a",
       "chars": 702,
-      "duration_s": 50.16,
+      "duration_s": 48.849,
       "lufs": -24.5,
-      "speech_lufs": -24.5,
-      "true_peak": -3.2,
-      "f0_body_hz": 163.3,
-      "qa": {
-        "loudness": true,
-        "true_peak": true,
-        "format": true,
-        "flat": true,
-        "no_trunc": true,
-        "pause": true,
-        "f0": false,
-        "fidelity": true,
-        "duration": true
-      }
+      "speech_lufs": -24.63,
+      "true_peak": -8.8,
+      "sha256": "19e5b70913caa21b90cc5ff4dafa03d0ae62fe7b40b8da177488855bcfc49712",
+      "gate_a": "PASS"
     },
     {
       "id": "rejoin-1b",
       "chars": 289,
-      "duration_s": 23.52,
+      "duration_s": 22.1,
       "lufs": -24.5,
-      "speech_lufs": -24.56,
-      "true_peak": -6,
-      "f0_body_hz": 160,
-      "qa": {
-        "loudness": true,
-        "true_peak": true,
-        "format": true,
-        "flat": true,
-        "no_trunc": true,
-        "pause": true,
-        "f0": false,
-        "fidelity": true,
-        "duration": false
-      }
+      "speech_lufs": -24.57,
+      "true_peak": -8,
+      "sha256": "ec51a0f0a248208b8c8ddb78e6c17acae0873fe70b423ad5478b05eaeddda344",
+      "gate_a": "PASS"
+    },
+    {
+      "id": "decision-2",
+      "chars": 154,
+      "duration_s": 9.845,
+      "lufs": -24.5,
+      "speech_lufs": -24.69,
+      "true_peak": -9.3,
+      "sha256": "fca2ff48d2968b842c4ee0dd0487d74ca90466604484230198e521eb2144e018",
+      "gate_a": "PASS"
+    },
+    {
+      "id": "fb-2a",
+      "chars": 666,
+      "duration_s": 45.506,
+      "lufs": -24.5,
+      "speech_lufs": -24.58,
+      "true_peak": -8.1,
+      "sha256": "b033f1063658846bcaca98455e14e9d1ad5172cbdfad84fe7246838147eef2a7",
+      "gate_a": "PASS"
+    },
+    {
+      "id": "fb-2c",
+      "chars": 523,
+      "duration_s": 33.776,
+      "lufs": -24.5,
+      "speech_lufs": -24.58,
+      "true_peak": -8.4,
+      "sha256": "83cc8c49a7b2cd94d11252c3bb31c02e52c33bbfd3ea3440cebfd9cbfc3d8a2e",
+      "gate_a": "PASS"
+    },
+    {
+      "id": "fb-2d",
+      "chars": 476,
+      "duration_s": 29.832,
+      "lufs": -24.5,
+      "speech_lufs": -24.53,
+      "true_peak": -7.9,
+      "sha256": "682a00892cf9017584f5211b9de1020221cdd23c6c44403711912b17b97cfc53",
+      "gate_a": "PASS"
     },
     {
       "id": "rejoin-2a",
       "chars": 757,
-      "duration_s": 51,
+      "duration_s": 51.827,
       "lufs": -24.5,
-      "speech_lufs": -24.61,
-      "true_peak": -4.1,
-      "f0_body_hz": 173.9,
-      "qa": {
-        "loudness": true,
-        "true_peak": true,
-        "format": true,
-        "flat": true,
-        "no_trunc": true,
-        "pause": true,
-        "f0": false,
-        "fidelity": true,
-        "duration": true
-      }
+      "speech_lufs": -24.49,
+      "true_peak": -8.1,
+      "sha256": "60c2590a22fec1564ac500185784c0a3b02b997b0dc0b06db9025a8bae3278e2",
+      "gate_a": "PASS"
     },
     {
       "id": "rejoin-2b",
       "chars": 323,
-      "duration_s": 25.416,
+      "duration_s": 23.145,
       "lufs": -24.5,
-      "speech_lufs": -24.53,
-      "true_peak": -4.7,
-      "f0_body_hz": 177.8,
-      "qa": {
-        "loudness": true,
-        "true_peak": true,
-        "format": true,
-        "flat": true,
-        "no_trunc": false,
-        "pause": true,
-        "f0": true,
-        "fidelity": true,
-        "duration": false
-      }
+      "speech_lufs": -24.58,
+      "true_peak": -8.7,
+      "sha256": "7e8c6308638e4f5e1e538e70d834006fdef738f2fe702a15721bd3d6f662fda3",
+      "gate_a": "PASS"
+    },
+    {
+      "id": "decision-3",
+      "chars": 98,
+      "duration_s": 8.057,
+      "lufs": -24.5,
+      "speech_lufs": -24.73,
+      "true_peak": -9,
+      "sha256": "45b09b12771b36e9211cb61db44fea74a676caf7b9984c9b7de00ae777a2be58",
+      "gate_a": "PASS"
+    },
+    {
+      "id": "fb-3a",
+      "chars": 572,
+      "duration_s": 40.803,
+      "lufs": -24.5,
+      "speech_lufs": -24.57,
+      "true_peak": -7.9,
+      "sha256": "9a6a119e252b581e149fbd27a2e9461530a55dce012306a39268c848a3213395",
+      "gate_a": "PASS"
+    },
+    {
+      "id": "fb-3c",
+      "chars": 520,
+      "duration_s": 33.411,
+      "lufs": -24.5,
+      "speech_lufs": -24.57,
+      "true_peak": -8.4,
+      "sha256": "18886c8b4098a565f97823aabeb90061550a4a46976f8d4312db197a516d9e72",
+      "gate_a": "PASS"
+    },
+    {
+      "id": "fb-3d",
+      "chars": 403,
+      "duration_s": 27.324,
+      "lufs": -24.5,
+      "speech_lufs": -24.52,
+      "true_peak": -8.2,
+      "sha256": "2d487fcd40bd1ac354438a0aa7e8f98f994ff85b29ff65b94936f59985fecc0f",
+      "gate_a": "PASS"
     },
     {
       "id": "rejoin-3",
       "chars": 720,
-      "duration_s": 50.448,
+      "duration_s": 48.405,
       "lufs": -24.5,
-      "speech_lufs": -24.62,
-      "true_peak": -4.2,
-      "f0_body_hz": 186,
-      "qa": {
-        "loudness": true,
-        "true_peak": true,
-        "format": true,
-        "flat": true,
-        "no_trunc": true,
-        "pause": true,
-        "f0": false,
-        "fidelity": true,
-        "duration": true
-      }
+      "speech_lufs": -24.52,
+      "true_peak": -8.3,
+      "sha256": "14d18439910295e3df6d0dabe6c0569db454cceec18c9aea48b1c55671df3c91",
+      "gate_a": "PASS"
     },
     {
       "id": "resolution-1",
       "chars": 407,
-      "duration_s": 26.52,
+      "duration_s": 27.977,
       "lufs": -24.5,
-      "speech_lufs": -24.71,
-      "true_peak": -6,
-      "f0_body_hz": 181.8,
-      "qa": {
-        "loudness": true,
-        "true_peak": true,
-        "format": true,
-        "flat": true,
-        "no_trunc": true,
-        "pause": true,
-        "f0": true,
-        "fidelity": true,
-        "duration": false
-      }
+      "speech_lufs": -24.59,
+      "true_peak": -8.6,
+      "sha256": "8f412f9bfa827860d012174acae8c0327586736df7b9d3cae3b2badefd509ab4",
+      "gate_a": "PASS"
     },
     {
       "id": "resolution-2",
       "chars": 402,
-      "duration_s": 27.864,
+      "duration_s": 27.194,
       "lufs": -24.5,
-      "speech_lufs": -24.67,
-      "true_peak": -4.6,
-      "f0_body_hz": 181.8,
-      "qa": {
-        "loudness": true,
-        "true_peak": true,
-        "format": true,
-        "flat": true,
-        "no_trunc": true,
-        "pause": true,
-        "f0": false,
-        "fidelity": true,
-        "duration": true
-      }
+      "speech_lufs": -24.56,
+      "true_peak": -7.9,
+      "sha256": "4540c2b2cfc99bcaa6a2527811efd5bb50ec56f3fa53cfc624959faa6a2d9461",
+      "gate_a": "PASS"
     },
     {
       "id": "resolution-3",
       "chars": 480,
-      "duration_s": 35.352,
+      "duration_s": 33.907,
       "lufs": -24.5,
-      "speech_lufs": -24.72,
-      "true_peak": -7.1,
-      "f0_body_hz": 177.8,
-      "qa": {
-        "loudness": true,
-        "true_peak": true,
-        "format": true,
-        "flat": true,
-        "no_trunc": true,
-        "pause": true,
-        "f0": true,
-        "fidelity": true,
-        "duration": true
-      }
+      "speech_lufs": -24.59,
+      "true_peak": -8.5,
+      "sha256": "831b6623931dbf35085ff5e88b0b26ce102c80d2db16485d2b8da70b9bd1d53e",
+      "gate_a": "PASS"
     }
   ]
 }

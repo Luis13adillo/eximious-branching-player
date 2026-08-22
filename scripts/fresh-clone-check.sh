@@ -39,23 +39,40 @@ chk "10 loudness target -24.5 LUFS"                  '\-?24\.5 ?LUFS'
 chk "11 audio format 24 kHz mono 128 kbps"           '24 ?kHz'
 chk "12 Diane = tts-1-hd / shimmer"                  'shimmer'
 chk "13 Curtis = tts-1-hd / onyx"                    'onyx'
-chk "14 Selena = gpt-4o-mini-tts-2025-12-15 / sage"  'gpt-4o-mini-tts-2025-12-15'
+# RECAST 2026-08-22: Selena left OpenAI. Asserting the OLD model here would keep passing
+# forever while the repo described a voice that is no longer used, so the check follows the
+# voice. The voice_id is the one thing that cannot be paraphrased.
+chk "14 Selena = fal/MiniMax speech-02-hd, voice-design LA-1"  'ttv-voice-2026082200132526-qth65Vqj'
 chk "15 lip-sync calls carry >=40 s of audio"        '40 ?s(ec)?'
 
-# 16 — Selena's voice is not reproducible without her exact `instructions` string.
-# It must be recoverable from the repo alone, and the two committed copies must agree.
+# 16 — The RETIRED sage definition must stay reproducible from the repo alone.
+#
+# Before the 2026-08-22 recast this checked that Selena's live `instructions` string was
+# recoverable from two agreeing copies. She no longer uses it — MiniMax takes no such
+# parameter — but the string is still the ONLY thing that makes the v1 audio re-renderable,
+# and v1 is what shipped on 2026-08-21. So the check follows it to where it now lives.
 LOCKED_HASH=bdf6862d6f8dc101b66898b0d0b2d0df1c4946d62f02fa202bb4af932483eeda
-extract_json=$(git show HEAD:public/media/presenter-3-selena-navarro-voice-SELECTED.json 2>/dev/null \
+SUP=public/media/presenter-3-selena-navarro-voice-SELECTED-v1-sage-superseded.json
+extract_json=$(git show HEAD:$SUP 2>/dev/null \
   | node -e 'let d="";process.stdin.on("data",c=>d+=c).on("end",()=>process.stdout.write(JSON.parse(d).instructions||""))' 2>/dev/null)
-extract_md=$(git show HEAD:CLAUDE.md 2>/dev/null \
-  | node -e 'let d="";process.stdin.on("data",c=>d+=c).on("end",()=>{const m=d.match(/```text\n([\s\S]*?)\n```/);process.stdout.write(m?m[1]:"")})' 2>/dev/null)
 h1=$(printf '%s' "$extract_json" | shasum -a 256 | cut -d' ' -f1)
-h2=$(printf '%s' "$extract_md"   | shasum -a 256 | cut -d' ' -f1)
-if [ "$h1" = "$LOCKED_HASH" ] && [ "$h2" = "$LOCKED_HASH" ]; then
-  printf '  PASS  %s\n' "16 Selena instructions recoverable from HEAD; both copies match the locked hash"
+if [ "$h1" = "$LOCKED_HASH" ]; then
+  printf '  PASS  %s\n' "16 retired sage instructions recoverable from HEAD, byte-exact (v1 stays reproducible)"
   pass=$((pass+1))
 else
-  printf '  FAIL  %s\n' "16 Selena instructions: sidecar=$h1 CLAUDE.md=$h2 expected=$LOCKED_HASH"
+  printf '  FAIL  %s\n' "16 retired sage instructions: superseded record=$h1 expected=$LOCKED_HASH"
+  fail=$((fail+1))
+fi
+
+# 17 — The recast must not be a rumour. A fresh clone has to be able to reproduce the CURRENT
+# voice, which means the tracked voice record and the presenter table must both name it.
+if git show HEAD:public/media/presenter-3-selena-navarro-voice-SELECTED.json 2>/dev/null \
+     | grep -q 'ttv-voice-2026082200132526-qth65Vqj' \
+   && git show HEAD:scripts/tts-narration.mjs 2>/dev/null | grep -q 'fal-minimax'; then
+  printf '  PASS  %s\n' "17 current voice reproducible from HEAD (tracked record + presenter table agree)"
+  pass=$((pass+1))
+else
+  printf '  FAIL  %s\n' "17 current voice NOT reproducible from HEAD — the recast is not committed"
   fail=$((fail+1))
 fi
 echo "  ---- $pass passed, $fail failed"

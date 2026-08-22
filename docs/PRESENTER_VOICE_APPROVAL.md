@@ -224,6 +224,24 @@ satisfies Guidelines §02 "professional guidance, not performance."
 
 Tracks 2, 3, 11, 13, 14 · 42 courses · pilot `ew-01` AV1
 
+
+> ### ⚠️ SUPERSEDED 2026-08-22 — Selena Navarro was RECAST
+>
+> Everything below about Presenter 3's voice describes the **retired** definition
+> (OpenAI `gpt-4o-mini-tts-2025-12-15` / `sage` / the 1133-character `instructions`
+> string). **Roger approved a recast on 2026-08-22** to a MiniMax voice-design voice
+> served through fal — `fal-ai/minimax/speech-02-hd`, `voice_id`
+> `ttv-voice-2026082200132526-qth65Vqj` ("LA-1-mexican-american"). That was a production
+> **rule 9 provider *and* model change** as well as a client recasting decision; both were
+> approved together.
+>
+> **Current definition:** `CLAUDE.md` → "★ RECAST 2026-08-22", and
+> `public/media/presenter-3-selena-navarro-voice-SELECTED.json`.
+> The retired definition is preserved verbatim in
+> `…-voice-SELECTED-v1-sage-superseded.json` so the audio that shipped on 2026-08-21
+> stays reproducible. The text below is kept as the historical approval record — do not
+> act on it.
+
 | | |
 |---|---|
 | Name | **Selena Navarro — APPROVED / LOCKED.** ⚠️ **Supersedes the working first name "Simone"** used throughout this section and in the demo filenames below. |

@@ -9,7 +9,8 @@
  * ------------
  * Phase 1 ("Gate A") of the locked production pipeline, for any lesson and any presenter:
  *
- *     locked script -> OpenAI TTS on the locked per-presenter voice config
+ *     locked script -> TTS on the locked per-presenter voice config
+ *                      (OpenAI for Diane/Curtis; fal -> MiniMax for Selena from 2026-08-22)
  *                   -> ffmpeg master to 24 kHz / mono / 128 kbps @ -24.5 LUFS
  *                   -> audio QA gate  <- MUST pass before any paid downstream step
  *
@@ -62,12 +63,50 @@ const PRESENTERS = {
     f0: { fmin: 55, fmax: 320 },
     charsPerSec: 16.24,
   },
+  /**
+   * ★ RECAST 2026-08-22 — approved by Roger, relayed by Luis.
+   *
+   * Selena moves from OpenAI `gpt-4o-mini-tts` / `sage` to a MiniMax voice-design voice
+   * served through fal. This is a production-rule-9 change (provider AND model) and a
+   * client recasting decision; both were approved together. The superseded definition is
+   * retained immediately below as `selena-navarro-v1-sage` so the shipped v1 audio stays
+   * reproducible — it is NOT a fallback and must not be selected without a new approval.
+   *
+   * The 1133-character `instructions` string belonged to the OpenAI voice and does not
+   * transfer: MiniMax takes no such parameter, and the delivery it described (including
+   * "Do not add a Spanish or Hispanic accent") is precisely what this recast reverses.
+   * Delivery here is carried by the designed voice itself.
+   *
+   * RISK, recorded rather than solved: `voice_id` is an account-scoped MiniMax
+   * voice-design ID. voice-design is not deterministic, so the same design prompt is not
+   * guaranteed to return this voice again. If the ID lapses, this voice may be
+   * unrecoverable across the 42 courses Selena carries. Render early, keep the raws.
+   */
   "selena-navarro": {
     label: "Selena Navarro (Presenter 3)",
+    provider: "fal-minimax",
+    endpoint: "fal-ai/minimax/speech-02-hd",
+    model: "minimax/speech-02-hd",
+    voice: "ttv-voice-2026082200132526-qth65Vqj",
+    voiceLabel: "LA-1-mexican-american (voice-design, 2026-08-22)",
+    speed: 1,
+    vol: 1,
+    pitch: 0,
+    instructions: null,
+    f0: { fmin: 80, fmax: 400 },
+    // Measured on the LA-1 audition: 159 wpm / 154.8 Hz. Re-measured after the real run.
+    charsPerSec: 14.24,
+  },
+
+  /** SUPERSEDED 2026-08-22 by the recast above. Kept only so v1 stays reproducible. */
+  "selena-navarro-v1-sage": {
+    label: "Selena Navarro (Presenter 3) — SUPERSEDED v1 sage",
+    provider: "openai",
+    superseded: "Replaced 2026-08-22 by the MiniMax LA-1 recast. Do not use without a new approval.",
     model: "gpt-4o-mini-tts-2025-12-15",
     voice: "sage",
     speed: null, // her locked definition directs delivery via `instructions`, not `speed`
-    instructionsFrom: "public/media/presenter-3-selena-navarro-voice-SELECTED.json",
+    instructionsFrom: "public/media/presenter-3-selena-navarro-voice-SELECTED-v1-sage-superseded.json",
     instructionsSha256:
       "bdf6862d6f8dc101b66898b0d0b2d0df1c4946d62f02fa202bb4af932483eeda",
     f0: { fmin: 80, fmax: 400 },
@@ -79,9 +118,35 @@ const PRESENTERS = {
 const PRICE = {
   "tts-1-hd": { perMillionChars: 30.0 },
   "gpt-4o-mini-tts-2025-12-15": { perMillionChars: 0.6, note: "text-in only; audio-out billed separately" },
+  // fal bills MiniMax TTS per 1,000 characters. Recorded as $/1M for one comparable unit.
+  // Re-verify before large runs; the run also records fal's own billed units from the
+  // response headers, which is the figure that actually settles.
+  "minimax/speech-02-hd": { perMillionChars: 100.0, note: "fal per-1k-character billing; header-reported units are authoritative" },
 };
 
 const ENV_FALLBACK = "/Users/luismiguel/Desktop/rubric/templates/generations/.env";
+
+function envValue(name) {
+  if (process.env[name]) return process.env[name];
+  if (existsSync(ENV_FALLBACK)) {
+    for (const line of readFileSync(ENV_FALLBACK, "utf8").split("\n")) {
+      if (line.trim().startsWith(`${name}=`)) {
+        return line.split("=").slice(1).join("=").trim().replace(/^['"]|['"]$/g, "");
+      }
+    }
+  }
+  return null;
+}
+
+/** Never printed, never persisted — same contract as scripts/fal-upload.mjs. */
+function providerKey(provider) {
+  if (provider === "fal-minimax") {
+    const k = envValue("FAL_KEY");
+    if (!k) throw new Error("FAL_KEY not found (environment or credential store)");
+    return k;
+  }
+  return openaiKey();
+}
 
 function openaiKey() {
   if (process.env.OPENAI_API_KEY) return process.env.OPENAI_API_KEY;
@@ -115,6 +180,51 @@ function resolveInstructions(p) {
     );
   }
   return s;
+}
+
+/**
+ * MiniMax speech-02-hd through fal. Returns { buf, billed } — `billed` is whatever fal
+ * reported for the call, so the audit record carries the provider's own number rather
+ * than our estimate.
+ *
+ * The raw is requested at 44.1 kHz / 256 kbps mono so the single calibrated master down to
+ * the locked 24 kHz / 128 kbps has the cleanest possible source. Mastering is unchanged:
+ * linear gain only, no compression, no limiting.
+ */
+async function minimaxTts({ key, endpoint, voice, speed, vol, pitch, input }) {
+  const body = {
+    text: input,
+    voice_setting: { voice_id: voice, speed, vol, pitch },
+    audio_setting: { sample_rate: 44100, bitrate: 256000, format: "mp3", channel: 1 },
+  };
+  let lastErr;
+  for (let attempt = 1; attempt <= 4; attempt++) {
+    try {
+      const res = await fetch(`https://fal.run/${endpoint}`, {
+        method: "POST",
+        headers: { Authorization: `Key ${key}`, "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+      });
+      if (!res.ok) {
+        // Never echo the request body — it is confidential client script text.
+        throw new Error(`HTTP ${res.status}: ${(await res.text()).slice(0, 300)}`);
+      }
+      const billed = {
+        billable_units: res.headers.get("x-fal-billable-units"),
+        request_id: res.headers.get("x-fal-request-id"),
+      };
+      const j = await res.json();
+      const url = j?.audio?.url;
+      if (!url) throw new Error(`no audio in response: ${JSON.stringify(j).slice(0, 200)}`);
+      const ar = await fetch(url);
+      if (!ar.ok) throw new Error(`audio download failed ${ar.status}`);
+      return { buf: Buffer.from(await ar.arrayBuffer()), billed };
+    } catch (e) {
+      lastErr = e;
+      if (attempt < 4) await new Promise((r) => setTimeout(r, 1500 * attempt));
+    }
+  }
+  throw lastErr;
 }
 
 async function tts({ key, model, voice, speed, instructions, input }) {
@@ -175,7 +285,10 @@ const instructions = resolveInstructions(P);
 console.log(`\nEXIMIOUS — Gate A narration`);
 console.log(`  lesson    : ${lessonId}`);
 console.log(`  presenter : ${P.label}`);
-console.log(`  model     : ${P.model}   voice: ${P.voice}   speed: ${P.speed ?? "n/a"}`);
+console.log(`  provider  : ${P.provider === "fal-minimax" ? `fal.ai -> MiniMax (${P.endpoint})` : "OpenAI"}`);
+console.log(`  model     : ${P.model}   voice: ${P.voiceLabel ? `${P.voiceLabel}` : P.voice}   speed: ${P.speed ?? "n/a"}`);
+if (P.provider === "fal-minimax") console.log(`  voice_id  : ${P.voice}`);
+if (P.superseded) { console.error(`\n  ABORT — this presenter definition is SUPERSEDED: ${P.superseded}\n`); process.exit(2); }
 console.log(`  instructions: ${instructions ? `locked string, sha256 ${P.instructionsSha256.slice(0, 16)}...` : "none (model takes no such parameter)"}`);
 console.log(`  output    : public/media/${lessonId}/\n`);
 
@@ -230,12 +343,13 @@ if (dryRun) {
 }
 
 // ---- 3. SYNTHESIS + MASTERING --------------------------------------------
-const key = remaster ? null : openaiKey();
+const key = remaster ? null : providerKey(P.provider || "openai");
 const scratch = process.env.SCRATCH || join(REPO, ".tts-raw");
 mkdirSync(scratch, { recursive: true });
 
 console.log("[3/4] Synthesis + mastering");
 const results = [];
+const billedUnits = [];
 let spentChars = 0;
 let skipped = 0;
 
@@ -265,15 +379,31 @@ for (const id of ids) {
       process.exit(1);
     }
   } else {
-    const buf = await tts({
-      key,
-      model: P.model,
-      voice: P.voice,
-      speed: P.speed,
-      instructions,
-      input: seg.text,
-    });
+    let buf, billed = null;
+    if (P.provider === "fal-minimax") {
+      const r = await minimaxTts({
+        key,
+        endpoint: P.endpoint,
+        voice: P.voice,
+        speed: P.speed,
+        vol: P.vol,
+        pitch: P.pitch,
+        input: seg.text,
+      });
+      buf = r.buf;
+      billed = r.billed;
+    } else {
+      buf = await tts({
+        key,
+        model: P.model,
+        voice: P.voice,
+        speed: P.speed,
+        instructions,
+        input: seg.text,
+      });
+    }
     writeFileSync(rawPath, buf);
+    if (billed) billedUnits.push({ id, ...billed });
     spentChars += seg.scriptChars;
   }
 
@@ -284,16 +414,27 @@ for (const id of ids) {
     asset: `${id}.mp3`,
     lesson: lessonId,
     presenter: P.label,
-    provider: "OpenAI",
-    endpoint: "POST https://api.openai.com/v1/audio/speech",
+    provider: P.provider === "fal-minimax" ? "fal.ai -> MiniMax" : "OpenAI",
+    endpoint:
+      P.provider === "fal-minimax"
+        ? `POST https://fal.run/${P.endpoint}`
+        : "POST https://api.openai.com/v1/audio/speech",
     model: P.model,
     voice: P.voice,
+    voice_label: P.voiceLabel ?? null,
+    voice_setting:
+      P.provider === "fal-minimax" ? { voice_id: P.voice, speed: P.speed, vol: P.vol, pitch: P.pitch } : null,
+    raw_audio_setting:
+      P.provider === "fal-minimax" ? { sample_rate: 44100, bitrate: 256000, format: "mp3", channel: 1 } : null,
     speed: P.speed,
     response_format: "mp3",
     instructions: instructions ? `LOCKED string, sha256 ${P.instructionsSha256}` : null,
-    note: instructions
-      ? "Delivery is directed by the locked `instructions` string; the string itself is not duplicated here."
-      : "tts-1-hd takes no `instructions` parameter; that belongs to Selena's locked config only.",
+    note:
+      P.provider === "fal-minimax"
+        ? "MiniMax takes no `instructions` parameter — delivery is carried by the designed voice itself. Recast approved by Roger 2026-08-22; supersedes gpt-4o-mini-tts/sage."
+        : instructions
+          ? "Delivery is directed by the locked `instructions` string; the string itself is not duplicated here."
+          : "tts-1-hd takes no `instructions` parameter; that belongs to Selena's locked config only.",
     // Text itself is NEVER written to a sidecar — it is confidential client script.
     script_chars: seg.scriptChars,
     script_sha256: seg.scriptSha256,
@@ -390,8 +531,11 @@ writeFileSync(
     {
       lesson: lessonId,
       presenter: P.label,
+      provider: P.provider === "fal-minimax" ? "fal.ai -> MiniMax" : "OpenAI",
+      endpoint: P.provider === "fal-minimax" ? `https://fal.run/${P.endpoint}` : "https://api.openai.com/v1/audio/speech",
       model: P.model,
       voice: P.voice,
+      voice_label: P.voiceLabel ?? null,
       date: new Date().toISOString(),
       segments: results.length,
       characters: totalChars,
@@ -400,6 +544,7 @@ writeFileSync(
       spend_this_run_usd: +thisRunSpend.toFixed(4),
       measured_total_s: +totalDur.toFixed(3),
       measured_chars_per_sec: +(totalChars / totalDur).toFixed(2),
+      provider_billed_units: billedUnits.length ? billedUnits : null,
       gate_b: Object.fromEntries(rows.map((r) => [r, `${results.filter((x) => x.qa[r]).length}/${results.length}`])),
       segments_detail: results.map((r) => ({
         id: r.id,

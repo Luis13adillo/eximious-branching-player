@@ -48,6 +48,21 @@ export function DecisionPanel({
     [scene.id, scene.options, attempted.length, shuffleOnRetry],
   );
 
+  // LAYOUT — the option board adapts to the length of the authored answers.
+  // In two columns each option gets roughly 120px of text width, so a long
+  // answer wraps to three words a line and reads as a shredded column. Past
+  // these thresholds the options take the panel's full width instead, and past
+  // the denser one the type, letter chip and padding tighten so all four still
+  // land in view. This is template behavior driven by the copy itself — no
+  // lesson has to opt in, and the short-answer 2x2 board is unchanged.
+  const lengths = displayOptions.map(
+    (o) => o.label.length + (o.detail?.length ?? 0),
+  );
+  const longest = Math.max(...lengths, 0);
+  const totalLength = lengths.reduce((n, len) => n + len, 0);
+  const stacked = longest > 70 || totalLength > 200;
+  const dense = longest > 190 || totalLength > 420;
+
   const choose = (id: OptionId) => {
     if (chosen || attempted.includes(id)) return;
     setChosen(id);
@@ -84,7 +99,11 @@ export function DecisionPanel({
   return (
     <div className="ex-animate-drift">
       <div className="mb-3 flex items-baseline justify-between gap-4">
-        <h2 className="font-[family-name:var(--font-display)] text-lg leading-snug text-ink-100 sm:text-xl">
+        <h2
+          className={`font-[family-name:var(--font-display)] leading-snug text-ink-100 ${
+            dense ? "text-[17px] sm:text-lg" : "text-lg sm:text-xl"
+          }`}
+        >
           {scene.prompt}
         </h2>
         <span className="hidden shrink-0 font-sans text-[11px] uppercase tracking-[0.18em] text-sky-300 sm:block">
@@ -115,7 +134,9 @@ export function DecisionPanel({
       <div
         role="group"
         aria-label="Choose your answer"
-        className="grid gap-2.5 sm:grid-cols-2 sm:gap-3"
+        className={`grid ${dense ? "gap-2 sm:gap-2.5" : "gap-2.5 sm:gap-3"} ${
+          stacked ? "" : "sm:grid-cols-2"
+        }`}
       >
         {displayOptions.map((o, idx) => {
           const isChosen = chosen === o.id;
@@ -132,7 +153,11 @@ export function DecisionPanel({
               disabled={!!chosen || isTried}
               onClick={() => choose(o.id)}
               aria-label={isTried ? `${o.label} — already tried, incorrect` : o.label}
-              className={`group/opt flex items-start gap-3 rounded-xl border p-3.5 text-left transition-all duration-200 sm:p-4 ${
+              className={`group/opt flex items-start rounded-xl border text-left transition-all duration-200 ${
+                dense
+                  ? "gap-2.5 px-3.5 py-2.5 sm:px-4 sm:py-3"
+                  : "gap-3 p-3.5 sm:p-4"
+              } ${
                 isChosen
                   ? "border-sky-500 bg-sky-500/12 ring-2 ring-sky-500/50"
                   : isTried
@@ -141,7 +166,9 @@ export function DecisionPanel({
               } ${dim ? "opacity-50" : ""} ${chosen || isTried ? "cursor-default" : "cursor-pointer"}`}
             >
               <span
-                className={`mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg font-[family-name:var(--font-display)] text-base font-semibold transition-colors ${
+                className={`mt-0.5 flex shrink-0 items-center justify-center rounded-lg font-[family-name:var(--font-display)] font-semibold transition-colors ${
+                  dense ? "h-7 w-7 text-[13px]" : "h-8 w-8 text-base"
+                } ${
                   isChosen
                     ? "bg-sky-500 text-navy-950"
                     : isTried
@@ -152,7 +179,11 @@ export function DecisionPanel({
                 {isTried ? <XIcon className="h-4 w-4" /> : letter}
               </span>
               <span className="min-w-0">
-                <span className="block font-sans text-[15px] font-medium leading-snug text-ink-100">
+                <span
+                  className={`block font-sans font-medium text-ink-100 ${
+                    dense ? "text-[14px]" : "text-[15px]"
+                  } ${stacked ? "leading-[1.45]" : "leading-snug"}`}
+                >
                   {o.label}
                 </span>
                 {isTried ? (
@@ -172,7 +203,11 @@ export function DecisionPanel({
         })}
       </div>
 
-      <p className="mt-3 hidden font-sans text-[11px] text-ink-400 sm:block">
+      <p
+        className={`hidden font-sans text-[11px] text-ink-400 sm:block ${
+          dense ? "mt-2.5" : "mt-3"
+        }`}
+      >
         Tip — you can also press{" "}
         <span className="font-semibold text-ink-200">A</span>,{" "}
         <span className="font-semibold text-ink-200">B</span>,{" "}

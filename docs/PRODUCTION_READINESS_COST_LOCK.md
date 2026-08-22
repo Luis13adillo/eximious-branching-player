@@ -114,11 +114,11 @@ Casting is closed. This section records the reproduction parameters only.
 |---|---|
 | Visual master (speaking) | `public/media/presenter-3-selena-navarro-master.png` — **1672×941, reference only**. Tighter seated-desk version |
 | Visual master (standing) | **Not on disk.** Course pages / title cards only — never the speaking video |
-| Voice provider / model / voice | **OpenAI · `gpt-4o-mini-tts-2025-12-15` (pinned snapshot) · `sage`** |
-| Voice settings | `response_format: mp3` **+ the exact locked `instructions` string** stored in `presenter-3-selena-navarro-voice-SELECTED.json`. **The voice is not reproducible without it** — it is part of her locked presenter definition |
-| Selected audio | `presenter-3-selena-navarro-voice-SELECTED.mp3`, SHA-256 `803de3e5…c96bb2`, 21.048 s, −24.49 LUFS |
-| Measured rate | **13.73 chars/sec ≈ 137 wpm** *(measured from the selected take)* |
-| QA baseline (from her sidecar) | F0 median 181.8 Hz · onset 186.0 Hz · onset drop −4.2 Hz · stability CV 0.188 · drift −4.0 Hz · 0 pauses >0.9 s |
+| Voice provider / model / voice | **fal.ai → MiniMax · `speech-02-hd` · voice-design `ttv-voice-2026082200132526-qth65Vqj`** — ⚠️ **RECAST 2026-08-22**, supersedes `OpenAI · gpt-4o-mini-tts-2025-12-15 · sage`. See `CLAUDE.md` "★ RECAST 2026-08-22" |
+| Voice settings | `voice_setting: {speed 1, vol 1, pitch 0}`, raw requested at 44.1 kHz / 256 kbps mono. **MiniMax takes no `instructions` parameter.** The retired `instructions` string is preserved in `…-voice-SELECTED-v1-sage-superseded.json` |
+| Selected audio | `presenter-3-selena-navarro-voice-SELECTED.mp3` (the LA-1 audition), SHA-256 `7400b977…577ee7`, 10.913 s. Superseded take: `…-v1-sage-superseded.mp3`, SHA-256 `803de3e5…c96bb2`, 21.048 s, −24.49 LUFS |
+| Measured rate | **14.32 chars/sec** *(measured across the 25 delivered ew-01 v2 masters, 690.1 s / 9,881 chars)*. Superseded `sage` figure was 13.73 chars/sec ≈ 137 wpm |
+| QA baseline | **LA-1: 154.8 Hz body pitch on the audition, ~162 Hz across the delivered masters, 159 wpm, 0 pauses >0.9 s.** Superseded `sage` baseline: F0 median 181.8 Hz · onset 186.0 Hz · onset drop −4.2 Hz · stability CV 0.188 · drift −4.0 Hz |
 | Pilot | `ew-01` AV1 — Prieto |
 
 **Model split is client-approved and closed** (Spec §7 F-6): Diane and Curtis on `tts-1-hd`, Selena on `gpt-4o-mini-tts`. Two consequences to carry operationally: the catalog spans two OpenAI TTS models (one extra deprecation surface), and Selena's `instructions` string must be sent on **every** call for all 42 of her courses.

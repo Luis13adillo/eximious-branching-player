@@ -36,8 +36,13 @@ yarn-error.log*
 # vercel
 .vercel
 
-# local tooling
-/.claude/
+# local tooling — everything under /.claude/ EXCEPT the production skill, which is
+# the operating manual for the 267-video catalog and must survive a fresh clone.
+# It contains no credentials and no confidential source text.
+# (Must be /.claude/* not /.claude/ — git cannot re-include a file inside an
+# excluded directory.)
+/.claude/*
+!/.claude/skills/
 
 # thinkific static export — build artifacts (regenerable from export-thinkific/)
 /export-thinkific/node_modules
@@ -72,6 +77,9 @@ eximious-claims-investigation-thinkific-html5*/
 #
 # Every presenter narration .mp3 is confidential client script text spoken aloud.
 public/media/presenter-*.mp3
+# Voice auditions and casting samples kept outside public/media. Same basis: an audio file
+# of a presenter voice is script text spoken aloud unless proven otherwise.
+assets/voices/
 #
 # Voice casting rounds and superseded candidates. Their sidecars carry the same
 # passage verbatim in an `excerpt` field.
@@ -100,6 +108,12 @@ EA_*_AV[0-9]/
 EA_*_AV[0-9].zip
 EA_*_AV[0-9]_source/
 EA_*_AV[0-9]_source.zip
+# Suffixed variants of the same deliverables — superseded builds kept on disk as the
+# archive of what a revision replaced (-mp3audio-SUPERSEDED, -v1-sage-superseded, ...).
+# The exact-name rules above do not match a suffix, so each of these 200-270 MB archives
+# would otherwise be staged, and GitHub rejects any file over 100 MB outright.
+EA_*_AV[0-9]-*.zip
+EA_*_AV[0-9]_source-*.zip
 # Legacy/superseded package names (the exact-name rules above predate these).
 eximious-*-thinkific-html5*.zip
 

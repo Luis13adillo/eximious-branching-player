@@ -315,3 +315,182 @@ which are out of scope for this work.
    files require cues to start at 0 and end at `durationSec`, so following that note
    would fail the tests. Corrected on all 25 ew-01 sidecars and in
    `scripts/lipsync-deliver.mjs`; claims-01 never had it.
+
+
+---
+
+# REVISION 2 — 2026-08-22 · VOICE RECAST, FULL RE-RENDER
+
+## Final disposition — revision 2
+
+Supersedes every disposition above. **Presenter 3's voice was recast on Roger's approval and
+all 25 segments were re-rendered from scratch.** The narration text did not change by a
+single character — `NARRATION_SHA256` is the same value revision 1 carried
+(`54f55fcee0fc63dd…`). Everything that moved, moved because the voice moved.
+
+| | |
+|---|---|
+| Status | **RE-DELIVERED 2026-08-22.** Both deliverables rebuilt and named per spec; functional acceptance **18/18** against the assembled package. Real-device round 1 remains **deferred, not waived** |
+| Voice | **fal.ai → MiniMax `speech-02-hd`**, voice-design `ttv-voice-2026082200132526-qth65Vqj` ("LA-1-mexican-american"). Supersedes OpenAI `gpt-4o-mini-tts-2025-12-15` / `sage` |
+| Package | `EA_ew-01_AV1`, zip **171.7 MB**, `index.html` at the archive root, 0 junk entries |
+| Package SHA-256 | `a67b346710956d4b518410f6e20bfdb7f6752f22f0ca797b8ec700462489d3cf` |
+| Source deliverable | `EA_ew-01_AV1_source.zip`, **262.8 MB**, 174 files. Agreement §2.3.1 |
+| Source SHA-256 | `95914bdaf017996ad59660b2c91af18d866a1a48777aa6b5b13f751555e4fe33` |
+| Segments delivered | **25/25** — 703.840 s (11.73 min) of video, 690.095 s of narration |
+| **Gate A (corrected)** | **PASS — 25/25 on all nine rows** |
+| **Gate B ASR fidelity** | **PASS — 25/25.** 1.004% WER, 18/25 transcribed exactly, every difference adjudicated |
+| **Gate C mechanical** | **PASS — 7/7 calls, 25/25 segments** |
+| **Gate C visual (by eye)** | **JUDGED 25/25** — see §Visual verdict |
+| **Gate D functional acceptance** | **PASS — 18/18** |
+| Masters byte-identical (rule 6) | **PASS** — 25/25 delivered mp4 + 25/25 narration mp3 match their sidecars; driving base unchanged; the v1 audition still hashes to `803de3e5…c96bb2` |
+| Packaged audio (rule 4) | **PASS 25/25** — AAC-LC 128 kbps / 24 kHz / mono, sample-identical to the delivered master, −24.5 LUFS ±0.4 survives the package encode |
+| Packaged video (rule 5) | **PASS 25/25** — exactly 1920×1080 / 25 fps |
+| Packaged quality | **45.0–49.1 dB PSNR** at the 1.9 Mbps cap (lowest `assignment-4`, highest `fb-1c`) |
+| Real devices | **DEFERRED — not run.** Unchanged from revision 1 |
+| Thinkific upload | **NOT YET DONE** — true of all three pilots |
+| Spend this revision | **$4.60** — see §Spend |
+
+---
+
+## Spend — revision 2
+
+| Item | Amount |
+|---|---|
+| TTS, fal → MiniMax (10.638 billable units = 10,638 characters, incl. one redraw) | **≈ $1.06** |
+| Gate B ASR read-back (whisper-1), run twice | **$0.138** |
+| Control + isolated-window adjudication transcriptions | **≈ $0.02** |
+| LatentSync, 7 calls | **$3.5360** |
+| ffmpeg · mastering · packaging · Gate D | **$0.00** |
+| **Total** | **≈ $4.75** |
+
+**On the TTS figure.** fal bills MiniMax per 1,000 characters and returns the count in the
+`x-fal-billable-units` response header. Those counts are recorded per segment in
+`_gate-a-summary.json` and total **10.638 units** — that number is authoritative. The dollar
+conversion is our own estimate; **read the fal billing record for the settled figure.**
+This is strictly better than the retired OpenAI route, where audio-out tokens were billed
+and never counted at all.
+
+---
+
+## Gate B — the one real defect, and how it was caught
+
+The ASR read-back flagged nine segments. Eight were transcriber artifacts. **One was real.**
+
+`rejoin-2a` rendered **"voir dire"** — a legal term of art, in an expert-witness course — as
+something the transcriber heard as "voie de rue". Cross-checked against the v1 audio, which
+transcribes it correctly, so it was this render, not the phrase.
+
+**The isolated window is what settled it.** Whole-segment transcripts smooth in both
+directions:
+
+| | full read-back | isolated 1.4 s window |
+|---|---|---|
+| v1 (known good) | "voir dire" | "Vordir" |
+| v2 bad draw | "voie de rue" | **"Vote the way"** |
+| v2 accepted draw | "voir dire" | **"voir dire"** |
+
+Three fresh draws of the clause on the identical config all said it correctly, so it was one
+bad draw, not the voice. Remedied by the pipeline's own generate-and-verify rule, now scripted
+as `scripts/redraw-verify.mjs`. The script redraws on the **same locked config**, checks the
+isolated window, and only replaces the master once a draw passes both the phrase check and the
+full audio gate.
+
+**A trap this exposed and closed.** The rejected draw was still sitting at `<id>.raw.mp3` in
+the scratch directory, so `tts-narration.mjs --remaster` — documented as free and safe —
+would have silently restored the bad reading and passed every audio gate doing it. The
+redraw script now promotes the accepted draw to be the canonical raw and renames the rejected
+one.
+
+### The eight adjudicated artifacts
+
+| Segment | Difference | Why it is not a defect |
+|---|---|---|
+| `intro` | "if it stuck" → "if it's stuck" | Same smoothing on the v1 audio |
+| `assignment-1` | "twenty-two", "eleven" → "22", "11" | Our normaliser explodes numerals into digit words; a correct reading cannot match |
+| `assignment-2` | "&" → "and"; "Ferrin Haulage" mangled; "a.m." → "am"; "Her estate" → "Parastate" | v1 mangles the proper noun too; the isolated window reads "Her estate" correctly |
+| `decision-2` | "end terminal" → "and terminal" | Near-homophone, adjudicated on v1 in the same phrase |
+| `fb-2c` | "twenty" → "20" | Same normaliser artifact |
+| `rejoin-2b` | "lapsed" → "lapse" | v1 transcribes identically — the transcriber merges the article |
+| `fb-3a` | "plaintiff's firms" → "plaintiffs firm's" | Apostrophe placement, same tokens |
+| `resolution-1` | "boundary" → "boundaries" | Full-sentence smoothing; correct on the window and on v1 |
+
+---
+
+## Gate C visual verdict — re-judged in full, by eye
+
+All 25 segments re-judged from scratch: a verdict recorded against v1's frames is worthless
+here because every file and every cut moved. The sidecars' carried verdicts were correctly
+marked **STALE** by `lipsync-deliver.mjs` at delivery and all 25 were replaced.
+
+Judged on per-call contact sheets re-tiled at ~2.8× (a 180×110 mouth crop scaled to 500×306,
+four tiles per row). **known-mistakes #18 is binding: no mouth claim came from a pixel metric.**
+
+| | closed | parted |
+|---|---|---|
+| First frame | 1 (`fb-3a`) | 24 |
+| Last frame | 4 (`fb-2d`, `fb-3a`, `rejoin-2a`, `rejoin-3`) | 21 |
+
+**Framing: PASS.** Judged against the approved driving base's own first frame — identity,
+environment, framing, wardrobe and lighting identical; no drift, zoom, crop or warping.
+
+**Articulation: PASS.** Twelve consecutive frames through a speaking stretch show varied,
+natural mouth shapes.
+
+**The parted-lips condition is unchanged from revision 1 and is still an open item for
+Roger.** It is visible only on a held frame — behind the Start control, or while a decision
+overlay is up — never during playback. A player-side fix costs $0.00 and re-renders nothing
+(pipeline rule 8).
+
+---
+
+## One assertion was corrected, and the media was not
+
+The re-delivery failed one lesson test: `rejoin-3`'s video is **16 ms shorter than its padded
+audio**.
+
+**The media is right and the assertion was wrong.** `audio_dur_s` is the narration *plus* the
+0.24 s of digital silence the splitter cuts in on each side. A call's return can end a frame
+before that padded length, leaving the tail of the trailing *silence* without a picture —
+nothing a learner can see or hear, because the player has already advanced. Every narration
+sample has a frame; the pipeline's own mechanical row `frames_cover_narration` passes.
+
+Checked against what has already shipped: **`siu-01` carries the same condition on `fb-1d`
+(−48 ms) and `rejoin-2` (−40 ms)** and passed review. `claims-01` and ew-01 v1 have none.
+
+The assertion now tests the guarantee the pipeline actually makes — video covers the
+**narration** — and additionally bounds any pad shortfall at two frames, so this cannot
+quietly become "the last word has no picture". Buying another LatentSync call to recover a
+fraction of a frame of silence would have been $0.37 for nothing.
+
+---
+
+## What else this revision fixed
+
+**The Gate A fidelity preflight was disarmed on this lesson, and nobody knew.**
+`ew-01-av1.narration.ts` had lost its per-segment `scriptChars` / `scriptSha256` fields when
+the module was regenerated against the measured durations at the v1 delivery. Those two
+fields are the only thing `tts-narration.mjs` checks before sending a character to a paid
+provider — without them a drifted script would have been spoken aloud and billed. Restored
+from the **unchanged** text (the combined fingerprint and total character count both still
+match), and a test now keeps them.
+
+**`claims-01-av1.narration.ts` has the same gap and was deliberately left alone** — it is
+outside this task. It should be repaired before that lesson is ever re-rendered.
+
+**Two new reusable scripts**, both written for the 267-video catalog rather than this pilot:
+`scripts/gate-a-adjudicate.mjs` (the corrected Gate A verdict, which had been applied by hand
+until now) and `scripts/redraw-verify.mjs`. Plus `scripts/rewire-narration.mjs`,
+`scripts/stamp-visual-qa.mjs` and `scripts/refresh-gate-a-summary.mjs`.
+
+---
+
+## Still open after revision 2
+
+| Item | State |
+|---|---|
+| Roger confirms the new voice | **Not confirmed.** It is materially lower in pitch than what he approved before |
+| iOS Safari / Android Chrome, real handsets | Not run — deferred, not waived |
+| Functional acceptance inside a Thinkific lesson | Not run — the package has never been uploaded, by any pilot |
+| First-frame mouth position | Open for Roger — player-side, $0.00 |
+| Exhibit photographs for the two evidence scenes | Open for Roger — content decision |
+| **MiniMax `voice_id` durability across Selena's 42 courses** | **Carried risk, not solved.** Account-scoped, non-deterministic to recreate. Mitigation is to render early and keep the raws |

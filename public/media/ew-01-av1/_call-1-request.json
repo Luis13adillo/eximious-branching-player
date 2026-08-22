@@ -1,9 +1,9 @@
 {
   "lesson": "ew-01-av1",
   "call": 1,
-  "request_id": "01a02445-fe5c-7202-9780-40fc2e36d852",
-  "status_url": "https://queue.fal.run/fal-ai/latentsync/requests/01a02445-fe5c-7202-9780-40fc2e36d852/status",
-  "response_url": "https://queue.fal.run/fal-ai/latentsync/requests/01a02445-fe5c-7202-9780-40fc2e36d852",
+  "request_id": "01a029ce-9595-74f1-9f95-052c45956c8b",
+  "status_url": "https://queue.fal.run/fal-ai/latentsync/requests/01a029ce-9595-74f1-9f95-052c45956c8b/status",
+  "response_url": "https://queue.fal.run/fal-ai/latentsync/requests/01a029ce-9595-74f1-9f95-052c45956c8b",
   "payload": {
     "video_url": "[temporary fal input, 24 h]",
     "audio_url": "[temporary fal input, 24 h]",
@@ -12,24 +12,24 @@
     "guidance_scale": 1
   },
   "input_expiry": {
-    "audio": "2026-08-22T12:25:38.845Z",
-    "video": "2026-08-22T12:26:01.683Z"
+    "audio": "2026-08-23T14:09:35.490Z",
+    "video": "2026-08-23T14:09:59.057Z"
   },
-  "submitted_utc": "2026-08-21T12:22:41.907Z",
-  "projected_cost_usd": 0.385,
-  "completed_utc": "2026-08-21T12:32:02.824Z",
+  "submitted_utc": "2026-08-22T14:09:59.733Z",
+  "projected_cost_usd": 0.5706,
+  "completed_utc": "2026-08-22T14:23:28.139Z",
   "returned": {
-    "frames": 1920,
-    "duration_s": 76.8,
+    "frames": 2848,
+    "duration_s": 113.92,
     "dims": "1920x1080",
     "fps": "25/1",
     "audio": {
       "codec": "aac",
       "sample_rate": 16000,
       "channels": 1,
-      "bit_rate": 56910
+      "bit_rate": 53814
     },
-    "sha256": "77a08efa73311e7efbf8ff5633f483918ea95483d4a33b4f58c6873f01a84377"
+    "sha256": "17d019aea6b6565525f4c7b4b4620aed5412e31462c94982576955e10b96f5bb"
   },
-  "actual_cost_usd": 0.384
+  "actual_cost_usd": 0.5696
 }

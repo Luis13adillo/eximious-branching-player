@@ -1,49 +1,59 @@
 {
   "asset": "rejoin-1a.mp3",
-  "video": "EA_ew-01_AV1",
+  "lesson": "ew-01-av1",
   "presenter": "Selena Navarro (Presenter 3)",
-  "provider": "OpenAI",
-  "endpoint": "POST https://api.openai.com/v1/audio/speech",
-  "model": "gpt-4o-mini-tts-2025-12-15",
-  "model_pinned": true,
-  "voice": "sage",
-  "speed": null,
+  "provider": "fal.ai -> MiniMax",
+  "endpoint": "POST https://fal.run/fal-ai/minimax/speech-02-hd",
+  "model": "minimax/speech-02-hd",
+  "voice": "ttv-voice-2026082200132526-qth65Vqj",
+  "voice_label": "LA-1-mexican-american (voice-design, 2026-08-22)",
+  "voice_setting": {
+    "voice_id": "ttv-voice-2026082200132526-qth65Vqj",
+    "speed": 1,
+    "vol": 1,
+    "pitch": 0
+  },
+  "raw_audio_setting": {
+    "sample_rate": 44100,
+    "bitrate": 256000,
+    "format": "mp3",
+    "channel": 1
+  },
+  "speed": 1,
   "response_format": "mp3",
-  "instructions_sha256": "bdf6862d6f8dc101b66898b0d0b2d0df1c4946d62f02fa202bb4af932483eeda",
-  "instructions_chars": 1133,
-  "note": "Selena's locked config carries the exact 1133-char `instructions` string and NO `speed` parameter. The string itself is in CLAUDE.md and in public/media/presenter-3-selena-navarro-voice-SELECTED.json; it is referenced here by sha256 so this sidecar cannot drift from it.",
+  "instructions": null,
+  "note": "MiniMax takes no `instructions` parameter — delivery is carried by the designed voice itself. Recast approved by Roger 2026-08-22; supersedes gpt-4o-mini-tts/sage.",
   "script_chars": 702,
   "script_sha256": "070d1179c4f01c9ee0301b2e2604b850ccb1ced630d9382c22a4694811d4dc4b",
-  "narration_lock": {
-    "file": "src/lib/lessons/ew-01-av1.narration.ts",
-    "narration_sha256": "54f55fcee0fc63ddfb8587922337bf630b275169c4a1b44ecee30652c68d48dc",
-    "narration_chars": 9881
-  },
-  "mastering": "single calibrated encode from raw; linear gain only (ffmpeg volume=NdB); no compression, no limiting; two-pass gain calibration corrects the ~0.5 dB transcode generation loss",
-  "gain_db": 8.6,
-  "synthesis": {
-    "source": "resynth",
-    "accepted_draw": 1,
-    "draws": 1,
-    "resynthesis_reasons": [
-      "tts-tail-truncation"
-    ],
-    "note": null,
-    "method": "generate-and-verify: every draw read back by ASR with word timestamps; a draw missing scripted words at head or tail, carrying an internal hole, or peaking above -3.0 dBFS was discarded and redrawn on the same locked config"
+  "mastering": "single calibrated encode from raw; linear gain only (ffmpeg volume=NdB); no compression, no limiting",
+  "mastering_detail": {
+    "i_raw": -16.6,
+    "gain_db": -7.5,
+    "calibration_passes": [
+      {
+        "gain_db": -7.9,
+        "measured": -24.9
+      },
+      {
+        "gain_db": -7.5,
+        "measured": -24.5
+      }
+    ]
   },
   "audio": {
     "lufs_integrated": -24.5,
-    "lra": 6.9,
-    "true_peak_dbfs": -3.2,
+    "lra": 2.7,
+    "true_peak_dbfs": -8.8,
+    "speech_lufs": -24.63,
     "sample_rate": 24000,
     "channels": 1,
     "bit_rate": 128000,
-    "duration_s": 50.16
+    "duration_s": 48.849
   },
   "f0": {
-    "onset_hz": 150.9,
-    "body_hz": 163.3,
-    "onset_over_body": 0.924
+    "onset_hz": 156.9,
+    "body_hz": 161.1,
+    "voiced_frames": 3325
   },
   "qa": {
     "loudness": true,
@@ -52,9 +62,27 @@
     "flat": true,
     "no_trunc": true,
     "pause": true,
-    "f0": false,
-    "fidelity": true,
+    "f0": true,
     "duration": true
+  },
+  "sha256": "19e5b70913caa21b90cc5ff4dafa03d0ae62fe7b40b8da177488855bcfc49712",
+  "date": "2026-08-22",
+  "qa_detail": {
+    "pauses": [],
+    "estimated_s": 49.298,
+    "duration_delta_pct": -0.9,
+    "truncation": {
+      "ok": true,
+      "tailRatio": 0,
+      "falling": true
+    },
+    "f0_onset_ratio": 0.974,
+    "momentary_frames": 488
+  },
+  "narration_lock": {
+    "file": "src/lib/lessons/ew-01-av1.narration.ts",
+    "narration_sha256": "54f55fcee0fc63ddfb8587922337bf630b275169c4a1b44ecee30652c68d48dc",
+    "narration_chars": 9881
   },
   "qa_corrected": {
     "loudness": true,
@@ -68,40 +96,34 @@
     "duration_within_3sd": true,
     "long_pauses": [],
     "truncation_v4": {
-      "tail_frame_ratio": 0.019,
+      "tail_frame_ratio": 0,
       "falling_recorded_not_gated": true,
       "missing_head_words": [],
       "missing_tail_words": []
     },
     "duration": {
-      "delta_pct": 1.7,
-      "corpus_mean_pct": 1.4,
-      "band_3sd_pct": 21.8,
+      "delta_pct": -0.4,
+      "corpus_mean_pct": 1.6,
+      "band_3sd_pct": 24.3,
       "exempt_under_3s": false
     }
   },
   "asr_adjudications": [],
   "level_in_context": {
-    "momentary_p95_lufs": -22.4,
-    "corpus_median_m_p95_lufs": -22.18,
-    "vs_corpus_median_lu": -0.22,
+    "momentary_p95_lufs": -21.2,
+    "corpus_median_m_p95_lufs": -20.9,
+    "vs_corpus_median_lu": -0.3,
     "junction_steps_lu": {
-      "fb-1a->rejoin-1a": -0.82,
-      "fb-1c->rejoin-1a": 0.2,
-      "fb-1d->rejoin-1a": -0.39,
-      "rejoin-1a->rejoin-1b": -1.38
+      "fb-1d->rejoin-1a": 0,
+      "rejoin-1a->rejoin-1b": 1.3
     },
     "note": "Integrated loudness is unreliable below ~3 s, so level is also carried as the 95th percentile of 400 ms momentary loudness - speech only. What a learner perceives is the step at a junction: ~1 LU is the detection threshold, ~3 LU is plainly audible."
   },
   "gate_a": {
     "status": "PASS",
-    "date": "2026-08-20",
+    "date": "2026-08-22",
     "rows_failed": [],
-    "as_written_rows_failed": [
-      "f0"
-    ],
-    "note": "Verdict is the CORRECTED gate. Three rows as Diane's run first wrote them measure the instrument, not the audio, and each was restated against evidence: raw F0 onset>=body (over-strict), any pause>0.9s (a sentence boundary is a beat, not a stall), and duration +-5% of a chars/sec model (ordinary rate variation). Both scorings are recorded."
-  },
-  "sha256": "4c487a2e73fbd444480e907c45ad224081847507a44874f17b9c7a967dba63e2",
-  "date": "2026-08-20"
+    "as_written_rows_failed": [],
+    "note": "Verdict is the CORRECTED gate. Three rows as the run first wrote them measure the instrument, not the audio, and each is restated against evidence: raw F0 onset>=body (over-strict), any pause>0.9s (a sentence boundary is a beat, not a stall), and duration +-5% of a chars/sec model (ordinary rate variation, and meaningless under 3 s). Both scorings are recorded."
+  }
 }

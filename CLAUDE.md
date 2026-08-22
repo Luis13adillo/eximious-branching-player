@@ -97,19 +97,46 @@ Passed two paid QA gates. Evidence: `docs/PRODUCTION_READINESS_COST_LOCK.md`,
 | Track group | Claims & Coverage (1, 4, 6, 10, 12) | Investigation & Fraud (5, 7, 8, 9, 15) | Professional Practice & Business (2, 3, 11, 13, 14) |
 | Courses | 51 | 32 | 42 |
 | Approved visual reference | `public/media/presenter-diane.jpg` (1920×1088, **original dark office**) — meets the 1080p floor; production base | `public/media/presenter-2-curtis-whitfield-master.png` (1672×941) — approved visual reference ONLY, NOT a production master | `public/media/presenter-3-selena-navarro-master.png` (1672×941) — approved visual reference ONLY, NOT a production master |
-| Provider / model | OpenAI `tts-1-hd` | OpenAI `tts-1-hd` | OpenAI `gpt-4o-mini-tts-2025-12-15` (pinned) |
-| Voice | `shimmer` | `onyx` | `sage` |
-| Required settings | `speed: 1.0`, `response_format: mp3` | `speed: 1.0`, `response_format: mp3` | `response_format: mp3` **+ the exact locked `instructions` string** |
+| Provider / model | OpenAI `tts-1-hd` | OpenAI `tts-1-hd` | **fal.ai → MiniMax `speech-02-hd`** (recast 2026-08-22) |
+| Voice | `shimmer` | `onyx` | **voice-design `ttv-voice-2026082200132526-qth65Vqj`** ("LA-1-mexican-american") |
+| Required settings | `speed: 1.0`, `response_format: mp3` | `speed: 1.0`, `response_format: mp3` | `voice_setting: {speed: 1, vol: 1, pitch: 0}`; raw requested at 44.1 kHz / 256 kbps mono, then mastered to the locked standard |
 
-**Selena's `instructions` string is part of her locked presenter definition.** Her voice is
-not reproducible without it. It is reproduced byte-exact below, and **this tracked file is the
-canonical copy** — a fresh clone needs nothing else. Copy it; never retype or paraphrase it.
-The sidecar `public/media/presenter-3-selena-navarro-voice-SELECTED.json` carries the
-identical string. Verify with `sha256` of the string alone: `bdf6862d6f8dc101b66898b0d0b2d0df1c4946d62f02fa202bb4af932483eeda` (1133 characters).
+### ★ RECAST 2026-08-22 — Selena Navarro's voice
 
-```text
-Speak as an American woman in her early thirties — bright, warm and quick-witted, talking directly to a colleague she likes and respects. Light, forward placement; keep the energy up and the tone friendly and personable. Around 158 words per minute with natural conversational rhythm and varied phrasing — brisk and alive, never plodding. Polished but completely unforced, the way a smart young professional sounds explaining something she knows cold. Let the short sentences move quickly and land lightly rather than settling in with weight. This is NOT narration or voice-over: no measured narrator cadence, no evenly paced professional delivery, no broadcast polish, no announcer authority, no theatrical emphasis. Neutral contemporary American English. No British, Irish, Australian or other non-American accent. Do not add a Spanish or Hispanic accent and do not stylise the delivery around ethnicity in any way. Do not sound older, matronly, or grandmotherly. Do not use a heavy, deep, slow or ponderous register. Do not deliver it as a formal lecture. Engaging, but never bubbly, girlish, giggly, breathy, or influencer-style.
-```
+**Approved by Roger, relayed by Luis, 2026-08-22.** Selena moves from OpenAI
+`gpt-4o-mini-tts-2025-12-15` / `sage` to a MiniMax voice-design voice served through fal.
+This was a **production rule 9 change (provider *and* model) and a client recasting
+decision**; both were approved together. Canonical record:
+`public/media/presenter-3-selena-navarro-voice-SELECTED.json`.
+
+| | |
+|---|---|
+| Endpoint | `POST https://fal.run/fal-ai/minimax/speech-02-hd` |
+| `voice_id` | `ttv-voice-2026082200132526-qth65Vqj` |
+| Origin | `fal-ai/minimax/voice-design`, prompt-designed 2026-08-22 (prompt recorded in the sidecar) |
+| Measured | 154.8 Hz body pitch, 159 wpm on the audition; **~42 Hz deeper than the superseded `sage`** |
+| Audio standard | **UNCHANGED** — still 24 kHz / mono / 128 kbps / −24.5 LUFS, linear gain only |
+
+**This reverses the superseded voice's own written direction.** The retired 1133-character
+`instructions` string said *"Do not add a Spanish or Hispanic accent and do not stylise the
+delivery around ethnicity in any way."* The recast deliberately reverses that. It is
+recorded here so no later session "corrects" it back. MiniMax takes no `instructions`
+parameter at all — delivery is carried by the designed voice itself.
+
+**The superseded definition is retained, not deleted**, so the audio that shipped on
+2026-08-21 stays reproducible:
+`public/media/presenter-3-selena-navarro-voice-SELECTED-v1-sage-superseded.json` (carries
+the `instructions` string byte-exact, sha256 `bdf6862d…83eeda`, 1133 characters) and
+`…-v1-sage-superseded.mp3`. Presenter key `selena-navarro-v1-sage` in
+`scripts/tts-narration.mjs` reproduces it and **aborts if selected** — using it again is a
+new client approval, not a fallback.
+
+> **★ RISK — carried, not solved.** The `voice_id` is an **account-scoped MiniMax
+> voice-design ID, and voice-design is not deterministic**: the recorded design prompt is
+> not guaranteed to return this voice again. Selena carries **42 courses**. If the ID
+> lapses before they are rendered, this exact voice may be unrecoverable. **Mitigation:
+> render early and keep every raw synthesis.** This exposure did not exist on `sage`,
+> which is a catalogued OpenAI voice plus a text string held in this repo.
 
 Selena's **seated** version is the speaking video; her **standing** version is course
 pages / title cards only.
@@ -124,7 +151,8 @@ before any paid downstream step.
 
 ```
 locked script
-  → OpenAI TTS on the locked per-presenter voice config
+  → TTS on the locked per-presenter voice config
+    (OpenAI tts-1-hd for Diane and Curtis; fal → MiniMax speech-02-hd for Selena)
   → ffmpeg master to 24 kHz / mono / 128 kbps @ −24.5 LUFS
   → audio QA gate (loudness, format, F0 onset) — MUST pass before any paid step
   → [ONE TIME per presenter] kling/v2-1-pro (KIE), 10 s, 1920×1080, NO audio → motion base

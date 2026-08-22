@@ -17,11 +17,11 @@
     "fps": 25,
     "block": 16,
     "clearance_s": 0.2,
+    "delivery_pad_s": 0.24,
+    "delivery_pad_reason": "Blocks are derived from content + this pad so the returned video always extends far enough past the last narration sample for lipsync-deliver.mjs to cut its trailing 0.24 s of silence. Without it the final segment of a call can be unsplittable.",
     "min_call_s": 40,
     "per_sec_usd": 0.005,
-    "min_call_cost_usd": 0.2,
-    "delivery_pad_s": 0.24,
-    "delivery_pad_reason": "Blocks are derived from content + this pad so the returned video always extends far enough past the last narration sample for lipsync-deliver.mjs to cut its trailing 0.24 s of silence. Without it the final segment of a call can be unsplittable."
+    "min_call_cost_usd": 0.2
   },
   "locked_params": {
     "model": "fal-ai/latentsync",
@@ -29,11 +29,11 @@
     "seed": 20260820,
     "guidance_scale": 1
   },
-  "calls": 8,
-  "total_audio_s": 694.056,
-  "total_submitted_s": 713.92,
-  "projected_cost_usd": 3.5696,
-  "longest_call_s": 108.36,
+  "calls": 7,
+  "total_audio_s": 690.095,
+  "total_submitted_s": 708.6,
+  "projected_cost_usd": 3.543,
+  "longest_call_s": 124.36,
   "plan": [
     {
       "call": 1,
@@ -44,256 +44,242 @@
         "assignment-4",
         "decision-1",
         "decision-2",
-        "decision-3"
+        "decision-3",
+        "fb-1a"
       ],
-      "raw_s": 72.768,
-      "content_s": 76.408,
-      "blocks": 120,
-      "frames": 1920,
-      "submit_s": 77,
-      "cost_usd": 0.385,
-      "headroom_s": 66.417,
+      "raw_s": 109.477,
+      "content_s": 113.617,
+      "blocks": 178,
+      "frames": 2848,
+      "submit_s": 114.12,
+      "cost_usd": 0.5706,
+      "headroom_s": 29.297,
       "offsets": [
         {
           "id": "assignment-1",
           "batch_start_s": 0.64,
-          "audio_dur_s": 19.656
+          "audio_dur_s": 22.518
         },
         {
           "id": "assignment-2",
-          "batch_start_s": 20.796,
-          "audio_dur_s": 26.856
+          "batch_start_s": 23.658,
+          "audio_dur_s": 27.455
         },
         {
           "id": "assignment-3",
-          "batch_start_s": 48.152,
-          "audio_dur_s": 3.6
+          "batch_start_s": 51.613,
+          "audio_dur_s": 3.878
         },
         {
           "id": "assignment-4",
-          "batch_start_s": 52.252,
-          "audio_dur_s": 2.4
+          "batch_start_s": 55.991,
+          "audio_dur_s": 1.149
         },
         {
           "id": "decision-1",
-          "batch_start_s": 55.152,
-          "audio_dur_s": 1.704
+          "batch_start_s": 57.64,
+          "audio_dur_s": 1.44
         },
         {
           "id": "decision-2",
-          "batch_start_s": 57.356,
-          "audio_dur_s": 11.352
+          "batch_start_s": 59.58,
+          "audio_dur_s": 9.845
         },
         {
           "id": "decision-3",
-          "batch_start_s": 69.208,
-          "audio_dur_s": 7.2
+          "batch_start_s": 69.925,
+          "audio_dur_s": 8.057
+        },
+        {
+          "id": "fb-1a",
+          "batch_start_s": 78.482,
+          "audio_dur_s": 35.135
         }
       ]
     },
     {
       "call": 2,
       "segments": [
-        "fb-1a",
         "fb-1c",
-        "fb-1d"
+        "fb-1d",
+        "fb-2a"
       ],
-      "raw_s": 106.176,
-      "content_s": 107.816,
-      "blocks": 169,
-      "frames": 2704,
-      "submit_s": 108.36,
-      "cost_usd": 0.5418,
-      "headroom_s": 35.057,
+      "raw_s": 121.967,
+      "content_s": 123.607,
+      "blocks": 194,
+      "frames": 3104,
+      "submit_s": 124.36,
+      "cost_usd": 0.6218,
+      "headroom_s": 19.057,
       "offsets": [
         {
-          "id": "fb-1a",
-          "batch_start_s": 0.64,
-          "audio_dur_s": 33.264
-        },
-        {
           "id": "fb-1c",
-          "batch_start_s": 34.404,
-          "audio_dur_s": 40.8
+          "batch_start_s": 0.64,
+          "audio_dur_s": 43.677
         },
         {
           "id": "fb-1d",
-          "batch_start_s": 75.704,
-          "audio_dur_s": 32.112
+          "batch_start_s": 44.817,
+          "audio_dur_s": 32.784
+        },
+        {
+          "id": "fb-2a",
+          "batch_start_s": 78.101,
+          "audio_dur_s": 45.506
         }
       ]
     },
     {
       "call": 3,
       "segments": [
-        "fb-2a",
-        "fb-2c"
+        "fb-2c",
+        "fb-2d",
+        "fb-3a"
       ],
-      "raw_s": 77.832,
-      "content_s": 78.972,
-      "blocks": 124,
-      "frames": 1984,
-      "submit_s": 79.56,
-      "cost_usd": 0.3978,
-      "headroom_s": 63.857,
+      "raw_s": 104.411,
+      "content_s": 106.051,
+      "blocks": 167,
+      "frames": 2672,
+      "submit_s": 107.08,
+      "cost_usd": 0.5354,
+      "headroom_s": 36.337,
       "offsets": [
         {
-          "id": "fb-2a",
+          "id": "fb-2c",
           "batch_start_s": 0.64,
-          "audio_dur_s": 45.312
+          "audio_dur_s": 33.776
         },
         {
-          "id": "fb-2c",
-          "batch_start_s": 46.452,
-          "audio_dur_s": 32.52
+          "id": "fb-2d",
+          "batch_start_s": 34.916,
+          "audio_dur_s": 29.832
+        },
+        {
+          "id": "fb-3a",
+          "batch_start_s": 65.248,
+          "audio_dur_s": 40.803
         }
       ]
     },
     {
       "call": 4,
       "segments": [
-        "fb-2d",
-        "fb-3a",
-        "fb-3c"
+        "fb-3c",
+        "fb-3d",
+        "intro",
+        "rejoin-1a"
       ],
-      "raw_s": 106.224,
-      "content_s": 107.864,
-      "blocks": 169,
-      "frames": 2704,
-      "submit_s": 108.36,
-      "cost_usd": 0.5418,
-      "headroom_s": 35.057,
+      "raw_s": 119.685,
+      "content_s": 121.825,
+      "blocks": 191,
+      "frames": 3056,
+      "submit_s": 122.44,
+      "cost_usd": 0.6122,
+      "headroom_s": 20.977,
       "offsets": [
         {
-          "id": "fb-2d",
-          "batch_start_s": 0.64,
-          "audio_dur_s": 31.008
-        },
-        {
-          "id": "fb-3a",
-          "batch_start_s": 32.148,
-          "audio_dur_s": 42
-        },
-        {
           "id": "fb-3c",
-          "batch_start_s": 74.648,
-          "audio_dur_s": 33.216
+          "batch_start_s": 0.64,
+          "audio_dur_s": 33.411
+        },
+        {
+          "id": "fb-3d",
+          "batch_start_s": 34.551,
+          "audio_dur_s": 27.324
+        },
+        {
+          "id": "intro",
+          "batch_start_s": 62.375,
+          "audio_dur_s": 10.101
+        },
+        {
+          "id": "rejoin-1a",
+          "batch_start_s": 72.976,
+          "audio_dur_s": 48.849
         }
       ]
     },
     {
       "call": 5,
       "segments": [
-        "fb-3d",
-        "intro",
-        "rejoin-1a"
+        "rejoin-1b",
+        "rejoin-2a"
       ],
-      "raw_s": 90.936,
-      "content_s": 92.576,
-      "blocks": 146,
-      "frames": 2336,
-      "submit_s": 93.64,
-      "cost_usd": 0.4682,
-      "headroom_s": 49.777,
+      "raw_s": 73.927,
+      "content_s": 75.067,
+      "blocks": 118,
+      "frames": 1888,
+      "submit_s": 75.72,
+      "cost_usd": 0.3786,
+      "headroom_s": 67.697,
       "offsets": [
         {
-          "id": "fb-3d",
+          "id": "rejoin-1b",
           "batch_start_s": 0.64,
-          "audio_dur_s": 28.968
+          "audio_dur_s": 22.1
         },
         {
-          "id": "intro",
-          "batch_start_s": 30.108,
-          "audio_dur_s": 11.808
-        },
-        {
-          "id": "rejoin-1a",
-          "batch_start_s": 42.416,
-          "audio_dur_s": 50.16
+          "id": "rejoin-2a",
+          "batch_start_s": 23.24,
+          "audio_dur_s": 51.827
         }
       ]
     },
     {
       "call": 6,
       "segments": [
-        "rejoin-1b",
-        "rejoin-2a",
-        "rejoin-2b"
+        "rejoin-2b",
+        "rejoin-3"
       ],
-      "raw_s": 99.936,
-      "content_s": 101.576,
-      "blocks": 160,
-      "frames": 2560,
-      "submit_s": 102.6,
-      "cost_usd": 0.513,
-      "headroom_s": 40.817,
+      "raw_s": 71.55,
+      "content_s": 72.69,
+      "blocks": 114,
+      "frames": 1824,
+      "submit_s": 73.16,
+      "cost_usd": 0.3658,
+      "headroom_s": 70.257,
       "offsets": [
         {
-          "id": "rejoin-1b",
-          "batch_start_s": 0.64,
-          "audio_dur_s": 23.52
-        },
-        {
-          "id": "rejoin-2a",
-          "batch_start_s": 24.66,
-          "audio_dur_s": 51
-        },
-        {
           "id": "rejoin-2b",
-          "batch_start_s": 76.16,
-          "audio_dur_s": 25.416
+          "batch_start_s": 0.64,
+          "audio_dur_s": 23.145
+        },
+        {
+          "id": "rejoin-3",
+          "batch_start_s": 24.285,
+          "audio_dur_s": 48.405
         }
       ]
     },
     {
       "call": 7,
       "segments": [
-        "rejoin-3"
-      ],
-      "raw_s": 50.448,
-      "content_s": 51.088,
-      "blocks": 81,
-      "frames": 1296,
-      "submit_s": 52.04,
-      "cost_usd": 0.2602,
-      "headroom_s": 91.377,
-      "offsets": [
-        {
-          "id": "rejoin-3",
-          "batch_start_s": 0.64,
-          "audio_dur_s": 50.448
-        }
-      ]
-    },
-    {
-      "call": 8,
-      "segments": [
         "resolution-1",
         "resolution-2",
         "resolution-3"
       ],
-      "raw_s": 89.736,
-      "content_s": 91.376,
-      "blocks": 144,
-      "frames": 2304,
-      "submit_s": 92.36,
-      "cost_usd": 0.4618,
-      "headroom_s": 51.057,
+      "raw_s": 89.078,
+      "content_s": 90.718,
+      "blocks": 143,
+      "frames": 2288,
+      "submit_s": 91.72,
+      "cost_usd": 0.4586,
+      "headroom_s": 51.697,
       "offsets": [
         {
           "id": "resolution-1",
           "batch_start_s": 0.64,
-          "audio_dur_s": 26.52
+          "audio_dur_s": 27.977
         },
         {
           "id": "resolution-2",
-          "batch_start_s": 27.66,
-          "audio_dur_s": 27.864
+          "batch_start_s": 29.117,
+          "audio_dur_s": 27.194
         },
         {
           "id": "resolution-3",
-          "batch_start_s": 56.024,
-          "audio_dur_s": 35.352
+          "batch_start_s": 56.811,
+          "audio_dur_s": 33.907
         }
       ]
     }

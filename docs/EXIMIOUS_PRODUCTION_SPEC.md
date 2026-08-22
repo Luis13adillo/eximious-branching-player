@@ -46,7 +46,7 @@ _Last updated from the authoritative sources below. Where this document and the 
 - ⚠️ **The registered files above are approved-appearance REFERENCES, not final production-resolution masters.** Both are 1672×941, below the **1920×1080 minimum** required by A §1.4.1 / B §6. **Compliant 1920×1080-or-greater copies must be produced and registered before pilot render.** Until then the **media-resolution requirement for Presenters 2 and 3 is UNRESOLVED** (§7 F‑1, §4 C‑12a).
 - ✅ **Voices are now CLIENT APPROVED / LOCKED** (selected from blind auditions):
   - **Curtis Whitfield — OpenAI `tts-1-hd`, voice `onyx`, speed 1.0.** Selected audio `public/media/presenter-2-curtis-whitfield-voice-SELECTED.mp3` (SHA-256 `8e26f505…b1439f`, 15.58 s, −24.49 LUFS).
-  - **Selena Navarro — OpenAI `gpt-4o-mini-tts-2025-12-15`, voice `sage`, with a locked `instructions` string.** Selected audio `public/media/presenter-3-selena-navarro-voice-SELECTED.mp3` (SHA-256 `803de3e5…c96bb2`, 21.05 s, −24.49 LUFS).
+  - ⚠️ **Selena Navarro — SUPERSEDED 2026-08-22 (RECAST).** She was cast on OpenAI `gpt-4o-mini-tts-2025-12-15`, voice `sage`, with a locked `instructions` string; selected audio `…-voice-SELECTED-v1-sage-superseded.mp3` (SHA-256 `803de3e5…c96bb2`, 21.05 s, −24.49 LUFS). **Roger approved a recast on 2026-08-22** to **fal.ai → MiniMax `speech-02-hd`**, `voice_id` `ttv-voice-2026082200132526-qth65Vqj` ("LA-1-mexican-american") — a production rule 9 provider AND model change, approved together with the recasting decision. Current definition: `CLAUDE.md` "★ RECAST 2026-08-22" and `public/media/presenter-3-selena-navarro-voice-SELECTED.json`.
   - Both preserved byte-for-byte from their auditions; neither was regenerated or re-encoded. Full reproduction parameters live in the matching `*-SELECTED.json` sidecars. **Selena's `instructions` string is part of her locked presenter definition** — the voice is not reproducible without it. See §7 F‑6 for the model split.
 
 **Constraint on producing the compliant masters.** The approved **appearance** must be reproduced exactly — same identity, environment, framing, wardrobe, lighting and color. The existing reference files must **not** be regenerated, edited, cropped, recolored, enhanced, upscaled in place, or otherwise altered; they stay on disk unchanged as the approval record against which any 1920×1080+ master is checked.
@@ -195,7 +195,7 @@ locked script → OpenAI TTS (per-presenter locked voice config)
 | Delivered audio codec | **AAC-LC only.** MP3-in-MP4 (`mp4a.69`) is forbidden — WebKit will not decode it, so every iOS learner gets silence. See §7 F‑7. |
 | Diane Marchetti | OpenAI `tts-1-hd` · `shimmer` · speed 1.0 |
 | Curtis Whitfield | OpenAI `tts-1-hd` · `onyx` · speed 1.0 |
-| Selena Navarro | OpenAI **`gpt-4o-mini-tts-2025-12-15`** (pinned) · `sage` · **+ the locked `instructions` string**, read byte-exact from `presenter-3-selena-navarro-voice-SELECTED.json` (§7 F‑6) |
+| Selena Navarro | **fal.ai → MiniMax `speech-02-hd`** · voice-design `ttv-voice-2026082200132526-qth65Vqj` · `voice_setting {speed 1, vol 1, pitch 0}` · **no `instructions` parameter** — RECAST 2026-08-22, supersedes `gpt-4o-mini-tts-2025-12-15`/`sage` |
 
 ⛔ **Not the pipeline, and not to be revived: `InfiniTalk` (KIE), HeyGen, or baking the
 lip-sync model's returned audio into the delivery.** InfiniTalk caps at 720p against the

@@ -332,6 +332,25 @@ export function LessonPlayer({
     panelRef.current?.focus({ preventScroll: true });
   }, [current.id]);
 
+  // The interaction panel scrolls on short screens (a long decision on a 768px
+  // laptop). Track whether anything is still below the fold so the panel can
+  // show a soft edge instead of a hard cut that reads as "that's all there is".
+  const [moreBelow, setMoreBelow] = useState(false);
+  useEffect(() => {
+    const el = panelRef.current;
+    if (!el) return;
+    const measure = () =>
+      setMoreBelow(el.scrollHeight - el.scrollTop - el.clientHeight > 8);
+    measure();
+    el.addEventListener("scroll", measure, { passive: true });
+    const ro = new ResizeObserver(measure);
+    ro.observe(el);
+    return () => {
+      el.removeEventListener("scroll", measure);
+      ro.disconnect();
+    };
+  }, [current.id, showSummary]);
+
   // A single persistent live region reliably announces each scene to screen
   // readers (a per-scene region that mounts with its text already present is
   // often not spoken).
@@ -421,8 +440,10 @@ export function LessonPlayer({
           className="rounded-2xl border border-gold-500/70 bg-navy-900/40 p-5 outline-none [outline-offset:-3px] sm:p-6 lg:h-full lg:min-h-0 lg:flex-1 lg:min-w-0 lg:overflow-y-auto"
         >
           {/* Center the interaction + tracker as one group so short scenes
-              don't leave a dead band between them. */}
-          <div className="lg:flex lg:min-h-full lg:flex-col lg:justify-center">
+              don't leave a dead band between them — but `safe center`, so a
+              scene taller than the panel (a long decision on a short screen)
+              pins to the top instead of hiding its first line above the fold. */}
+          <div className="lg:flex lg:min-h-full lg:flex-col lg:[justify-content:safe_center]">
             <div>
               {showSummary ? (
                 <CompletionSummary
@@ -499,6 +520,17 @@ export function LessonPlayer({
               />
             )}
           </div>
+
+          {/* soft bottom edge — only while there is still content below the
+              panel's fold, so a long decision reads as "scroll for the rest"
+              rather than as an option cut in half. Sits flush to the panel's
+              bottom padding and takes no space in the flow. */}
+          {moreBelow && (
+            <div
+              aria-hidden
+              className="pointer-events-none sticky bottom-0 -mb-5 -mt-14 hidden h-14 bg-gradient-to-t from-[#061223] via-[#061223]/85 to-transparent sm:-mb-6 lg:block"
+            />
+          )}
         </section>
       </main>
 

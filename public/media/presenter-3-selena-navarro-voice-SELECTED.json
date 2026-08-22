@@ -1,56 +1,58 @@
 {
   "kind": "presenter-voice-SELECTED",
-  "status": "CLIENT-APPROVED and LOCKED voice for Presenter 3. Audio preserved exactly as auditioned; NOT regenerated, re-encoded, or normalized.",
-  "presenter": "Presenter 3 \u2014 Selena Navarro \u2014 Professional Practice & Business",
-  "allocation": "42 courses \u00b7 Tracks 2, 3, 11, 13, 14 \u00b7 pilot ew-01 AV1 (Prieto)",
-  "selectedFrom": "Blind OpenAI casting round, candidate Selena-A",
-  "auditionOriginal": "/Users/luismiguel/Downloads/Eximious-Selena-Final-OpenAI-Auditions/Selena-A.mp3",
-  "provider": "OpenAI",
-  "model": "gpt-4o-mini-tts-2025-12-15",
-  "modelPinned": true,
-  "voice": "sage",
-  "responseFormat": "mp3",
-  "instructions": "Speak as an American woman in her early thirties \u2014 bright, warm and quick-witted, talking directly to a colleague she likes and respects. Light, forward placement; keep the energy up and the tone friendly and personable. Around 158 words per minute with natural conversational rhythm and varied phrasing \u2014 brisk and alive, never plodding. Polished but completely unforced, the way a smart young professional sounds explaining something she knows cold. Let the short sentences move quickly and land lightly rather than settling in with weight. This is NOT narration or voice-over: no measured narrator cadence, no evenly paced professional delivery, no broadcast polish, no announcer authority, no theatrical emphasis. Neutral contemporary American English. No British, Irish, Australian or other non-American accent. Do not add a Spanish or Hispanic accent and do not stylise the delivery around ethnicity in any way. Do not sound older, matronly, or grandmotherly. Do not use a heavy, deep, slow or ponderous register. Do not deliver it as a formal lecture. Engaging, but never bubbly, girlish, giggly, breathy, or influencer-style.",
-  "instructionsNote": "Part of the locked presenter definition. Reproducing this voice requires the model, voice AND this exact instruction string.",
-  "scriptSource": "ew-01 AV1 — Decision 1 rejoin teaching block (script title withheld; see docs/source/pilot-scripts.pdf)",
-  "excerpt": "[REDACTED — verbatim ew-01 pilot-script narration. Confidential client content; not reproduced in git. Source: docs/source/pilot-scripts.pdf (local-only, git-ignored).]",
-  "excerptNote": "Redacted for git. The audition was generated from a verbatim contiguous pilot-script passage, held IDENTICAL across all three candidates. That identity is what makes the blind comparison valid. Unredacted original: docs/confidential/presenter-3-selena-navarro-voice-SELECTED.unredacted.json (local-only, git-ignored).",
-  "durationSec": 21.048,
-  "mastering": {
-    "linearGainDb": 9.22,
-    "measuredIntegratedLoudness": "-24.49 LUFS",
-    "target": "-24.5 LUFS (matches Diane)",
-    "procedure": "Calibrated single encode from raw. Linear gain only.",
-    "encode": "mp3 128 kbps, 24 kHz, mono"
+  "status": "CLIENT-APPROVED and LOCKED voice for Presenter 3 from 2026-08-22. Recast approved by Roger; relayed by Luis in session 2026-08-22. Supersedes the OpenAI gpt-4o-mini-tts / sage definition.",
+  "presenter": "Presenter 3 — Selena Navarro — Professional Practice & Business",
+  "allocation": "42 courses · Tracks 2, 3, 11, 13, 14 · pilot ew-01 AV1 (Prieto)",
+  "approval": {
+    "decision": "Recast Presenter 3 from OpenAI gpt-4o-mini-tts/sage to the MiniMax voice-design voice LA-1-mexican-american.",
+    "approvedBy": "Roger (client)",
+    "relayedBy": "Luis",
+    "date": "2026-08-22",
+    "scope": [
+      "Recasting the presenter voice (the prior voice was client-approved and locked)",
+      "Production rule 9 provider AND model change: OpenAI -> fal.ai / MiniMax"
+    ],
+    "reversesPriorDirection": "The superseded locked `instructions` string explicitly directed 'Do not add a Spanish or Hispanic accent and do not stylise the delivery around ethnicity in any way.' This recast deliberately reverses that direction. Recorded so it is never 'corrected' back by a later session."
   },
-  "qa": {
-    "f0_median_hz": 181.8,
-    "f0_min_hz": 87.9,
-    "f0_max_hz": 347.8,
-    "f0_onset_median_hz": 186.0,
-    "f0_body_median_hz": 181.8,
-    "onset_drop_hz": -4.2,
-    "f0_stability_cv": 0.188,
-    "f0_first_third_hz": 181.8,
-    "f0_last_third_hz": 177.8,
-    "drift_hz": -4.0,
-    "peak_dbfs": "-4.007378",
-    "flat_factor": 0.0,
-    "internal_pauses_over_0_9s": 0,
-    "longest_pause_s": 0.0,
-    "durationSec": 21.048,
-    "loudnessLUFS": -24.49
+  "provider": "fal.ai -> MiniMax",
+  "endpoint": "POST https://fal.run/fal-ai/minimax/speech-02-hd",
+  "model": "minimax/speech-02-hd",
+  "voice_id": "ttv-voice-2026082200132526-qth65Vqj",
+  "voice_label": "LA-1-mexican-american",
+  "voice_origin": "fal-ai/minimax/voice-design, prompt-designed 2026-08-22",
+  "design_prompt": "A Mexican-American woman in her early thirties from Southern California. Native American English with the natural warmth and cadence of a US-raised Latina. Feminine, light and bright with a high forward placement - not deep, not chesty, not matronly. Professional and composed but relaxed and conversational, never stiff or read-aloud. No British, Irish, Australian or other European accent of any kind.",
+  "voice_setting": {
+    "voice_id": "ttv-voice-2026082200132526-qth65Vqj",
+    "speed": 1,
+    "vol": 1,
+    "pitch": 0
   },
-  "qaFailures": [],
-  "sha256": "803de3e519eb7545bad2d92323e863cb302c480373a7f64594651ac328c96bb2",
-  "provenance": "Byte-identical to Selena-A.mp3 as auditioned and selected. Copied, never re-synthesized.",
-  "reproduce": "POST /v1/audio/speech {model:'gpt-4o-mini-tts-2025-12-15', voice:'sage', instructions:<instructions field>, response_format:'mp3'}, then calibrated single encode to -24.5 LUFS (mp3 128k / 24kHz / mono).",
-  "pipelineNote": "DEPARTS from Diane's and Curtis's tts-1-hd pipeline. Client-approved exception: tts-1-hd has no `instructions` parameter and its female roster was exhausted against Selena's casting brief. See EXIMIOUS_PRODUCTION_SPEC.md section 7.",
-  "supersedes": [
-    "presenter-3-simone-voice-approval.mp3 (gpt-4o-mini-tts, sage, no instructions)",
-    "presenter-3-selena-navarro-voice-v1.mp3 (tts-1-hd, coral)",
-    "presenter-3-selena-marin-B.mp3 / -FINAL.mp3 (marin)",
-    "tts-1-hd blind round candidates (alloy, fable, nova, sage)"
-  ],
+  "raw_audio_setting": {
+    "sample_rate": 44100,
+    "bitrate": 256000,
+    "format": "mp3",
+    "channel": 1
+  },
+  "instructions": null,
+  "instructionsNote": "MiniMax takes no `instructions` parameter. Delivery is carried by the designed voice itself. The 1133-char string that was part of the v1 definition does not transfer and is retained only in public/media/presenter-3-selena-navarro-voice-SELECTED-v1-sage-superseded.json.",
+  "auditionFile": "public/media/presenter-3-selena-navarro-voice-SELECTED.mp3",
+  "auditionSha256": "7400b977d36e0dc0010e94c5fdc30387b2d356ad7da3bf1c353b1f71cc577ee7",
+  "auditionNote": "The LA-1 audition exactly as generated and selected. Raw, 32 kHz / 96 kbps / -17.2 LUFS — this is the AUDITION, not a delivery master. Delivered narration is mastered to the locked standard.",
+  "measured_on_audition": {
+    "pitch_body_hz": 154.8,
+    "pace_wpm": 159,
+    "duration_s": 10.913,
+    "lufs_integrated": -17.2,
+    "comparison": "The superseded sage voice measured 181.8 Hz on its own audition and 196.7 Hz on the shipped intro segment. LA-1 is materially deeper. Luis and Roger were told this before approving."
+  },
+  "audio_standard_unchanged": "mp3 · 24 kHz · mono · 128 kbps · -24.5 LUFS integrated. Single calibrated encode from raw, linear gain only — never compression or limiting. Unchanged by this recast.",
+  "supersedes": {
+    "record": "public/media/presenter-3-selena-navarro-voice-SELECTED-v1-sage-superseded.json",
+    "audio": "public/media/presenter-3-selena-navarro-voice-SELECTED-v1-sage-superseded.mp3",
+    "config": "OpenAI gpt-4o-mini-tts-2025-12-15 / sage / 1133-char instructions (sha256 bdf6862d6f8dc101b66898b0d0b2d0df1c4946d62f02fa202bb4af932483eeda)"
+  },
+  "RISK_voice_id_expiry": "This voice_id is an account-scoped MiniMax voice-design ID. voice-design is NOT deterministic — the recorded design_prompt is not guaranteed to return this voice again. Selena carries 42 courses. If the ID lapses before those are rendered, this exact voice may be unrecoverable. MITIGATION: render early and keep every raw synthesis. Raws for ew-01 are kept outside the repo in the run's scratch directory; the delivered 24 kHz masters in public/media/ew-01-av1/ are the durable copy.",
+  "reproduce": "POST https://fal.run/fal-ai/minimax/speech-02-hd {text:<segment>, voice_setting:{voice_id, speed:1, vol:1, pitch:0}, audio_setting:{sample_rate:44100, bitrate:256000, format:'mp3', channel:1}} -> ffmpeg linear-gain master to 24 kHz / mono / 128 kbps @ -24.5 LUFS.",
+  "excerpt": "[REDACTED — the audition line is verbatim ew-01 pilot-script narration. Confidential client content; not reproduced in git. Source: docs/source/pilot-scripts.pdf]",
   "note": "Voice selection approved. Does not constitute approval of any rendered narration or avatar video."
 }

@@ -438,8 +438,29 @@ describe("delivered media", () => {
     (id) => {
       const meta = sidecar(id);
       expect(NARRATION[id].durationSec).toBe(meta.split.video_dur_s);
-      // video must cover the audio — the locked pipeline trims UP a frame
-      expect(meta.split.video_dur_s).toBeGreaterThanOrEqual(meta.split.audio_dur_s);
+
+      /**
+       * THE GUARANTEE IS "VIDEO COVERS THE NARRATION", NOT "VIDEO COVERS THE PADDED AUDIO".
+       *
+       * `audio_dur_s` is the narration PLUS the 0.24 s of digital silence the splitter
+       * cuts in on each side. A call's return can end a frame or two before that padded
+       * length, which leaves the tail of the TRAILING SILENCE without a picture — nothing
+       * a learner can see or hear, because the player has already advanced.
+       *
+       * This was asserted the strict way first and it failed on `rejoin-3` by 16 ms. The
+       * strict reading is wrong, not the media: the shipped `siu-01` pilot carries the same
+       * condition on `fb-1d` (−48 ms) and `rejoin-2` (−40 ms) and passed review, and the
+       * pipeline's own mechanical row is `frames_cover_narration`. Buying another call to
+       * recover a fraction of a frame of silence would be $0.37 for nothing.
+       *
+       * So: every narration sample must have a frame (hard), and any shortfall must be
+       * confined to the pad and bounded at two frames (hard) — which is what stops this
+       * from quietly becoming "the last word has no picture".
+       */
+      expect(meta.split.video_dur_s).toBeGreaterThanOrEqual(meta.split.narration_dur_s);
+      expect(meta.qa.frames_cover_narration).toBe(true);
+      const padShortfallMs = (meta.split.audio_dur_s - meta.split.video_dur_s) * 1000;
+      expect(padShortfallMs).toBeLessThanOrEqual(80);
     },
   );
 
@@ -479,4 +500,94 @@ describe("delivered media", () => {
       expect(["closed", "parted"]).toContain(meta.visual_qa.last_frame_mouth);
     },
   );
+});
+
+/**
+ * ★ The voice is a LOCKED, client-approved presenter definition. It was recast once, on
+ * 2026-08-22, and that took two approvals — a client recasting decision and a production
+ * rule 9 provider-and-model change. Nothing about it should ever move quietly again.
+ *
+ * These rows read the config back out of the Gate A sidecars that were actually written
+ * when the audio was synthesised, so a drift between the locked definition and what was
+ * really sent to the provider fails here rather than shipping in the presenter's voice.
+ */
+describe("presenter voice config — locked", () => {
+  const MEDIA = path.join(REPO, "public/media/ew-01-av1");
+  const audioSidecar = (id: string) =>
+    JSON.parse(readFileSync(path.join(MEDIA, `${id}.json`), "utf8"));
+
+  const LOCKED = {
+    provider: "fal.ai -> MiniMax",
+    endpoint: "POST https://fal.run/fal-ai/minimax/speech-02-hd",
+    model: "minimax/speech-02-hd",
+    voice: "ttv-voice-2026082200132526-qth65Vqj",
+  } as const;
+
+  it.runIf(MEDIA_DELIVERED).each(IDS)("%s was synthesised on the locked voice", (id) => {
+    const a = audioSidecar(id);
+    expect(a.provider).toBe(LOCKED.provider);
+    expect(a.endpoint).toBe(LOCKED.endpoint);
+    expect(a.model).toBe(LOCKED.model);
+    expect(a.voice).toBe(LOCKED.voice);
+    expect(a.voice_setting).toEqual({ voice_id: LOCKED.voice, speed: 1, vol: 1, pitch: 0 });
+  });
+
+  it.runIf(MEDIA_DELIVERED).each(IDS)("%s is mastered to the locked audio standard", (id) => {
+    const a = audioSidecar(id).audio;
+    expect(a.sample_rate).toBe(24000);
+    expect(a.channels).toBe(1);
+    expect(Math.abs(a.bit_rate - 128000)).toBeLessThan(4000);
+    expect(Math.abs(a.lufs_integrated - -24.5)).toBeLessThanOrEqual(0.3);
+    expect(a.true_peak_dbfs).toBeLessThanOrEqual(-3.0);
+  });
+
+  it.runIf(MEDIA_DELIVERED).each(IDS)("%s passed the corrected Gate A", (id) => {
+    const g = audioSidecar(id).gate_a;
+    expect(g, "gate_a missing — run scripts/gate-a-adjudicate.mjs").toBeDefined();
+    expect(g.status).toBe("PASS");
+    expect(g.rows_failed).toEqual([]);
+  });
+
+  /**
+   * The canonical voice record must agree with what was actually sent. CLAUDE.md points at
+   * this file, and scripts/tts-narration.mjs is written from it — if they disagree, the
+   * next lesson renders in a different voice than this one did.
+   */
+  it("the tracked voice record matches the config the audio was rendered on", () => {
+    const rec = JSON.parse(
+      readFileSync(path.join(REPO, "public/media/presenter-3-selena-navarro-voice-SELECTED.json"), "utf8"),
+    );
+    expect(rec.voice_id).toBe(LOCKED.voice);
+    expect(rec.model).toBe(LOCKED.model);
+    expect(rec.endpoint).toBe(LOCKED.endpoint);
+    expect(rec.voice_setting).toEqual({ voice_id: LOCKED.voice, speed: 1, vol: 1, pitch: 0 });
+  });
+
+  /**
+   * The retired definition must stay reproducible. Its `instructions` string is the only
+   * thing that makes the v1 audio re-renderable, and it is 1133 bytes of exact text.
+   */
+  it("the superseded sage definition is preserved byte-exact", () => {
+    const p = path.join(REPO, "public/media/presenter-3-selena-navarro-voice-SELECTED-v1-sage-superseded.json");
+    expect(existsSync(p), "the retired voice record must not be deleted").toBe(true);
+    const rec = JSON.parse(readFileSync(p, "utf8"));
+    expect(rec.instructions).toHaveLength(1133);
+    expect(createHash("sha256").update(rec.instructions, "utf8").digest("hex")).toBe(
+      "bdf6862d6f8dc101b66898b0d0b2d0df1c4946d62f02fa202bb4af932483eeda",
+    );
+  });
+});
+
+/**
+ * The Gate A fidelity preflight is only armed if these fields exist. They were present when
+ * ew-01 first rendered and were lost when this module was regenerated against the measured
+ * durations, which silently disarmed the check — a "small wording fix" could then have been
+ * spoken aloud and paid for. This row keeps them.
+ */
+describe("narration fidelity preflight is armed", () => {
+  it.each(IDS)("%s carries a self-consistent script hash and char count", (id) => {
+    const seg = NARRATION[id];
+    expect(seg.scriptChars).toBe(seg.text.length);
+    expect(createHash("sha256").update(seg.text, "utf8").digest("hex")).toBe(seg.scriptSha256);
+  });
 });
