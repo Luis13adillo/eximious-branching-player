@@ -2,3 +2,13 @@
 public/media/kling-avatar.mp4
 public/media/intro-vo.mp3
 public/media/intro-remotion.mp4
+
+# Superseded lesson media — 778 MB of retired cuts (earlier voices, rejected
+# motion routes, pre-recast Selena). Nothing in src/ references these paths;
+# the lesson data only points at claims-01-av1/, siu-01-av1/ and ew-01-av1/.
+#
+# Excluded from the DEPLOYMENT only. The files stay on disk and in git, so
+# rule 6 still holds and any superseded cut can be restored without a re-render.
+# Two reasons: they were publicly fetchable on the preview URL (verified 206 on
+# 2026-08-22), and they were nearly halving the deployment for no benefit.
+public/media/*-superseded/
