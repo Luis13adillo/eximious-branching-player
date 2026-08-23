@@ -48,13 +48,18 @@ const nextConfig: NextConfig = {
         // 2026-08-22 on the deployed preview: transfers pinned at ~120 KB/s
         // against the ~2.8-3.4 Mbps these clips need to play in real time.
         //
-        // One hour, deliberately short. Delivered media HAS been replaced in
-        // place at the same path (the Selena recast, 2026-08-22), so a long
-        // max-age or `immutable` would keep serving a superseded voice to a
-        // reviewer. An hour covers a review session; after that the ETag makes
-        // revalidation a cheap 304. No `stale-while-revalidate`, for the same
-        // reason — correctness of WHICH cut is served outranks the last few
-        // percent of caching.
+        // SIXTY SECONDS, and do not raise it without a cache-busting URL.
+        // Delivered media is replaced IN PLACE at the same path (the Selena
+        // recast, 2026-08-22), so any meaningful max-age can leave a reviewer
+        // playing a superseded cut with no way to tell. This was set to 3600
+        // earlier the same day and reduced after a reviewer reported not
+        // hearing the recast: an hour of stale audio during an active review
+        // is a worse failure than a slow load. Sixty seconds still lets one
+        // playback reuse its own range requests, which is where most of the
+        // benefit was. No `stale-while-revalidate`, same reason.
+        //
+        // The real fix, if long caching is ever wanted, is a content hash in
+        // the media URL so a new cut is a new URL. Until then, keep this low.
         //
         // Preview-side only: the Thinkific package is served by Thinkific with
         // their own headers, so this does not travel with the deliverable.
@@ -62,7 +67,7 @@ const nextConfig: NextConfig = {
         headers: [
           {
             key: "Cache-Control",
-            value: "public, max-age=3600, must-revalidate",
+            value: "public, max-age=60, must-revalidate",
           },
         ],
       },
