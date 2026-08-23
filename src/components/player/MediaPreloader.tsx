@@ -1,5 +1,7 @@
 "use client";
 
+import { mediaSrc } from "@/lib/media-version";
+
 /**
  * MediaPreloader
  * ============================================================================
@@ -37,9 +39,9 @@ export function MediaPreloader({ urls }: { urls: (string | undefined)[] }) {
     >
       {list.map((u) =>
         u.endsWith(".mp3") ? (
-          <audio key={u} src={u} preload="metadata" muted />
+          <audio key={u} src={mediaSrc(u)} preload="metadata" muted />
         ) : (
-          <video key={u} src={u} preload="metadata" muted playsInline />
+          <video key={u} src={mediaSrc(u)} preload="metadata" muted playsInline />
         ),
       )}
     </div>

@@ -4,6 +4,7 @@ import { useState } from "react";
 import type { EvidenceItem } from "@/lib/branching/types";
 import { Illustration } from "@/components/media/illustrations";
 import { ExhibitTabs, ExhibitsLabel } from "./exhibits";
+import { mediaSrc } from "@/lib/media-version";
 
 /**
  * EvidenceStage
@@ -25,7 +26,7 @@ function ExhibitVisual({ item }: { item: EvidenceItem }) {
     return (
       // eslint-disable-next-line @next/next/no-img-element
       <img
-        src={item.imageUrl}
+        src={mediaSrc(item.imageUrl)}
         alt={item.title}
         className="absolute inset-0 h-full w-full object-cover"
       />

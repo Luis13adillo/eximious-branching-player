@@ -1,8 +1,32 @@
 import type { NextConfig } from "next";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { execSync } from "node:child_process";
 
 const projectRoot = path.dirname(fileURLToPath(import.meta.url));
+
+/**
+ * Media cache-busting version — see `src/lib/media-version.ts`.
+ * Delivered media is replaced in place at the same path, so a stable URL can go
+ * stale in a reviewer's browser. Every deploy stamps `/media/...` URLs with
+ * `?v=<this>`, making a redelivered cut a new URL nothing can have cached.
+ * On Vercel this is the commit sha; locally it is the working-tree HEAD; if git
+ * is unavailable it is empty (URLs stay bare — no worse than before).
+ */
+function mediaVersion(): string {
+  const sha = process.env.VERCEL_GIT_COMMIT_SHA;
+  if (sha) return sha.slice(0, 8);
+  try {
+    return execSync("git rev-parse --short=8 HEAD", {
+      cwd: projectRoot,
+      stdio: ["ignore", "pipe", "ignore"],
+    })
+      .toString()
+      .trim();
+  } catch {
+    return "";
+  }
+}
 
 /**
  * Iframe embedding (Thinkific / any LMS)
@@ -25,6 +49,11 @@ const nextConfig: NextConfig = {
   turbopack: { root: projectRoot },
   // Hide the Next dev overlay button — it otherwise floats over the player UI.
   devIndicators: false,
+  // Inlined into the client bundle so `mediaSrc()` can stamp `/media/...` URLs
+  // with a per-deploy version (see src/lib/media-version.ts).
+  env: {
+    NEXT_PUBLIC_MEDIA_VERSION: mediaVersion(),
+  },
   async headers() {
     return [
       {
@@ -58,8 +87,13 @@ const nextConfig: NextConfig = {
         // playback reuse its own range requests, which is where most of the
         // benefit was. No `stale-while-revalidate`, same reason.
         //
-        // The real fix, if long caching is ever wanted, is a content hash in
-        // the media URL so a new cut is a new URL. Until then, keep this low.
+        // Media URLs now ALSO carry a per-deploy `?v=<sha>` cache-buster
+        // (src/lib/media-version.ts), so a redelivered cut is already a new URL
+        // that cannot be served stale. This max-age is deliberately kept low
+        // anyway: not every media request is guaranteed to route through the
+        // versioning helper, and 60 s + must-revalidate is a safe floor for any
+        // bare request. With versioned URLs it is now safe to raise this if the
+        // phone-bandwidth tradeoff ever needs it — but that is a separate change.
         //
         // Preview-side only: the Thinkific package is served by Thinkific with
         // their own headers, so this does not travel with the deliverable.

@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { Scene } from "@/lib/branching/types";
 import type { MediaClock } from "./useMediaClock";
+import { mediaSrc } from "@/lib/media-version";
 import { SceneBackdrop } from "@/components/media/SceneBackdrop";
 import { AvatarPresenter } from "./AvatarPresenter";
 import { EvidenceStage } from "./EvidenceStage";
@@ -182,8 +183,8 @@ export function MediaStage({
               ? "absolute inset-0 h-full w-full object-cover object-[58%_center] lg:object-[70%_center]"
               : "pointer-events-none absolute inset-0 h-full w-full opacity-0"
           }
-          src={mediaUrl}
-          poster={showVideo ? scene.media.posterUrl : undefined}
+          src={mediaSrc(mediaUrl)}
+          poster={showVideo ? mediaSrc(scene.media.posterUrl) : undefined}
           playsInline
           muted
           loop={!!scene.media.loop}
@@ -191,7 +192,7 @@ export function MediaStage({
           {scene.media.captionsUrl && (
             <track
               kind="captions"
-              src={scene.media.captionsUrl}
+              src={mediaSrc(scene.media.captionsUrl)}
               default={clock.captionsOn}
               label="English"
             />
@@ -205,7 +206,7 @@ export function MediaStage({
           <div className="absolute inset-0">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
-              src={scene.media.posterUrl}
+              src={mediaSrc(scene.media.posterUrl)}
               alt=""
               className="absolute inset-0 h-full w-full object-cover object-[58%_center] lg:object-[70%_center]"
               style={{

@@ -3,6 +3,7 @@
 import { useState } from "react";
 import type { EvidenceItem } from "@/lib/branching/types";
 import { Illustration } from "@/components/media/illustrations";
+import { mediaSrc } from "@/lib/media-version";
 
 /**
  * Exhibit primitives — shared by the stage and the content panel.
@@ -138,7 +139,7 @@ export function ExhibitPanel({
         {item.imageUrl ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img
-            src={item.imageUrl}
+            src={mediaSrc(item.imageUrl)}
             alt={item.title}
             className="block aspect-video w-full object-cover"
           />

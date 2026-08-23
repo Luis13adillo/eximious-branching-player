@@ -2,6 +2,7 @@
 
 import type { ComparisonSide, EvidenceComparison } from "@/lib/branching/types";
 import { Illustration } from "@/components/media/illustrations";
+import { mediaSrc } from "@/lib/media-version";
 
 /**
  * EvidenceComparisonCard — the locked `A ≠ B` evidence comparison.
@@ -24,7 +25,7 @@ function SideVisual({ side }: { side: ComparisonSide }) {
       <div className="mb-2 aspect-video w-full overflow-hidden rounded-md border border-white/10">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
-          src={side.imageUrl}
+          src={mediaSrc(side.imageUrl)}
           alt={`${side.label}: ${side.value}`}
           className="h-full w-full object-cover"
         />
