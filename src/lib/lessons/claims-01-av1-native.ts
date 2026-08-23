@@ -26,5 +26,5 @@ export const claims01Av1Native: Lesson = {
   ...cloned,
   id: "claims-01-av1-native",
   slug: "claims-01-av1-native",
-  ...(cloned.title ? { title: `${cloned.title} — Native preview` } : {}),
+  // Clean title (no "preview" marker) — this cut is featured as the pilot.
 };

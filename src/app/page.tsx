@@ -5,13 +5,19 @@ import { getLesson, listLessons } from "@/lib/lessons";
 import { SceneBackdrop } from "@/components/media/SceneBackdrop";
 
 /**
- * THE PILOT HUB — the three videos delivered for the §4.1 pilot review, in the
- * order the Agreement lists them (B §5): claims-01, siu-01, ew-01.
+ * THE PILOT HUB — the three videos for the §4.1 pilot review, in the order the
+ * Agreement lists them (B §5): claims-01, siu-01, ew-01.
+ *
+ * These point at the NATIVE avatar cuts (Kling AI Avatar v2 Pro — movement and
+ * lip-sync generated together), which is what the pilot review is now shown on.
+ * The earlier dubbed cuts are NOT deleted; they remain reachable at their own
+ * slugs (claims-investigation-application-1, siu-01-av1, ew-01-av1) — this hub
+ * simply features the native cuts. To revert, restore the three slugs below.
  *
  * Named explicitly rather than taken from `listLessons()` because the registry also
- * carries `water-damage-claim`, which is the TEMPLATE PROOF, not pilot content, and
- * must never be presented as one of the pilots. Adding video #4 of the catalog means
- * adding its slug here.
+ * carries `water-damage-claim`, the TEMPLATE PROOF (not pilot content), plus the
+ * dubbed cuts and any preview variants, none of which must be presented as a pilot.
+ * Adding video #4 of the catalog means adding its slug here.
  *
  * Deliberately NOT labelled with presenter names. On-screen presenter identification
  * is locked to the fixed lower-third "Course Presenter" (Agreement §1.4 / Spec B §6),
@@ -20,9 +26,9 @@ import { SceneBackdrop } from "@/components/media/SceneBackdrop";
  * introducing a presenter identity the locked template does not carry.
  */
 const PILOT_SLUGS = [
-  "claims-investigation-application-1",
-  "siu-01-av1",
-  "ew-01-av1",
+  "claims-01-av1-native",
+  "siu-01-av1-native",
+  "ew-01-av1-native",
 ] as const;
 
 export default function Home() {

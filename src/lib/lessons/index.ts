@@ -3,6 +3,7 @@ import { validateLesson } from "@/lib/branching/engine";
 import { claimsInvestigationApplication1 } from "./claims-investigation-application-1";
 import { claims01Av1Native } from "./claims-01-av1-native"; // native pilot
 import { ew01Av1 } from "./ew-01-av1";
+import { ew01Av1Native } from "./ew-01-av1-native"; // native pilot
 import { siu01Av1 } from "./siu-01-av1";
 import { siu01Av1Native } from "./siu-01-av1-native"; // native pilot
 import { waterDamageClaim } from "./water-damage-claim";
@@ -25,6 +26,7 @@ const allLessons: Lesson[] = [
   siu01Av1,
   siu01Av1Native, // native pilot
   ew01Av1,
+  ew01Av1Native, // native pilot
   waterDamageClaim,
 ];
 
