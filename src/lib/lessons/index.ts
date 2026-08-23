@@ -1,8 +1,10 @@
 import type { Lesson, LessonSummary } from "@/lib/branching/types";
 import { validateLesson } from "@/lib/branching/engine";
 import { claimsInvestigationApplication1 } from "./claims-investigation-application-1";
+import { claims01Av1Native } from "./claims-01-av1-native"; // native pilot
 import { ew01Av1 } from "./ew-01-av1";
 import { siu01Av1 } from "./siu-01-av1";
+import { siu01Av1Native } from "./siu-01-av1-native"; // native pilot
 import { waterDamageClaim } from "./water-damage-claim";
 
 /**
@@ -19,7 +21,9 @@ import { waterDamageClaim } from "./water-damage-claim";
  */
 const allLessons: Lesson[] = [
   claimsInvestigationApplication1,
+  claims01Av1Native, // native pilot
   siu01Av1,
+  siu01Av1Native, // native pilot
   ew01Av1,
   waterDamageClaim,
 ];
