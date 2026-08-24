@@ -420,7 +420,7 @@ export function LessonPlayer({
           visible without scrolling. Mobile/tablet: stacked. */}
       <main className="flex flex-1 flex-col gap-4 lg:min-h-0 lg:flex-row lg:items-stretch lg:gap-5">
         {/* video stage */}
-        <div className="relative overflow-hidden rounded-2xl border border-white/10 shadow-2xl shadow-black/40 ring-1 ring-black/20 lg:h-full lg:min-h-0 lg:flex-[1.55] lg:min-w-0">
+        <div className="relative overflow-hidden rounded-2xl border border-white/10 shadow-2xl shadow-black/40 ring-1 ring-black/20 lg:h-[90%] lg:min-h-0 lg:flex-[1.55] lg:min-w-0 lg:self-start">
           <MediaStage scene={current} clock={clock} mediaRef={mediaRef} />
           {/* Contract-required AI disclosure — briefly at the opening, then
               fades. Its hold starts when the LESSON does, not when the page
