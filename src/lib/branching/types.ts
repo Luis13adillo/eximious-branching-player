@@ -72,6 +72,15 @@ export interface MediaSource {
    * polished look before final footage exists. Ignored once `videoUrl` is set.
    */
   placeholderScene?: PlaceholderSceneName;
+  /**
+   * Presenter framing override. Default (undefined) uses the template's
+   * close object-cover framing. "medium" pulls the camera back: the full 16:9
+   * source frame is shown (object-contain) scaled to a medium shot, over a soft
+   * blurred fill of the same frame so the panel has no hard letterbox. Used for
+   * a presenter whose source clip is framed tighter than the others (Selena) —
+   * client-requested 2026-08-23. Display only; no media or audio is changed.
+   */
+  presenterFraming?: "medium";
 }
 
 export type PlaceholderSceneName =

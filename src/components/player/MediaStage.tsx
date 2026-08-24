@@ -62,6 +62,10 @@ export function MediaStage({
   // tap-for-sound, especially on mobile Safari.)
   const mediaUrl = scene.media.videoUrl ?? scene.media.audioUrl;
   const showVideo = !!scene.media.videoUrl; // has real visual footage to show
+  // Pull the camera back for a presenter whose source clip is framed tight:
+  // show the full frame (contain) at a medium size over a soft blurred fill,
+  // instead of the template's close object-cover. Display only.
+  const mediumFrame = showVideo && scene.media.presenterFraming === "medium";
   const isAvatar = scene.layout === "avatar" && !!scene.presenter;
   const hasEvidence = !!scene.evidence && scene.evidence.length > 0;
   // A cinematic presenter still, only when an avatar scene has no real video.
@@ -174,14 +178,32 @@ export function MediaStage({
           recreation. It shows real footage when present, and plays the
           audio-only voiceover otherwise (kept invisible behind the scene's
           visual layer below). `key` pins its identity across renders. */}
+      {mediumFrame && (
+        // Soft blurred fill of the same frame, so the pulled-back (contain)
+        // video sits over ambient scene colour instead of hard letterbox bars.
+        // eslint-disable-next-line @next/next/no-img-element
+        <img
+          src={mediaSrc(scene.media.posterUrl)}
+          alt=""
+          aria-hidden
+          className="pointer-events-none absolute inset-0 h-full w-full scale-110 object-cover opacity-50 blur-2xl"
+        />
+      )}
       {mediaUrl && (
         <video
           key="stage-media"
           ref={mediaRef as React.RefObject<HTMLVideoElement>}
           className={
-            showVideo
-              ? "absolute inset-0 h-full w-full object-cover object-[58%_center] lg:object-[70%_center]"
-              : "pointer-events-none absolute inset-0 h-full w-full opacity-0"
+            !showVideo
+              ? "pointer-events-none absolute inset-0 h-full w-full opacity-0"
+              : mediumFrame
+                ? "absolute inset-0 h-full w-full object-contain"
+                : "absolute inset-0 h-full w-full object-cover object-[58%_center] lg:object-[70%_center]"
+          }
+          style={
+            mediumFrame
+              ? { transform: "scale(1.35)", transformOrigin: "center" }
+              : undefined
           }
           src={mediaSrc(mediaUrl)}
           poster={showVideo ? mediaSrc(scene.media.posterUrl) : undefined}
