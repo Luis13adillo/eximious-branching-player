@@ -173,8 +173,7 @@ export const ew01Av1Native: Lesson = {
             "end": 10.64,
             "text": "Pause when I ask."
           }
-        ],
-        "presenterFraming": "medium"
+        ]
       },
       "next": "assignment-1"
     },
@@ -226,8 +225,7 @@ export const ew01Av1Native: Lesson = {
             "end": 23.08,
             "text": "You have never designed a piece of roadside safety hardware in your life."
           }
-        ],
-        "presenterFraming": "medium"
+        ]
       },
       "next": "assignment-2"
     },
@@ -289,8 +287,7 @@ export const ew01Av1Native: Lesson = {
             "end": 28,
             "text": "Her estate is suing the driver’s employer and the county."
           }
-        ],
-        "presenterFraming": "medium"
+        ]
       },
       "next": "assignment-3"
     },
@@ -321,8 +318,7 @@ export const ew01Av1Native: Lesson = {
             "end": 4.44,
             "text": "Eleven minutes into the call, Prieto says this:"
           }
-        ],
-        "presenterFraming": "medium"
+        ]
       },
       "evidence": [
         {
@@ -362,8 +358,7 @@ export const ew01Av1Native: Lesson = {
             "end": 1.68,
             "text": "Let’s work it."
           }
-        ],
-        "presenterFraming": "medium"
+        ]
       },
       "next": "decision-1"
     },
@@ -392,8 +387,7 @@ export const ew01Av1Native: Lesson = {
             "end": 2,
             "text": "What do you say?"
           }
-        ],
-        "presenterFraming": "medium"
+        ]
       },
       "options": [
         {
@@ -480,8 +474,7 @@ export const ew01Av1Native: Lesson = {
             "end": 35.68,
             "text": "and reasoning backward leaves fingerprints all over a file that opposing counsel gets to read."
           }
-        ],
-        "presenterFraming": "medium"
+        ]
       },
       "next": "rejoin-1a"
     },
@@ -575,8 +568,7 @@ export const ew01Av1Native: Lesson = {
             "end": 44.24,
             "text": "Telling her what she wants to hear privately is the same failure in a quieter room."
           }
-        ],
-        "presenterFraming": "medium"
+        ]
       },
       "next": "rejoin-1a"
     },
@@ -638,8 +630,7 @@ export const ew01Av1Native: Lesson = {
             "end": 33.32,
             "text": "Reserve your escalation for something that actually earns it."
           }
-        ],
-        "presenterFraming": "medium"
+        ]
       },
       "next": "rejoin-1a"
     },
@@ -716,8 +707,7 @@ export const ew01Av1Native: Lesson = {
             "end": 49.4,
             "text": "Your opinion belongs to the court."
           }
-        ],
-        "presenterFraming": "medium"
+        ]
       },
       "next": "rejoin-1b"
     },
@@ -783,8 +773,7 @@ export const ew01Av1Native: Lesson = {
             "end": 22.64,
             "text": "Teachers get retained."
           }
-        ],
-        "presenterFraming": "medium"
+        ]
       },
       "comparison": {
         "kicker": "On screen",
@@ -843,8 +832,7 @@ export const ew01Av1Native: Lesson = {
             "end": 10.4,
             "text": "What’s your answer?"
           }
-        ],
-        "presenterFraming": "medium"
+        ]
       },
       "options": [
         {
@@ -961,8 +949,7 @@ export const ew01Av1Native: Lesson = {
             "end": 46.08,
             "text": "It’ll be the reach."
           }
-        ],
-        "presenterFraming": "medium"
+        ]
       },
       "next": "rejoin-2a"
     },
@@ -1051,8 +1038,7 @@ export const ew01Av1Native: Lesson = {
             "end": 34.32,
             "text": "you’re reaching."
           }
-        ],
-        "presenterFraming": "medium"
+        ]
       },
       "next": "rejoin-2a"
     },
@@ -1119,8 +1105,7 @@ export const ew01Av1Native: Lesson = {
             "end": 30.36,
             "text": "Disclaim the rest out loud."
           }
-        ],
-        "presenterFraming": "medium"
+        ]
       },
       "next": "rejoin-2a"
     },
@@ -1207,8 +1192,7 @@ export const ew01Av1Native: Lesson = {
             "end": 52.4,
             "text": "invited an examination that can end with a judge limiting or excluding him."
           }
-        ],
-        "presenterFraming": "medium"
+        ]
       },
       "next": "rejoin-2b"
     },
@@ -1260,8 +1244,7 @@ export const ew01Av1Native: Lesson = {
             "end": 23.72,
             "text": "which poisons everything else you say."
           }
-        ],
-        "presenterFraming": "medium"
+        ]
       },
       "next": "decision-3"
     },
@@ -1302,8 +1285,7 @@ export const ew01Av1Native: Lesson = {
             "end": 8.6,
             "text": "Here’s what it says."
           }
-        ],
-        "presenterFraming": "medium"
+        ]
       },
       "options": [
         {
@@ -1405,8 +1387,7 @@ export const ew01Av1Native: Lesson = {
             "end": 41.36,
             "text": "Write it as if under oath."
           }
-        ],
-        "presenterFraming": "medium"
+        ]
       },
       "next": "rejoin-3"
     },
@@ -1495,8 +1476,7 @@ export const ew01Av1Native: Lesson = {
             "end": 33.96,
             "text": "It’s a page that’s still true when it’s read back to you in four years."
           }
-        ],
-        "presenterFraming": "medium"
+        ]
       },
       "next": "rejoin-3"
     },
@@ -1553,8 +1533,7 @@ export const ew01Av1Native: Lesson = {
             "end": 27.88,
             "text": "it comes from making no outcome claims at all and saying plainly that you’re retained by both."
           }
-        ],
-        "presenterFraming": "medium"
+        ]
       },
       "next": "rejoin-3"
     },
@@ -1651,8 +1630,7 @@ export const ew01Av1Native: Lesson = {
             "end": 48.92,
             "text": "beats a hundred inquiries from matters outside your lane."
           }
-        ],
-        "presenterFraming": "medium"
+        ]
       },
       "next": "resolution-1"
     },
@@ -1713,8 +1691,7 @@ export const ew01Av1Native: Lesson = {
             "end": 28.52,
             "text": "Then you examine the restraint evidence the way you’d examine it for anybody."
           }
-        ],
-        "presenterFraming": "medium"
+        ]
       },
       "summaryCard": {
         "kicker": "On screen",
@@ -1804,8 +1781,7 @@ export const ew01Av1Native: Lesson = {
             "end": 27.76,
             "text": "Which is the deal."
           }
-        ],
-        "presenterFraming": "medium"
+        ]
       },
       "evidence": [
         {
@@ -1895,8 +1871,7 @@ export const ew01Av1Native: Lesson = {
             "end": 34.44,
             "text": "The answer changes on its own."
           }
-        ],
-        "presenterFraming": "medium"
+        ]
       },
       "next": null
     }
